@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html data-theme="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - panasonic_machine_checker</title>
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.3/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content grid-cols-1 grid items-start justify-start bg-base-200 min-h-screen md:pl-8">
+            <div class="w-full flex justify-between items-center bg-base-100 p-3 px-4 rounded-bl-2xl">
+                <div class="gap-3 flex items-center">
+                    <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M3 18v-2h18v2zm0-5v-2h18v2zm0-5V6h18v2z" /></svg>
+                    </label>
+                    <img src="@Url.Content("~/Assets/Images/panasonic.png")" class="h-8" />
+                </div>
+                <div>
+                    <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="avatar">
+                            <div class="w-12 mask mask-squircle">
+                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                            </div>
+                        </div>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a>Profile</a></li>
+                            <li><a>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="w-full lg:px-12 px-8 min-h-[80vh] grid grid-cols-1 items-start justify-center">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+                <footer class="footer">
+                    <div class="flex items-center p-7">
+                        &copy; 2024 - Panasonic - <a class="text-primary" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <div class="drawer-side">
+            <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
+            <ul class="menu p-4 w-80 min-h-full bg-base-100 text-base-content space-y-2">
+                <div class="divider">Admin</div>
+                <li><a class="@isActive("Admin", "Index")" asp-area="" asp-controller="Admin" asp-action="Index">Dashboard</a></li>
+                <li><a class="@isActive("Admin", "Cases")" asp-area="" asp-controller="Admin" asp-action="Cases">Cases</a></li>
+                <li><a class="@isActive("Admin", "Machines")" asp-area="" asp-controller="Admin" asp-action="Machines">Machines</a></li>
+                <li><a class="@isActive("Admin", "KytForm")" asp-area="" asp-controller="Admin" asp-action="KytForms">KYT Forms</a></li>
+                <li><a class="@isActive("Admin", "RepairSchedule")" asp-area="" asp-controller="RepairSchedule" asp-action="Cases">Repair Schedule</a></li>
+                <li><a class="@isActive("Admin", "Users")" asp-area="" asp-controller="Admin" asp-action="Users">Users</a></li>
+            </ul>
+
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+@functions {
+    public string isActive(string controller, string action)
+    {
+        var routeData = Context.GetRouteData();
+        var routeController = routeData.Values["controller"].ToString();
+        var routeAction = routeData.Values["action"].ToString();
+        return (controller == routeController && action == routeAction) ? "bg-primary/10 text-primary" : "";
+    }
+}

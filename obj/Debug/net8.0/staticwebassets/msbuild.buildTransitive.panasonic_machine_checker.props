@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\panasonic_machine_checker.props" />
+</Project>
