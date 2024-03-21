@@ -27,8 +27,8 @@
                             </div>
                         </div>
                         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><a>Profile</a></li>
-                            <li><a>Logout</a></li>
+                            <li><a asp-area="" asp-controller="Admin" asp-action="Profile">Profile</a></li>
+                            <li><a asp-area="" asp-controller="Auth" asp-action="Login">Logout</a></li>
                         </ul>
                     </div>
                 </div>
@@ -52,9 +52,10 @@
                 <li><a class="@isActive("Admin", "Index")" asp-area="" asp-controller="Admin" asp-action="Index">Dashboard</a></li>
                 <li><a class="@isActive("Admin", "Cases")" asp-area="" asp-controller="Admin" asp-action="Cases">Cases</a></li>
                 <li><a class="@isActive("Admin", "Machines")" asp-area="" asp-controller="Admin" asp-action="Machines">Machines</a></li>
-                <li><a class="@isActive("Admin", "KytForm")" asp-area="" asp-controller="Admin" asp-action="KytForms">KYT Forms</a></li>
-                <li><a class="@isActive("Admin", "RepairSchedule")" asp-area="" asp-controller="RepairSchedule" asp-action="Cases">Repair Schedule</a></li>
+                <li><a class="@isActive("Admin", "KYTForms")" asp-area="" asp-controller="Admin" asp-action="KYTForms">KYTForms</a></li>
+                <li><a class="@isActive("Admin", "RepairSchedules")" asp-area="" asp-controller="Admin" asp-action="RepairSchedules">Repair Schedule</a></li>
                 <li><a class="@isActive("Admin", "Users")" asp-area="" asp-controller="Admin" asp-action="Users">Users</a></li>
+                <li><a class="@isActive("Admin", "Status")" asp-area="" asp-controller="Admin" asp-action="Status">Status</a></li>
             </ul>
 
         </div>

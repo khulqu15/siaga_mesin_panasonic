@@ -251,3 +251,4 @@ C:\Users\admin\Documents\Projects\panasonic_machine_checker\obj\Debug\net8.0\pan
 C:\Users\admin\Documents\Projects\panasonic_machine_checker\bin\Debug\net8.0\package-lock.json
 C:\Users\admin\Documents\Projects\panasonic_machine_checker\bin\Debug\net8.0\package.json
 C:\Users\admin\Documents\Projects\panasonic_machine_checker\bin\Debug\net8.0\Web.config
+C:\Users\admin\Documents\Projects\panasonic_machine_checker\obj\Debug\net8.0\panasonic_machine_checker.sourcelink.json

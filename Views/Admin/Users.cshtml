@@ -1,5 +1,241 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    Layout = "~/Views/Shared/_App_Layout.cshtml";
 }
+
+<div class="w-full bg-base-100 p-6 rounded-xl mt-5">
+    <input type="checkbox" id="form_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl">
+            <h3 class="font-bold text-lg">Machines's Form</h3>
+            <form>
+                <div class="form-control my-3">
+                    <label for="avatar">User Avatar</label>
+                    <input type="file" name="avatar" placeholder="Enter user name" id="avatar" class="input input-bordered mt-1 input-sm w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="name">User Name</label>
+                    <input type="text" name="name" placeholder="Enter user name" id="name" class="input input-bordered mt-1 w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" placeholder="Enter user email" id="email" class="input input-bordered mt-1 w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="Enter user password" id="password" class="input input-bordered mt-1 w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="status">Current Status</label>
+                    <select class="select select-bordered w-full mt-1" id="status" name="status">
+                        <option disabled selected>Leader Production</option>
+                        <option>Manager Production</option>
+                        <option>Member MTC</option>
+                        <option>Leader MTC</option>
+                        <option>Manager MTC</option>
+                    </select>
+                </div>
+            </form>
+            <div class="modal-action">
+                <label for="form_modal" class="btn">Cancel</label>
+                <button class="btn btn-primary text-white">Submit Data</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="checkbox" id="delete_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Delete User ?</h3>
+            <p class="text-sm">The user data will be deleted permanently</p>
+            <div class="modal-action">
+                <label for="delete_modal" class="btn">Cancel</label>
+                <button class="btn btn-error text-white">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="w-full grid grid-cols-2 p-2 mb-4 border rounded-xl gap-3">
+            <div>
+                <a asp-area="" asp-controller="Admin" asp-action="Users" class="w-full btn btn-sm btn-primary">User data</a>
+            </div>
+            <div>
+                <a asp-area="" asp-controller="Admin" asp-action="Roles" class="w-full btn btn-sm">Role data</a>
+            </div>
+        </div>
+        <div class="flex items-center justify-between w-full mb-3">
+            <h1 class="font-semibold">Users <span class="badge badge-primary">05</span></h1>
+            <div>
+                <label for="form_modal" class="btn btn-sm btn-primary">Add new</label>
+                <select class="select w-24 select-sm select-bordered">
+                    <option disabled selected>Terbaru</option>
+                    <option>Terlama</option>
+                </select>
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a>Select to Edit</a></li>
+                        <li><a>Delete All</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>1</th>
+                        <td>
+                            <div class="flex gap-4 items-center">
+                                <div class="avatar">
+                                    <div class="w-12 mask mask-squircle">
+                                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 class="">Faiz Surya</h1>
+                                </div>
+                            </div>
+                        </td>
+                        <td>faiz@gmail.com</td>
+                        <td>Member MTC</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>2</th>
+                        <td>
+                            <div class="flex gap-4 items-center">
+                                <div class="avatar">
+                                    <div class="w-12 mask mask-squircle">
+                                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 class="">Bayu Purnama</h1>
+                                </div>
+                            </div>
+                        </td>
+                        <td>bayup@gmail.com</td>
+                        <td>Leader Production</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>3</th>
+                        <td>
+                            <div class="flex gap-4 items-center">
+                                <div class="avatar">
+                                    <div class="w-12 mask mask-squircle">
+                                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 class="">Peter Paramesia</h1>
+                                </div>
+                            </div>
+                        </td>
+                        <td>peterp@gmail.com</td>
+                        <td>Leader Production</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>4</th>
+                        <td>
+                            <div class="flex gap-4 items-center">
+                                <div class="avatar">
+                                    <div class="w-12 mask mask-squircle">
+                                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 class="">Khusnul Khuluq</h1>
+                                </div>
+                            </div>
+                        </td>
+                        <td>khuluq@gmail.com</td>
+                        <td>Leader MTC</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>3</th>
+                        <td>
+                            <div class="flex gap-4 items-center">
+                                <div class="avatar">
+                                    <div class="w-12 mask mask-squircle">
+                                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 class="">Nur Gusnaidi</h1>
+                                </div>
+                            </div>
+                        </td>
+                        <td>gusned@gmail.com</td>
+                        <td>Manager MTC</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                            </label>
+                        </td>
+                    </tr>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="w-full flex mt-10 justify-end">
+            <div class="join">
+                <button class="btn join-item"><</button>
+                <button class="btn btn-primary join-item">1</button>
+                <button class="btn join-item">></button>
+            </div>
+        </div>
+    </div>
+</div>

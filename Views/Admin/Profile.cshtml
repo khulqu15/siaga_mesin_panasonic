@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "~/Views/Shared/_App_Layout.cshtml";
+}
+
+<div class="space-y-4 mt-5">
+    <div class="w-full grid lg:grid-cols-1 grid-cols-1 gap-4">
+        <div>
+            <div class="w-full bg-base-100 p-6 rounded-xl">
+                <div class="flex items-center justify-between w-full mb-3">
+                    <h1 class="font-semibold">Profile</h1>
+                </div>
+                <div class="space-y-3 mt-8">
+                    <div class="grid md:grid-cols-1 grid-cols-1 gap-4">
+                        <div>
+                            <div class="avatar">
+                                <div class="w-32 mask mask-squircle">
+                                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <form>
+                                <div class="form-control my-3">
+                                    <label for="avatar">User Avatar</label>
+                                    <input type="file" name="avatar" placeholder="Enter user name" id="avatar" class="input input-bordered mt-1 input-sm w-full" />
+                                </div>
+                                <div class="form-control my-3">
+                                    <label for="name">User Name</label>
+                                    <input type="text" name="name" placeholder="Enter user name" id="name" class="input input-bordered mt-1 w-full" />
+                                </div>
+                                <div class="form-control my-3">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" placeholder="Enter user email" id="email" class="input input-bordered mt-1 w-full" />
+                                </div>
+                                <div class="form-control my-3">
+                                    <label for="password">Password</label>
+                                    <input type="password" name="password" placeholder="Enter user password" id="password" class="input input-bordered mt-1 w-full" />
+                                </div>
+                                <div class="form-control my-3">
+                                    <label for="status">Current Status</label>
+                                    <select class="select select-bordered w-full mt-1" id="status" name="status">
+                                        <option disabled selected>Leader Production</option>
+                                        <option>Manager Production</option>
+                                        <option>Member MTC</option>
+                                        <option>Leader MTC</option>
+                                        <option>Manager MTC</option>
+                                    </select>
+                                </div>
+                            </form>
+                            <button class="btn btn-primary">Save Data</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,4 @@
 ﻿@{
-
-}@{
     Layout = "~/Views/Shared/_App_Layout.cshtml";
 }
 
@@ -8,11 +6,19 @@
     <input type="checkbox" id="form_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box max-w-xl">
-            <h3 class="font-bold text-lg">Status Form</h3>
+            <h3 class="font-bold text-lg">Machines's Form</h3>
             <form>
                 <div class="form-control my-3">
-                    <label for="name">Status name</label>
-                    <input type="text" name="name" placeholder="Enter status name" id="name" class="input input-bordered w-full"/>
+                    <label for="name">Machine Name</label>
+                    <input type="text" name="name" placeholder="Enter machine's name" id="name" class="input input-bordered mt-1 w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="type">Type Machine</label>
+                    <input type="text" name="type" placeholder="Enter machine's type" id="type" class="input input-bordered mt-1 w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="location">Location</label>
+                    <textarea id="location" name="location" class="textarea textarea-bordered w-full" placeholder="Enter machine's location"></textarea>
                 </div>
             </form>
             <div class="modal-action">
@@ -25,8 +31,8 @@
     <input type="checkbox" id="delete_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box">
-            <h3 class="font-bold text-lg">Delete Status ?</h3>
-            <p class="text-sm">The status data will be deleted permanently</p>
+            <h3 class="font-bold text-lg">Delete Machine ?</h3>
+            <p class="text-sm">The mahchine data will be deleted permanently</p>
             <div class="modal-action">
                 <label for="delete_modal" class="btn">Cancel</label>
                 <button class="btn btn-error text-white">Delete</button>
@@ -35,8 +41,16 @@
     </div>
 
     <div>
+        <div class="w-full grid grid-cols-2 p-2 mb-4 border rounded-xl gap-3">
+            <div>
+                <a asp-area="" asp-controller="Admin" asp-action="Machines" class="w-full btn btn-sm">Machine</a>
+            </div>
+            <div>
+                <a asp-area="" asp-controller="Admin" asp-action="MachineRepairs" class="w-full btn btn-sm btn-primary">Machine Repair</a>
+            </div>
+        </div>
         <div class="flex items-center justify-between w-full mb-3">
-            <h1 class="font-semibold">Status <span class="badge badge-primary">03</span></h1>
+            <h1 class="font-semibold">Machine Repairs <span class="badge badge-primary">03</span></h1>
             <div>
                 <label for="form_modal" class="btn btn-sm btn-primary">Add new</label>
                 <select class="select w-24 select-sm select-bordered">
@@ -59,29 +73,27 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Name</th>
+                        <th>Scheduled At</th>
+                        <th>Reviewed By</th>
+                        <th>Repair Date</th>
+                        <th>Status</th>
+                        <th>Corrections</th>
+                        <th>Results</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <th>1</th>
+                        <td>20 March 2024</td>
+                        <td>Bayu Purnama</td>
+                        <td>25 March 2024</td>
                         <td>Pending</td>
+                        <td>Over voltages input, and short circuit</td>
+                        <td>Some component electronics was changed</td>
                         <td>
                             <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z"/></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td>Progress</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
                             </label>
                             <label for="delete_modal" class="btn btn-error btn-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
@@ -89,8 +101,30 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>3</th>
-                        <td>Completed</td>
+                        <th>2</th>
+                        <td>20 March 2024</td>
+                        <td>Bayu Purnama</td>
+                        <td>25 March 2024</td>
+                        <td>Pending</td>
+                        <td>Over voltages input, and short circuit</td>
+                        <td>Some component electronics was changed</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>2</th>
+                        <td>20 March 2024</td>
+                        <td>Bayu Purnama</td>
+                        <td>25 March 2024</td>
+                        <td>Pending</td>
+                        <td>Over voltages input, and short circuit</td>
+                        <td>Some component electronics was changed</td>
                         <td>
                             <label for="form_modal" class="btn btn-primary btn-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
@@ -104,6 +138,8 @@
                     <tr>
                         <th></th>
                         <th>Name</th>
+                        <th>Type</th>
+                        <th>Location</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>

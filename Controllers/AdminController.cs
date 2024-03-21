@@ -18,6 +18,10 @@ namespace panasonic_machine_checker.Controllers
             return View();
         }
 
+        public IActionResult MachineRepairs() {
+            return View();
+        }
+
         public IActionResult KYTForms()
         {
             return View();
@@ -33,6 +37,16 @@ namespace panasonic_machine_checker.Controllers
         }
 
         public IActionResult Users()
+        {
+            return View();
+        }
+
+        public IActionResult Roles()
+        {
+            return View();
+        }
+
+        public IActionResult Profile()
         {
             return View();
         }
