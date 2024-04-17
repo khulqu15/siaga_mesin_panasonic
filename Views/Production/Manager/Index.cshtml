@@ -1,0 +1,138 @@
+﻿@{
+    Layout = "~/Views/Shared/_App_Layout.cshtml";
+}
+
+<div class="w-full bg-base-100 p-6 rounded-xl mt-5">
+    <input type="checkbox" id="form_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl">
+            <h3 class="font-bold text-lg">Review Job Order</h3>
+            <form>
+                <div class="form-control my-3">
+                    <label for="machine">Select Machine</label>
+                    <select disabled class="select select-bordered w-full mt-1" id="machine" name="machine">
+                        <option disabled selected>CNC Tools</option>
+                        <option>3D Printer</option>
+                    </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="reported">Reported By</label>
+                    <select disabled class="select select-bordered w-full text-black mt-1" id="reported" name="reported">
+                        <option disabled selected>Bayu Purnama</option>
+                    </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="status">Current Status</label>
+                    <select disabled class="select select-bordered w-full mt-1" id="status" name="status">
+                        <option disabled selected>Pending</option>
+                        <option>Progress</option>
+                        <option>Completed</option>
+                    </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="location">Description</label>
+                    <textarea disabled id="description" name="description" class="textarea textarea-bordered w-full" placeholder="Enter cases's description"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="schedule_by">Schedule By</label>
+                    <input id="schedule_by" type="text" disabled value="Mohammad Bayu (Production Manager (Me))" class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="schedule">Schedule At</label>
+                    <input id="schedule" type="date" class="input input-bordered w-full" />
+                </div>
+            </form>
+            <div class="modal-action">
+                <label for="form_modal" class="btn">Cancel</label>
+                <button class="btn btn-primary text-white">Send to MTC</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="checkbox" id="delete_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Delete Case ?</h3>
+            <p class="text-sm">The case data will be deleted permanently</p>
+            <div class="modal-action">
+                <label for="delete_modal" class="btn">Cancel</label>
+                <button class="btn btn-error text-white">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="flex items-center justify-between w-full mb-3">
+            <h1 class="font-semibold">Available Job Orders <span class="badge badge-primary">02</span></h1>
+            <div>
+                <select class="select w-24 select-sm select-bordered">
+                    <option disabled selected>Terbaru</option>
+                    <option>Terlama</option>
+                </select>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Case</th>
+                        <th>Scheduled By</th>
+                        <th>Scheduled At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody
+                    <tr>
+                        <th>1</th>
+                        <td>CNC Tools, Bayu Purnama, Monday, 18 March 2024 20:03</td>
+                        <td>Nur Gusnaidi</td>
+                        <td>Monday, 18 March 2024 20:03</td>
+                        <td>Pending</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                Review <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z"/></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>2</th>
+                        <td>3D Printer, Peter Paramesia, 18 March 2024 20:03</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>Pending</td>
+                        <td>
+                            <label for="form_modal" class="btn btn-primary btn-sm">
+                                Review <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z"/></svg>
+                            </label>
+                            <label for="delete_modal" class="btn btn-error btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg>
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Case</th>
+                        <th>Scheduled By</th>
+                        <th>Scheduled At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="w-full flex mt-10 justify-end">
+            <div class="join">
+                <button class="btn join-item"><</button>
+                <button class="btn btn-primary join-item">1</button>
+                <button class="btn join-item">></button>
+            </div>
+        </div>
+    </div>
+</div>

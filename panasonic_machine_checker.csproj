@@ -39,4 +39,9 @@
     <None Include="C:\Users\admin\Documents\Projects\panasonic_machine_checker\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\MTC\Member\" />
+    <Folder Include="Views\MTC\Manager\" />
+  </ItemGroup>
+
 </Project>

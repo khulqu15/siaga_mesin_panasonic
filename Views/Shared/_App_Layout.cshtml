@@ -48,14 +48,26 @@
         <div class="drawer-side">
             <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
             <ul class="menu p-4 w-80 min-h-full bg-base-100 text-base-content space-y-2">
-                <div class="divider">Admin</div>
-                <li><a class="@isActive("Admin", "Index")" asp-area="" asp-controller="Admin" asp-action="Index">Dashboard</a></li>
-                <li><a class="@isActive("Admin", "Cases")" asp-area="" asp-controller="Admin" asp-action="Cases">Cases</a></li>
-                <li><a class="@isActive("Admin", "Machines")" asp-area="" asp-controller="Admin" asp-action="Machines">Machines</a></li>
-                <li><a class="@isActive("Admin", "KYTForms")" asp-area="" asp-controller="Admin" asp-action="KYTForms">KYTForms</a></li>
-                <li><a class="@isActive("Admin", "RepairSchedules")" asp-area="" asp-controller="Admin" asp-action="RepairSchedules">Repair Schedule</a></li>
-                <li><a class="@isActive("Admin", "Users")" asp-area="" asp-controller="Admin" asp-action="Users">Users</a></li>
-                <li><a class="@isActive("Admin", "Status")" asp-area="" asp-controller="Admin" asp-action="Status">Status</a></li>
+                <div class="divider">@((ViewData["UserRole"] != null) ? ViewData["UserRole"].ToString() : "Admin")</div>
+                @if (UserIsInRole("Admin") || ViewData["UserRole"] == null)
+                {
+                    <li><a class="@isActive("Admin", "Index")" asp-area="" asp-controller="Admin" asp-action="Index">Dashboard</a></li>
+                    <li><a class="@isActive("Admin", "Cases")" asp-area="" asp-controller="Admin" asp-action="Cases">Cases</a></li>
+                    <li><a class="@isActive("Admin", "Machines")" asp-area="" asp-controller="Admin" asp-action="Machines">Machines</a></li>
+                    <li><a class="@isActive("Admin", "KYTForms")" asp-area="" asp-controller="Admin" asp-action="KYTForms">KYTForms</a></li>
+                    <li><a class="@isActive("Admin", "RepairSchedules")" asp-area="" asp-controller="Admin" asp-action="RepairSchedules">Repair Schedule</a></li>
+                    <li><a class="@isActive("Admin", "Users")" asp-area="" asp-controller="Admin" asp-action="Users">Users</a></li>
+                    <li><a class="@isActive("Admin", "Status")" asp-area="" asp-controller="Admin" asp-action="Status">Status</a></li>
+                }
+                @if (UserIsInRole("Production Leader"))
+                {
+                    <li><a class="@isActive("Production", "Leader")" asp-area="" asp-controller="Production" asp-action="Leader">Reported Case</a></li>
+                }
+                @if (UserIsInRole("Production Manager"))
+                {
+                    <li><a class="@isActive("Production", "Manager")" asp-area="" asp-controller="Production" asp-action="Manager">Job Order Lists</a></li>
+                    <li><a class="@isActive("Production", "ManagerMachineRepairs")" asp-area="" asp-controller="Production" asp-action="ManagerMachineRepairs">Machine Repairs</a></li>
+                }
             </ul>
 
         </div>
@@ -74,5 +86,10 @@
         var routeController = routeData.Values["controller"].ToString();
         var routeAction = routeData.Values["action"].ToString();
         return (controller == routeController && action == routeAction) ? "bg-primary/10 text-primary" : "";
+    }
+
+    private bool UserIsInRole(string role)
+    {
+        return ViewData["UserRole"] == role;
     }
 }
