@@ -1,6 +1,5 @@
-﻿@{
-
-}@{
+﻿@model panasonic_machine_checker.Models.RolesModels;
+@{
     Layout = "~/Views/Shared/_App_Layout.cshtml";
 }
 
@@ -8,28 +7,28 @@
     <input type="checkbox" id="form_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box max-w-xl">
-            <h3 class="font-bold text-lg">User Role Form</h3>
-            <form>
+            <h3 class="font-bold text-lg">Role Form</h3>
+            <form id="formMachine">
                 <div class="form-control my-3">
-                    <label for="name">Role name</label>
-                    <input type="text" name="name" placeholder="Enter status name" id="name" class="input input-bordered w-full" />
+                    <label for="name">Role Name</label>
+                    <input required type="text" name="name" placeholder="Enter role name" id="name" class="input input-bordered mt-1 w-full" />
+                </div>
+                <div class="modal-action">
+                    <label for="form_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Submit Data</button>
                 </div>
             </form>
-            <div class="modal-action">
-                <label for="form_modal" class="btn">Cancel</label>
-                <button class="btn btn-primary text-white">Submit Data</button>
-            </div>
         </div>
     </div>
 
     <input type="checkbox" id="delete_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box">
-            <h3 class="font-bold text-lg">Delete Status ?</h3>
-            <p class="text-sm">The status data will be deleted permanently</p>
+            <h3 class="font-bold text-lg">Delete Machine ?</h3>
+            <p class="text-sm">The mahchine data will be deleted permanently</p>
             <div class="modal-action">
                 <label for="delete_modal" class="btn">Cancel</label>
-                <button class="btn btn-error text-white">Delete</button>
+                <button id="deleteBtn" class="btn btn-error text-white">Delete</button>
             </div>
         </div>
     </div>
@@ -44,26 +43,18 @@
             </div>
         </div>
         <div class="flex items-center justify-between w-full mb-3">
-            <h1 class="font-semibold">User Role <span class="badge badge-primary">05</span></h1>
+            <h1 class="font-semibold">Roles <span class="badge badge-primary">@Model.TotalItems</span></h1>
             <div>
-                <label for="form_modal" class="btn btn-sm btn-primary">Add new</label>
-                <select class="select w-24 select-sm select-bordered">
-                    <option disabled selected>Terbaru</option>
-                    <option>Terlama</option>
+                <label for="form_modal" id="btnAdd" class="btn btn-sm btn-primary">Add new</label>
+                <select class="select w-24 select-sm select-bordered" id="sort-filter">
+                    <option disabled selected>Select Order</option>
+                    <option value="newest">Terbaru (Newest)</option>
+                    <option value="oldest">Terlama (Oldest)</option>
                 </select>
-                <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                    </div>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a>Select to Edit</a></li>
-                        <li><a>Delete All</a></li>
-                    </ul>
-                </div>
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="table table-sm">
+            <table class="table table-sm" id="machinesTable">
                 <thead>
                     <tr>
                         <th></th>
@@ -72,66 +63,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>1</th>
-                        <td>Leader Production</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td>Manager Production</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>3</th>
-                        <td>Member MTC</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>4</th>
-                        <td>Leader MTC</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>3</th>
-                        <td>Manager MTC</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                            </label>
-                        </td>
-                    </tr>
+                    @if (Model.RolesList.Count > 0)
+                    {
+                        int counter = 1;
+                        foreach (var machine in Model.RolesList)
+                        {
+                            <tr id="item-@machine.Id">
+                                <th class="machine_counter">@counter</th>
+                                <td class="machine_name">@machine.Name</td>
+                                <td>
+                                    <label for="form_modal" data-itemid="@machine.Id" class="btn btnEdit btn-primary btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                    </label>
+                                    <label for="delete_modal" data-itemid="@machine.Id" class="btn btnDelete btn-error btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                    </label>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+                                <div class="w-full bg-error text-white p-3 rounded-xl text-center">
+                                    Roles Not Found
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 <tfoot>
                     <tr>
                         <th></th>
@@ -143,10 +104,93 @@
         </div>
         <div class="w-full flex mt-10 justify-end">
             <div class="join">
-                <button class="btn join-item"><</button>
-                <button class="btn btn-primary join-item">1</button>
-                <button class="btn join-item">></button>
+                <button class="btn join-item" onclick="location.href='@Url.Action("Roles", new { page = Model.CurrentPage - 1 })'" @(Model.CurrentPage == 1 ? "disabled" : "")><</button>
+                @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+                {
+                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Machines", new { page = i })'">@i</button>
+                }
+                <button class="btn join-item" onclick="location.href='@Url.Action("Roles", new { page = Model.CurrentPage + 1 })'" @(Model.CurrentPage * Model.PageSize >= Model.TotalItems ? "disabled" : "")>></button>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let data = null
+            function updateRole() {
+                let name = document.getElementById('name').value;
+                let role = data != null ? { data, name } : { name };
+                let url = data != null ? `/Admin/UpdateRole/${data}` : '/Admin/CreateRole';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(role)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Machine Saved');
+                        document.getElementById('form_modal').click()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    })
+            }
+
+            document.getElementById('sort-filter').addEventListener('change', (event) => {
+                window.location.href = `?page=1&sortOrder=${event.target.value}`;
+            })
+
+            document.getElementById('btnAdd').addEventListener('click', (event) => {
+                data = null
+                document.getElementById('name').value = ''
+            })
+            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+                element.addEventListener('click', (event) => {
+                    data = event.target.getAttribute('data-itemid')
+                    let itemData = document.getElementById('item-' + data)
+                    document.getElementById('name').value = Array.from(itemData.getElementsByClassName('machine_name'))[0].innerHTML
+                })
+            })
+            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+                element.addEventListener('click', (event) => {
+                    data = event.target.getAttribute('data-itemid')
+                })
+            })
+
+            function deleteMachine() {
+                fetch('/Admin/DeleteRole/' + data, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: data })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Machine deleted');
+                            document.getElementById('delete_modal').click()
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 300)
+                        } else {
+                            alert('Error deleting machine');
+                        }
+                    });
+            }
+
+            document.getElementById('formMachine').addEventListener('submit', (event) => {
+                event.preventDefault()
+                updateRole()
+            });
+            document.getElementById('deleteBtn').addEventListener('click', function () {
+                deleteMachine();
+            });
+        })
+    </script>
+}

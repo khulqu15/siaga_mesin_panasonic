@@ -1,8 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using panasonic_machine_checker.data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace panasonic_machine_checker.Models
 {
+
+    public class KytFormsModel
+    {
+        public List<KytForms>? KytFormsList { get; set; }
+        public int TotalItems { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+    }
     public class KytForms
     {
         [Key]
@@ -16,9 +25,9 @@ namespace panasonic_machine_checker.Models
 
         [Required]
         [Column(TypeName = "text")]
-        public required string Description { get; set; }
-  
-        public required Cases Case { get; set; }
-        public required Users FilledBy { get; set; }
+        public required string PotentialHazard { get; set; }
+
+        public virtual Case Case { get; set; } = null!;
+        public virtual User FilledBy { get; set; } = null!;
     }
 }

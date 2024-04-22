@@ -1,7 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using panasonic_machine_checker.data;
+using System.ComponentModel.DataAnnotations;
 
 namespace panasonic_machine_checker.Models
 {
+    public class JobOrdersModel
+    {
+        public List<JobOrders>? JobOrdersList { get; set; }
+        public int TotalItems { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+    }
     public class JobOrders
     {
         [Key]
@@ -18,9 +26,9 @@ namespace panasonic_machine_checker.Models
         [Required]
         public int StatusId { get; set; }
 
-        public required Cases Case { get; set; }
-        public required Users ScheduledBy { get; set; }
-        public required Status Status { get; set; }
+        public required Case Case { get; set; }
+        public required User ScheduledBy { get; set; }
+        public required StatusJoborder Status { get; set; }
 
     }
 }

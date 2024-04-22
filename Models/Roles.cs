@@ -2,6 +2,15 @@
 
 namespace panasonic_machine_checker.Models
 {
+    
+    public class RolesModels
+    {
+        public List<Roles>? RolesList { get; set; }
+        public int TotalItems { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+    }
+
     public class Roles
     {
         [Key]

@@ -3,24 +3,21 @@
 namespace panasonic_machine_checker.Models
 {
 
-    public class MachinesModel
+    public class StatusJobOrdersModel
     {
-        public List<Machines>? MachinesList { get; set; }
+        public List<StatusJobOrders>? StatusList { get; set; }
         public int TotalItems { get; set; }
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
     }
-    public class Machines
+
+    public class StatusJobOrders
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
-
-        [Required]
-        public string Type { get; set; }
-
-        [Required]
-        public string Location { get; set; }
+        [StringLength(250)]
+        public required string Name { get; set; }
     }
 }

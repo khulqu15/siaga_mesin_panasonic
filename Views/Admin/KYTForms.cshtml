@@ -1,68 +1,69 @@
-﻿@{
+﻿@model panasonic_machine_checker.Models.KytFormsModel;
+@{
     Layout = "~/Views/Shared/_App_Layout.cshtml";
+    var userList = ViewBag.UserList as List<Users>;
+    var caseList = ViewBag.CaseList as List<Cases>;
 }
 
 <div class="w-full bg-base-100 p-6 rounded-xl mt-5">
     <input type="checkbox" id="form_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box max-w-xl">
-            <h3 class="font-bold text-lg">Machines's Form</h3>
-            <form>
+            <h3 class="font-bold text-lg">Kyt Form</h3>
+            <form id="formData">
                 <div class="form-control my-3">
-                    <label for="case">Select Case</label>
-                    <select class="select select-bordered w-full mt-1" id="case" name="case">
-                        <option disabled selected>1, CNC Tools by Bayu Purnama</option>
-                        <option>2, CNC Tools by Bayu Purnama</option>
+                    <label for="case_id">Select Case</label>
+                    <select required class="select select-bordered w-full mt-1" id="case_id" name="case">
+                        <option value="" disabled selected>Select Case</option>
+                        @foreach(var item in caseList)
+                        {
+                         <option value="@item.Id">@item.Id, @item.Machine.Name by @item.ReportedByNavigation.Name</option>
+                        }
                     </select>
                 </div>
                 <div class="form-control my-3">
-                    <label for="reported">Fiiled By</label>
-                    <select class="select select-bordered w-full text-black mt-1" id="reported" name="reported">
-                        <option disabled selected>Bayu Purnama</option>
+                    <label for="filled_by">Filled By</label>
+                    <select required class="select select-bordered w-full text-black mt-1" id="filled_by" name="filled_by">
+                        <option value="" disabled selected>Select User</option>
+                        @foreach(var item in userList)
+                        {
+                         <option value="@item.Id">@item.Name (@item.Email)</option>
+                        }
                     </select>
                 </div>
                 <div class="form-control my-3">
                     <label for="potential_hazard">Potential Hazard</label>
-                    <textarea class="textarea textarea-bordered w-full" placeholder="Enter a potential of hazard" id="potential_hazard" name="potential_hazard"></textarea>
+                    <textarea id="potential_hazard" name="potential_hazard" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="modal-action">
+                    <label for="form_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Submit Data</button>
                 </div>
             </form>
-            <div class="modal-action">
-                <label for="form_modal" class="btn">Cancel</label>
-                <button class="btn btn-primary text-white">Submit Data</button>
-            </div>
         </div>
     </div>
 
     <input type="checkbox" id="delete_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box">
-            <h3 class="font-bold text-lg">Delete KYT Forms ?</h3>
-            <p class="text-sm">The KYT Form data will be deleted permanently</p>
+            <h3 class="font-bold text-lg">Delete Schedule ?</h3>
+            <p class="text-sm">The Schedule data will be deleted permanently</p>
             <div class="modal-action">
                 <label for="delete_modal" class="btn">Cancel</label>
-                <button class="btn btn-error text-white">Delete</button>
+                <button id="deleteBtn" class="btn btn-error text-white">Delete</button>
             </div>
         </div>
     </div>
 
     <div>
         <div class="flex items-center justify-between w-full mb-3">
-            <h1 class="font-semibold">KYT Forms <span class="badge badge-primary">02</span></h1>
+            <h1 class="font-semibold">KYT Forms <span class="badge badge-primary">@Model.KytFormsList.Count</span></h1>
             <div>
-                <label for="form_modal" class="btn btn-sm btn-primary">Add new</label>
-                <select class="select w-24 select-sm select-bordered">
+                <label for="form_modal" class="btn btn-sm btn-primary" id="btnAdd">Add new</label>
+                <select class="select w-24 select-sm select-bordered" id="sort-filter">
                     <option disabled selected>Terbaru</option>
                     <option>Terlama</option>
                 </select>
-                <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                    </div>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a>Select to Edit</a></li>
-                        <li><a>Delete All</a></li>
-                    </ul>
-                </div>
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -77,40 +78,46 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>1</th>
-                        <td><span class="badge badge-primary">1</span> CNC Tools by Bayu Purnama</td>
-                        <td>Admin</td>
-                        <td>Machine cant printing, maybe it's because 3d print's nozle was stuck</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td><span class="badge badge-primary">1</span> 3D Printer by Peter Paramesia</td>
-                        <td>Admin</td>
-                        <td>Machine cant printing, maybe it's because 3d print's nozle was stuck</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                            </label>
-                        </td>
-                    </tr
+                    @if(Model.KytFormsList.Count > 0)
+                    {
+                        int counter = 1;
+                        @foreach (var item in Model.KytFormsList)
+                        {
+                            <tr id="item-@item.Id">
+                                <th class="item_counter">@counter</th>
+                                <td class="item_case_id hidden">@item.CaseId</td>
+                                <td class="item_case"><span class="badge badge-primary">@item.Case.Id</span> @item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
+                                <td class="item_filled_by_id hidden">@item.FilledById</td>
+                                <td class="item_filled_by">@item.FilledBy.Name</td>
+                                <td class="item_potential_hazard">@item.PotentialHazard</td>
+                                <td>
+                                    <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                    </label>
+                                    <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                    </label>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+                                <div class="w-full bg-error text-white p-3 rounded-xl text-center">
+                                    KYT Form Data Not Found
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 <tfoot>
                     <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Location</th>
+                        <th>Case</th>
+                        <th>Filled By</th>
+                        <th>Potential Hazard</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -125,3 +132,94 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let data = null
+            function updateMachine() {
+                let case_id = parseInt(document.getElementById('case_id').value);
+                let filled_by = parseInt(document.getElementById('filled_by').value);
+                let potential_hazard = document.getElementById('potential_hazard').value;
+                let case_data = {
+                    CaseId: case_id,
+                    FilledBy: filled_by,
+                    PotentialHazard: potential_hazard,
+                }
+                if (data != null) case_data.Id = data
+                let url = data != null ? '/Admin/UpdateKYTForms/' + data : '/Admin/CreateKYTForms';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(case_data)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('KYT Forms Data Saved');
+                        document.getElementById('form_modal').click()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    })
+            }
+
+            document.getElementById('sort-filter').addEventListener('change', (event) => {
+                window.location.href = '?page=1&sortOrder=' + event.target.value;
+            })
+
+            document.getElementById('btnAdd').addEventListener('click', (event) => {
+                data = null
+                document.getElementById('case_id').value = ''
+                document.getElementById('filled_by').value = ''
+                document.getElementById('potential_hazard').value = ''
+            })
+            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+                element.addEventListener('click', (event) => {
+                    data = event.target.getAttribute('data-itemid')
+                    let itemData = document.getElementById('item-' + data)
+                    document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
+                    document.getElementById('filled_by').value = Array.from(itemData.getElementsByClassName('item_filled_by_id'))[0].innerHTML
+                    document.getElementById('potential_hazard').value = Array.from(itemData.getElementsByClassName('item_potential_hazard'))[0].innerHTML
+                })
+            })
+            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+                element.addEventListener('click', (event) => {
+                    data = event.target.getAttribute('data-itemid')
+                })
+            })
+
+            function deleteMachine() {
+                fetch('/Admin/DeleteKYTForms/' + data, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: data })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('KYT Forms Data  deleted');
+                            document.getElementById('delete_modal').click()
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 300)
+                        } else {
+                            alert('Error deleting KYT Forms Data ');
+                        }
+                    });
+            }
+
+            document.getElementById('formData').addEventListener('submit', (event) => {
+                event.preventDefault()
+                updateMachine()
+            });
+            document.getElementById('deleteBtn').addEventListener('click', function () {
+                deleteMachine();
+            });
+        })
+    </script>
+}

@@ -55,6 +55,7 @@
                     <li><a class="@isActive("Admin", "Cases")" asp-area="" asp-controller="Admin" asp-action="Cases">Cases</a></li>
                     <li><a class="@isActive("Admin", "Machines")" asp-area="" asp-controller="Admin" asp-action="Machines">Machines</a></li>
                     <li><a class="@isActive("Admin", "KYTForms")" asp-area="" asp-controller="Admin" asp-action="KYTForms">KYTForms</a></li>
+                    <li><a class="@isActive("Admin", "JobOrders")" asp-area="" asp-controller="Admin" asp-action="JobOrders">Job Orders</a></li>
                     <li><a class="@isActive("Admin", "RepairSchedules")" asp-area="" asp-controller="Admin" asp-action="RepairSchedules">Repair Schedule</a></li>
                     <li><a class="@isActive("Admin", "Users")" asp-area="" asp-controller="Admin" asp-action="Users">Users</a></li>
                     <li><a class="@isActive("Admin", "Status")" asp-area="" asp-controller="Admin" asp-action="Status">Status</a></li>
@@ -88,8 +89,6 @@
         return (controller == routeController && action == routeAction) ? "bg-primary/10 text-primary" : "";
     }
 
-    private bool UserIsInRole(string role)
-    {
-        return ViewData["UserRole"] == role;
-    }
+    private bool UserIsInRole(string role) => ViewData["UserRole"] == role;
+
 }

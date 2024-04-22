@@ -1,8 +1,8 @@
-﻿@model panasonic_machine_checker.Models.RepairSchedulesModel;
+﻿@model panasonic_machine_checker.Models.JobOrdersModel;
 @{
     Layout = "~/Views/Shared/_App_Layout.cshtml";
     var userList = ViewBag.UserList as List<Users>;
-    var statusList = ViewBag.StatusList as List<StatusRepairSchedules>;
+    var statusList = ViewBag.StatusList as List<StatusJobOrders>;
     var caseList = ViewBag.CaseList as List<Cases>;
 }
 
@@ -10,45 +10,41 @@
     <input type="checkbox" id="form_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box max-w-xl">
-            <h3 class="font-bold text-lg">Schedule's Form</h3>
+            <h3 class="font-bold text-lg">Kyt Form</h3>
             <form id="formData">
                 <div class="form-control my-3">
                     <label for="case_id">Select Case</label>
                     <select required class="select select-bordered w-full mt-1" id="case_id" name="case">
                         <option value="" disabled selected>Select Case</option>
-                        @foreach(var item in caseList)
+                        @foreach (var item in caseList)
                         {
-                         <option value="@item.Id">@item.Id, @item.Machine.Name by @item.ReportedByNavigation.Name</option>
+                            <option value="@item.Id">@item.Id, @item.Machine.Name by @item.ReportedByNavigation.Name</option>
                         }
                     </select>
                 </div>
                 <div class="form-control my-3">
                     <label for="scheduled_by">Scheduled By</label>
-                    <select required class="select select-bordered w-full text-black mt-1" id="scheduled_by" name="scheduled">
+                    <select required class="select select-bordered w-full text-black mt-1" id="scheduled_by" name="scheduled_by">
                         <option value="" disabled selected>Select User</option>
-                        @foreach(var item in userList)
+                        @foreach (var item in userList)
                         {
-                         <option value="@item.Id">@item.Name (@item.Email)</option>
+                            <option value="@item.Id">@item.Name (@item.Email)</option>
                         }
                     </select>
                 </div>
                 <div class="form-control my-3">
-                    <label for="call_date">Call date</label>
-                    <input type="date" id="call_date" name="call_date" required class="input input-bordered w-full"/>
-                </div>
-                <div class="form-control my-3">
-                    <label for="repair_date">Reapair date</label>
-                    <input type="date" id="repair_date" name="repair_date" class="input input-bordered w-full"/>
-                </div>
-                <div class="form-control my-3">
-                    <label for="status_id">Current Status</label>
-                    <select required class="select select-bordered w-full mt-1" id="status_id" name="status_id">
+                    <label for="status_id">Status</label>
+                    <select required class="select select-bordered w-full text-black mt-1" id="status_id" name="status_id">
                         <option value="" disabled selected>Select Status</option>
-                        @foreach(var item in statusList)
+                        @foreach (var item in statusList)
                         {
-                         <option value="@item.Id">@item.Name</option>
+                            <option value="@item.Id">@item.Name</option>
                         }
                     </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="repair_date">Scheduled date</label>
+                    <input type="date" id="scheduled_date" name="scheduled_date" class="input input-bordered w-full" />
                 </div>
                 <div class="modal-action">
                     <label for="form_modal" class="btn">Cancel</label>
@@ -72,7 +68,7 @@
 
     <div>
         <div class="flex items-center justify-between w-full mb-3">
-            <h1 class="font-semibold">Repair Schedule <span class="badge badge-primary">@Model.RepairSchedulesList.Count</span></h1>
+            <h1 class="font-semibold">Job Orders <span class="badge badge-primary">@Model.JobOrdersList.Count</span></h1>
             <div>
                 <label for="form_modal" class="btn btn-sm btn-primary" id="btnAdd">Add new</label>
                 <select class="select w-24 select-sm select-bordered" id="sort-filter">
@@ -87,28 +83,26 @@
                     <tr>
                         <th></th>
                         <th>Case</th>
-                        <th>Scheduled By</th>
-                        <th>Called at</th>
-                        <th>Repaired at</th>
+                        <th>Reviewed By</th>
+                        <th>Reviewed At</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if(Model.RepairSchedulesList.Count > 0)
+                    @if (Model.JobOrdersList.Count > 0)
                     {
-                         @foreach(var item in Model.RepairSchedulesList)
+                        int counter = 1;
+                        @foreach (var item in Model.JobOrdersList)
                         {
-                            int counter = 1;
                             <tr id="item-@item.Id">
                                 <th class="item_counter">@counter</th>
                                 <td class="item_case_id hidden">@item.CaseId</td>
                                 <td class="item_case"><span class="badge badge-primary">@item.Case.Id</span> @item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
                                 <td class="item_scheduled_by_id hidden">@item.ScheduledById</td>
-                                <td class="item_scheduled_by">@item.ScheduledByNavigation.Name</td>
-                                <td class="item_calldate">@item.CallDate</td>
-                                <td class="item_repairdate">@item.RepairDate</td>
                                 <td class="item_status_id hidden">@item.StatusId</td>
+                                <td class="item_reviewed_by">@item.ScheduledBy.Name</td>
+                                <td class="item_reviewed_date">@item.ScheduledDate</td>
                                 <td class="item_status">@item.Status.Name</td>
                                 <td>
                                     <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
@@ -127,7 +121,7 @@
                         <tr>
                             <td colspan="7">
                                 <div class="w-full bg-error text-white p-3 rounded-xl text-center">
-                                    Repair Schedule Data Not Found
+                                    Job Order Data Not Found
                                 </div>
                             </td>
                         </tr>
@@ -136,9 +130,8 @@
                     <tr>
                         <th></th>
                         <th>Case</th>
-                        <th>Scheduled By</th>
-                        <th>Called at</th>
-                        <th>Repaired at</th>
+                        <th>Reviewed By</th>
+                        <th>Reviewed At</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -162,18 +155,16 @@
             function updateMachine() {
                 let case_id = parseInt(document.getElementById('case_id').value);
                 let scheduled_by = parseInt(document.getElementById('scheduled_by').value);
-                let status_id = parseInt(document.getElementById('status_id').value);
-                let call_date = document.getElementById('call_date').value;
-                let repair_date = document.getElementById('repair_date').value;
+                let scheduled_date = document.getElementById('scheduled_date').value;
+                let status_id = document.getElementById('status_id').value;
                 let case_data = {
-                    StatusId: status_id,
                     CaseId: case_id,
                     ScheduledBy: scheduled_by,
-                    CallDate: call_date,
-                    RepairDate: repair_date,
+                    ScheduledDate: scheduled_date,
+                    StatusId: status_id,
                 }
                 if (data != null) case_data.Id = data
-                let url = data != null ? '/Admin/UpdateRepairSchedule/' + data : '/Admin/CreateRepairSchedule';
+                let url = data != null ? '/Admin/UpdateJobOrder/' + data : '/Admin/CreateJobOrder';
 
                 fetch(url, {
                     method: 'POST',
@@ -184,7 +175,7 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        alert('Repair Schedule Data Saved');
+                        alert('Job Orders Data Saved');
                         document.getElementById('form_modal').click()
                         setTimeout(() => {
                             window.location.reload()
@@ -200,21 +191,19 @@
                 data = null
                 document.getElementById('case_id').value = ''
                 document.getElementById('scheduled_by').value = ''
+                document.getElementById('scheduled_date').value = ''
                 document.getElementById('status_id').value = ''
-                document.getElementById('call_date').value = ''
-                document.getElementById('repair_date').value = ''
             })
             Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
                 element.addEventListener('click', (event) => {
                     data = event.target.getAttribute('data-itemid')
+                    console.log(data)
                     let itemData = document.getElementById('item-' + data)
-                    const reportedAt = new Date(itemData.querySelector('.item_calldate').innerHTML);
-                    const completedAt = new Date(itemData.querySelector('.item_repairdate').innerHTML);
+                    const reviewedAt = new Date(itemData.querySelector('.item_reviewed_date').innerHTML);
                     document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
+                    document.getElementById('status_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
                     document.getElementById('scheduled_by').value = Array.from(itemData.getElementsByClassName('item_scheduled_by_id'))[0].innerHTML
-                    document.getElementById('status_id').value = Array.from(itemData.getElementsByClassName('item_status_id'))[0].innerHTML
-                    document.getElementById('call_date').value = reportedAt.toISOString().split('T')[0]
-                    document.getElementById('repair_date').value = completedAt.toISOString().split('T')[0];
+                    document.getElementById('scheduled_date').value = reviewedAt.toISOString().split('T')[0]
                 })
             })
             Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
@@ -224,7 +213,7 @@
             })
 
             function deleteMachine() {
-                fetch('/Admin/DeleteRepairSchedule/' + data, {
+                fetch('/Admin/DeleteJobOrder/' + data, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -234,13 +223,13 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Repair Schedule Data deleted');
+                            alert('Job Orders Data deleted');
                             document.getElementById('delete_modal').click()
                             setTimeout(() => {
                                 window.location.reload()
                             }, 300)
                         } else {
-                            alert('Error deleting Repair Schedule Data ');
+                            alert('Error deleting Job Orders Data');
                         }
                     });
             }

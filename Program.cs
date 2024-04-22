@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using panasonic_machine_checker.DBContext;
+using panasonic_machine_checker.data;
 
 namespace panasonic_machine_checker
 {
@@ -9,12 +10,13 @@ namespace panasonic_machine_checker
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
             builder.Services.AddControllersWithViews();
-            
-            var provider = builder.Services.BuildServiceProvider();
-            var configuration = provider.GetRequiredService<IConfiguration>();
-            builder.Services.AddDbContext<CasesDBContext>(item => item.UseSqlServer(configuration.GetConnectionString("myconn")));
+            // builder.Services.AddSingleton<DbPanasonicContext>();
+
+            builder.Services.AddDbContext<DbPanasonicContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("myconn")));
+
 
             var app = builder.Build();
 

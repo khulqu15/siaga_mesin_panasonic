@@ -1,8 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using panasonic_machine_checker.data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace panasonic_machine_checker.Models
 {
+
+    public class RepairSchedulesModel
+    {
+        public List<RepairSchedules>? RepairSchedulesList { get; set; }
+        public int TotalItems { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+    }
+
     public class RepairSchedules
     {
         [Key]
@@ -23,8 +33,8 @@ namespace panasonic_machine_checker.Models
         [Required]
         public required DateTime CallDate { get; set; }
 
-        public required Cases Case { get; set; }
-        public required Users SchedulesBy { get; set; }
-        public required Status Status { get; set; }
+        public virtual Case Case { get; set; } = null!;
+        public virtual User ScheduledByNavigation { get; set; } = null!;
+        public virtual StatusRepairschedule Status { get; set; } = null!;
     }
 }

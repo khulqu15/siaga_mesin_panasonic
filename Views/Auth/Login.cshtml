@@ -40,7 +40,54 @@
 
         formLogin.addEventListener('submit', function (e) {
             e.preventDefault();
-            window.location.href = '/Admin/'
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/DoLogin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        sessionStorage.setItem('authToken', data.token);
+                        sessionStorage.setItem('user', JSON.stringify(data.user_data));
+                        sessionStorage.setItem('user', JSON.stringify(data.user));
+                        switch (data.user) {
+                            case "Admin":
+                            case null:
+                                window.location.href = '/Admin';
+                                break;
+                            case "Leader Production":
+                                window.location.href = '/Production/Leader';
+                                break;
+                            case "Manager Production":
+                                window.location.href = '/Production/Manager';
+                                break;
+                            case "Manager MTC":
+                                window.location.href = '/ManagerMTC';
+                                break;
+                            case "Leader MTC":
+                                window.location.href = '/LeaderMTC';
+                                break;
+                            case "Member MTC":
+                                window.location.href = '/MemberMTC';
+                                break;
+                            default:
+                                alert('Unauthorized access');
+                        }
+                    } else {
+                        alert('Login failed: ' + data.message);
+                        console.log(data)
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during login:', error);
+                    alert('Error logging in. Please try again later.');
+                });
         })
     });
 </script>
