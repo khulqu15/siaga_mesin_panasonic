@@ -70,17 +70,17 @@ public partial class DbPanasonicContext : DbContext
 
             entity.HasOne(d => d.Machine).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.MachineId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_cases_machines");
 
             entity.HasOne(d => d.ReportedByNavigation).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.ReportedById)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_cases_users");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_cases_status");
         });
 
@@ -100,17 +100,17 @@ public partial class DbPanasonicContext : DbContext
 
             entity.HasOne(d => d.Case).WithMany(p => p.JobOrders)
                 .HasForeignKey(d => d.CaseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_joborders_cases");
 
             entity.HasOne(d => d.ScheduledByNavigation).WithMany(p => p.JobOrders)
                 .HasForeignKey(d => d.ScheduledBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_joborders_users");
 
             entity.HasOne(d => d.Status).WithMany(p => p.JobOrders)
                 .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_joborders_status");
         });
 
@@ -123,18 +123,19 @@ public partial class DbPanasonicContext : DbContext
             entity.Property(e => e.Id);
             entity.Property(e => e.CaseId).HasColumnName("case_id");
             entity.Property(e => e.FilledBy).HasColumnName("filled_by");
+            entity.Property(e => e.Approval).HasColumnName("approval");
             entity.Property(e => e.PotentialHazard)
                 .HasColumnType("text")
                 .HasColumnName("potential_hazard");
 
             entity.HasOne(d => d.Case).WithMany(p => p.Kytforms)
                 .HasForeignKey(d => d.CaseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_kytforms_cases");
 
             entity.HasOne(d => d.FilledByNavigation).WithMany(p => p.Kytforms)
                 .HasForeignKey(d => d.FilledBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_kytforms_users");
         });
 
@@ -181,17 +182,17 @@ public partial class DbPanasonicContext : DbContext
 
             entity.HasOne(d => d.ReviewedByNavigation).WithMany(p => p.MachineRepairs)
                 .HasForeignKey(d => d.ReviewedBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_machinerepairs_users");
 
             entity.HasOne(d => d.Schedule).WithMany(p => p.MachineRepairs)
                 .HasForeignKey(d => d.ScheduleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_machinerepairs_schedule");
 
             entity.HasOne(d => d.Status).WithMany(p => p.MachineRepairs)
                 .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_machinerepairs_status");
         });
 
@@ -214,17 +215,17 @@ public partial class DbPanasonicContext : DbContext
 
             entity.HasOne(d => d.Case).WithMany(p => p.RepairSchedules)
                 .HasForeignKey(d => d.CaseId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_repairschedules_cases");
 
             entity.HasOne(d => d.ScheduledByNavigation).WithMany(p => p.RepairSchedules)
                 .HasForeignKey(d => d.ScheduledBy)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_repairschedules_users");
 
             entity.HasOne(d => d.Status).WithMany(p => p.RepairSchedules)
                 .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_repairschedules_status");
         });
 
@@ -332,7 +333,7 @@ public partial class DbPanasonicContext : DbContext
 
             entity.HasOne(d => d.RoleNavigation).WithMany(p => p.Users)
                 .HasForeignKey(d => d.Role)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_users_roles");
         });
 

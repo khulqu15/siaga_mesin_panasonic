@@ -1,8 +1,7 @@
-﻿@model panasonic_machine_checker.Models.JobOrdersModel;
+﻿@model panasonic_machine_checker.Models.KytFormsModel;
 @{
     Layout = "~/Views/Shared/_App_Layout.cshtml";
     var userList = ViewBag.UserList as List<Users>;
-    var statusList = ViewBag.StatusList as List<StatusJobOrders>;
     var caseList = ViewBag.CaseList as List<Cases>;
 }
 
@@ -18,37 +17,29 @@
                         <option value="" disabled selected>Select Case</option>
                         @foreach (var item in caseList)
                         {
-                            <option value="@item.Id">@item.Id, @item.Machine.Name by @item.ReportedByNavigation.Name</option>
+                            <option disabled value="@item.Id">@item.Id, @item.Machine.Name by @item.ReportedByNavigation.Name</option>
                         }
                     </select>
                 </div>
                 <div class="form-control my-3">
-                    <label for="scheduled_by">Scheduled By</label>
-                    <select required class="select select-bordered w-full text-black mt-1" id="scheduled_by" name="scheduled_by">
+                    <label for="filled_by">Filled By</label>
+                    <select required class="select select-bordered w-full text-black mt-1" id="filled_by" name="filled_by">
                         <option value="" disabled selected>Select User</option>
                         @foreach (var item in userList)
                         {
-                            <option value="@item.Id">@item.Name (@item.Email)</option>
+                            <option disabled value="@item.Id">@item.Name (@item.Email)</option>
                         }
                     </select>
                 </div>
                 <div class="form-control my-3">
-                    <label for="status_id">Status</label>
-                    <select required class="select select-bordered w-full text-black mt-1" id="status_id" name="status_id">
-                        <option value="" disabled selected>Select Status</option>
-                        @foreach (var item in statusList)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-control my-3">
-                    <label for="repair_date">Scheduled date</label>
-                    <input type="date" id="scheduled_date" name="scheduled_date" class="input input-bordered w-full" />
+                    <label for="potential_hazard">Potential Hazard</label>
+                    <textarea id="potential_hazard" name="potential_hazard" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="modal-action">
                     <label for="form_modal" class="btn">Cancel</label>
-                    <button type="submit" class="btn btn-primary text-white">Submit Data</button>
+                    <button type="button" id="rejectBtn" class="btn btn-error text-white">Reject</button>
+                    <button type="button" id="approveBtn" class="btn btn-primary text-white">Approve</button>
+                    <button type="submit" id="submitBtn" class="btn hidden btn-primary text-white">Approve</button>
                 </div>
             </form>
         </div>
@@ -68,9 +59,8 @@
 
     <div>
         <div class="flex items-center justify-between w-full mb-3">
-            <h1 class="font-semibold">Job Orders <span class="badge badge-primary">@Model.JobOrdersList.Count</span></h1>
+            <h1 class="font-semibold">KYT Forms <span class="badge badge-primary">@Model.KytFormsList.Count</span></h1>
             <div>
-                <label for="form_modal" class="btn btn-sm btn-primary" id="btnAdd">Add new</label>
                 <select class="select w-24 select-sm select-bordered" id="sort-filter">
                     <option disabled selected>Terbaru</option>
                     <option>Terlama</option>
@@ -83,30 +73,42 @@
                     <tr>
                         <th></th>
                         <th>Case</th>
-                        <th>Reviewed By</th>
-                        <th>Reviewed At</th>
-                        <th>Status</th>
+                        <th>Filled By</th>
+                        <th>Potential Hazard</th>
+                        <th>Approval</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.JobOrdersList.Count > 0)
+                    @if (Model.KytFormsList.Count > 0)
                     {
                         int counter = 1;
-                        @foreach (var item in Model.JobOrdersList)
+                        @foreach (var item in Model.KytFormsList)
                         {
                             <tr id="item-@item.Id">
                                 <th class="item_counter">@counter</th>
                                 <td class="item_case_id hidden">@item.CaseId</td>
                                 <td class="item_case"><span class="badge badge-primary">@item.Case.Id</span> @item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
-                                <td class="item_scheduled_by_id hidden">@item.ScheduledById</td>
-                                <td class="item_status_id hidden">@item.StatusId</td>
-                                <td class="item_reviewed_by">@item.ScheduledBy.Name</td>
-                                <td class="item_reviewed_date">@item.ScheduledDate</td>
-                                <td class="item_status">@item.Status.Name</td>
+                                <td class="item_filled_by_id hidden">@item.FilledById</td>
+                                <td class="item_filled_by">@item.FilledBy.Name</td>
+                                <td class="item_potential_hazard">@item.PotentialHazard</td>
+                                <td class="item_approval">@if(item.Approval == null) { <span>-</span>
+                                    } else
+                                    {
+                                        @if (item.Approval == 0)
+                                        {
+                                            <span class="badge badge-error text-white">Rejected</span>
+                                        }
+                                        @if (item.Approval == 1)
+                                        {
+                                            <span class="badge badge-success text-white">Approved</span>
+                                        }
+                                    }
+                                </td>
                                 <td>
                                     <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                        Review
                                     </label>
                                     <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
@@ -121,7 +123,7 @@
                         <tr>
                             <td colspan="7">
                                 <div class="w-full bg-error text-white p-3 rounded-xl text-center">
-                                    Job Order Data Not Found
+                                    KYT Form Data Not Found
                                 </div>
                             </td>
                         </tr>
@@ -130,9 +132,8 @@
                     <tr>
                         <th></th>
                         <th>Case</th>
-                        <th>Reviewed By</th>
-                        <th>Reviewed At</th>
-                        <th>Status</th>
+                        <th>Filled By</th>
+                        <th>Potential Hazard</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -140,12 +141,12 @@
         </div>
         <div class="w-full flex mt-10 justify-end">
             <div class="join">
-                <button class="btn join-item" onclick="location.href='@Url.Action("Machines", new { page = Model.CurrentPage - 1 })'" @(Model.CurrentPage == 1 ? "disabled" : "")><</button>
+                <button class="btn join-item" onclick="location.href='@Url.Action("Manager", new { page = Model.CurrentPage - 1 })'" @(Model.CurrentPage == 1 ? "disabled" : "")><</button>
                 @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
                 {
-                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Machines", new { page = i })'">@i</button>
+                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Manager", new { page = i })'">@i</button>
                 }
-                <button class="btn join-item" onclick="location.href='@Url.Action("Machines", new { page = Model.CurrentPage + 1 })'" @(Model.CurrentPage * Model.PageSize >= Model.TotalItems ? "disabled" : "")>></button>
+                <button class="btn join-item" onclick="location.href='@Url.Action("Manager", new { page = Model.CurrentPage + 1 })'" @(Model.CurrentPage * Model.PageSize >= Model.TotalItems ? "disabled" : "")>></button>
             </div>
         </div>
     </div>
@@ -153,21 +154,20 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
             let data = null
+            let approval_status = null;
             function updateMachine() {
                 let case_id = parseInt(document.getElementById('case_id').value);
-                let scheduled_by = parseInt(document.getElementById('scheduled_by').value);
-                let scheduled_date = document.getElementById('scheduled_date').value;
-                let status_id = document.getElementById('status_id').value;
+                let filled_by = parseInt(document.getElementById('filled_by').value);
+                let potential_hazard = document.getElementById('potential_hazard').value;
                 let case_data = {
                     CaseId: case_id,
-                    ScheduledBy: scheduled_by,
-                    ScheduledDate: scheduled_date,
-                    StatusId: status_id,
+                    FilledBy: filled_by,
+                    PotentialHazard: potential_hazard,
+                    Approval: approval_status,
                 }
                 if (data != null) case_data.Id = data
-                let url = data != null ? '/Admin/UpdateJobOrder/' + data : '/Admin/CreateJobOrder';
+                let url = data != null ? '/MTC/UpdateKYTForms/' + data : '/MTC/CreateKYTForms';
 
                 fetch(url, {
                     method: 'POST',
@@ -178,7 +178,7 @@
                 })
                     .then((response) => response.json())
                     .then((data) => {
-                        alert('Job Orders Data Saved');
+                        alert('KYT Forms Data Saved');
                         document.getElementById('form_modal').click()
                         setTimeout(() => {
                             window.location.reload()
@@ -190,23 +190,15 @@
                 window.location.href = '?page=1&sortOrder=' + event.target.value;
             })
 
-            document.getElementById('btnAdd').addEventListener('click', (event) => {
-                data = null
-                document.getElementById('case_id').value = ''
-                document.getElementById('scheduled_by').value = ''
-                document.getElementById('scheduled_date').value = ''
-                document.getElementById('status_id').value = ''
-            })
             Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
                 element.addEventListener('click', (event) => {
                     data = event.target.getAttribute('data-itemid')
-                    console.log(data)
                     let itemData = document.getElementById('item-' + data)
-                    const reviewedAt = new Date(itemData.querySelector('.item_reviewed_date').innerHTML);
-                    document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
-                    document.getElementById('status_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
-                    document.getElementById('scheduled_by').value = Array.from(itemData.getElementsByClassName('item_scheduled_by_id'))[0].innerHTML
-                    document.getElementById('scheduled_date').value = reviewedAt.toISOString().split('T')[0]
+                    setTimeout(() => {
+                        document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
+                        document.getElementById('filled_by').value = Array.from(itemData.getElementsByClassName('item_filled_by_id'))[0].innerHTML
+                        document.getElementById('potential_hazard').value = Array.from(itemData.getElementsByClassName('item_potential_hazard'))[0].innerHTML
+                    }, 300)
                 })
             })
             Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
@@ -216,7 +208,7 @@
             })
 
             function deleteMachine() {
-                fetch('/Admin/DeleteJobOrder/' + data, {
+                fetch('/MTC/DeleteKYTForms/' + data, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -226,13 +218,13 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Job Orders Data deleted');
+                            alert('KYT Forms Data  deleted');
                             document.getElementById('delete_modal').click()
                             setTimeout(() => {
                                 window.location.reload()
                             }, 300)
                         } else {
-                            alert('Error deleting Job Orders Data');
+                            alert('Error deleting KYT Forms Data ');
                         }
                     });
             }
@@ -241,9 +233,21 @@
                 event.preventDefault()
                 updateMachine()
             });
+
+            document.getElementById('rejectBtn').addEventListener('click', (event) => {
+                event.preventDefault()
+                approval_status = 0
+                document.getElementById('submitBtn').click()
+            })
+
+            document.getElementById('approveBtn').addEventListener('click', (event) => {
+                event.preventDefault()
+                approval_status = 1
+                document.getElementById('submitBtn').click()
+            })
+
             document.getElementById('deleteBtn').addEventListener('click', function () {
                 deleteMachine();
             });
-        })
     </script>
 }

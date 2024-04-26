@@ -53,28 +53,31 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        sessionStorage.setItem('authToken', data.token);
-                        sessionStorage.setItem('user', JSON.stringify(data.user_data));
-                        sessionStorage.setItem('user', JSON.stringify(data.user));
+                        let token = data.token
+                        let user_id = data.user_data
+                        let role = data.user
+                        let new_token = token.slice(0, 5) + '-' + user_id + '-' + token.slice(5) + '-' + role
+
+                        sessionStorage.setItem('authToken', new_token)
                         switch (data.user) {
                             case "Admin":
                             case null:
                                 window.location.href = '/Admin';
                                 break;
                             case "Leader Production":
-                                window.location.href = '/Production/Leader';
+                                window.location.href = '/Production/Leader/'+user_id;
                                 break;
                             case "Manager Production":
-                                window.location.href = '/Production/Manager';
+                                window.location.href = '/Production/Manager/' + user_id;
                                 break;
                             case "Manager MTC":
-                                window.location.href = '/ManagerMTC';
+                                window.location.href = '/MTC/Manager/' + user_id;
                                 break;
                             case "Leader MTC":
-                                window.location.href = '/LeaderMTC';
+                                window.location.href = '/MTC/Leader/' + user_id;
                                 break;
                             case "Member MTC":
-                                window.location.href = '/MemberMTC';
+                                window.location.href = '/MTC/Member/' + user_id;
                                 break;
                             default:
                                 alert('Unauthorized access');

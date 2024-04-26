@@ -14,6 +14,8 @@ public partial class Kytform
 
     public string? PotentialHazard { get; set; }
 
+    public int? Approval { get; set; }
+
     public virtual Case Case { get; set; } = null!;
 
     public virtual User FilledByNavigation { get; set; } = null!;

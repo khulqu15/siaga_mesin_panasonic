@@ -257,6 +257,14 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\f4cd717a856df3e605e351d66fc2d23e.jpg",
+      "PackagePath": "staticwebassets\\uploads\\f4cd717a856df3e605e351d66fc2d23e.jpg"
+    },
+    {
+      "Id": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\r6zb2xwbmqea.jpg",
+      "PackagePath": "staticwebassets\\uploads\\r6zb2xwbmqea.jpg"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.panasonic_machine_checker.props",
       "PackagePath": "build\\panasonic_machine_checker.props"
     },

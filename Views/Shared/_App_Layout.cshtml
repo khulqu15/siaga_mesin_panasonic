@@ -23,12 +23,35 @@
                     <div class="dropdown dropdown-end">
                         <div tabindex="0" role="button" class="avatar">
                             <div class="w-12 mask mask-squircle">
-                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                <img id="image_profile_nav" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
                             </div>
                         </div>
                         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><a asp-area="" asp-controller="Admin" asp-action="Profile">Profile</a></li>
-                            <li><a asp-area="" asp-controller="Auth" asp-action="Login">Logout</a></li>
+                            @if (UserIsInRole("Admin") || ViewData["UserRole"] == null)
+                            {
+                                <li><a asp-area="" asp-controller="Admin" asp-action="Profile">Profile</a></li>
+                            }
+                            @if (UserIsInRole("Production Leader"))
+                            {
+                                <li><a asp-area="" asp-controller="Production" asp-action="LeaderProfile">Profile</a></li>
+                            }
+                            @if (UserIsInRole("Production Manager"))
+                            {
+                                <li><a asp-area="" asp-controller="Production" asp-action="ManagerProfile">Profile</a></li>
+                            }
+                            @if (UserIsInRole("MTC Leader"))
+                            {
+                                <li><a asp-area="" asp-controller="MTC" asp-action="LeaderProfile">Profile</a></li>
+                            }
+                            @if (UserIsInRole("MTC Manager"))
+                            {
+                                <li><a asp-area="" asp-controller="MTC" asp-action="ManagerProfile">Profile</a></li>
+                            }
+                            @if (UserIsInRole("MTC Member"))
+                            {
+                                <li><a asp-area="" asp-controller="MTC" asp-action="MemberProfile">Profile</a></li>
+                            }
+                            <li><a onclick="sessionStorage.removeItem('authToken')" asp-area="" asp-controller="Auth" asp-action="Login">Logout</a></li>
                         </ul>
                     </div>
                 </div>
@@ -62,12 +85,22 @@
                 }
                 @if (UserIsInRole("Production Leader"))
                 {
-                    <li><a class="@isActive("Production", "Leader")" asp-area="" asp-controller="Production" asp-action="Leader">Reported Case</a></li>
+                    <li><a class="@isActive("Production", "Leader") linkid" asp-area="" asp-controller="Production" asp-action="Leader">Reported Case</a></li>
+                    <li><a class="@isActive("Production", "LeaderJobOrder") linkid" asp-area="" asp-controller="Production" asp-action="LeaderJobOrder">Job Order</a></li>
+                    <li><a class="@isActive("Production", "LeaderMachineRepairs") linkid" asp-area="" asp-controller="Production" asp-action="LeaderMachineRepairs">Machine Repairs</a></li>
                 }
                 @if (UserIsInRole("Production Manager"))
                 {
-                    <li><a class="@isActive("Production", "Manager")" asp-area="" asp-controller="Production" asp-action="Manager">Job Order Lists</a></li>
-                    <li><a class="@isActive("Production", "ManagerMachineRepairs")" asp-area="" asp-controller="Production" asp-action="ManagerMachineRepairs">Machine Repairs</a></li>
+                    <li><a class="@isActive("Production", "Manager") linkid" asp-area="" asp-controller="Production" asp-action="Manager">Job Order Lists</a></li>
+                    <li><a class="@isActive("Production", "ManagerMachineRepairs") linkid" asp-area="" asp-controller="Production" asp-action="ManagerMachineRepairs">Machine Repairs</a></li>
+                }
+                @if (UserIsInRole("MTC Member"))
+                {
+                    <li><a class="@isActive("Mtc", "Member") linkid" asp-area="" asp-controller="Mtc" asp-action="Member">Case List & KYT Form</a></li>
+                }
+                @if (UserIsInRole("MTC Manager"))
+                {
+                    <li><a class="@isActive("Mtc", "Manager") linkid" asp-area="" asp-controller="Mtc" asp-action="Manager">KYT Form Lists</a></li>
                 }
             </ul>
 
@@ -76,6 +109,49 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let user_id = 0
+            let checkToken = sessionStorage.getItem('authToken')
+            if (checkToken != null && checkToken != undefined) {
+                let separator = checkToken.split('-')
+                let role = separator.pop()
+                let suffix = checkToken.split('-')[1]
+                let user_id_selection = checkToken.slice(5, checkToken.indexOf('-'))
+                user_id = parseInt(checkToken.split("-")[1])
+                fetchUser(user_id, role)
+            } else window.location.href = "/Login"
+
+            let linkids = document.querySelectorAll('.linkid')
+            linkids.forEach((element, index) => {
+                let link = element.getAttribute('href')
+                let split_link = link.split('/')
+                if (split_link.pop() != user_id) {
+                    element.setAttribute('href', link + '/' + user_id)
+                }
+                console.log(element.getAttribute('href'))
+            })
+
+            function fetchUser(user_id, role) {
+                fetch("/Admin/UserData/" + user_id, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        return response.json()
+                    })
+                    .then((data) => {
+                        console.log(data.data)
+                        document.getElementById('image_profile_nav').setAttribute('src', 'https://ui-avatars.com/api/?name=' + encodeURI(data.data.name))
+                        if (data.data.avatar != null) {
+                            document.getElementById('image_profile_nav').setAttribute('src', data.data.avatar.replace("wwwroot", ""))
+                        }
+                    })
+            }
+        })
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
@@ -90,5 +166,4 @@
     }
 
     private bool UserIsInRole(string role) => ViewData["UserRole"] == role;
-
 }

@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using panasonic_machine_checker.DBContext;
 using panasonic_machine_checker.data;
 
 namespace panasonic_machine_checker
@@ -14,9 +12,10 @@ namespace panasonic_machine_checker
             builder.Services.AddControllersWithViews();
             // builder.Services.AddSingleton<DbPanasonicContext>();
 
+            var key = builder.Configuration["Jwt:Key"];
+
             builder.Services.AddDbContext<DbPanasonicContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("myconn")));
-
 
             var app = builder.Build();
 

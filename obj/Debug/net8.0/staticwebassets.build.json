@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "sBGGanak1icPnYRvK2no9mloxpJVs37FdEjv+nUyPmY=",
+  "Hash": "/6ICLmUwNOREQcY7vISXcTstR8XPylSW1zv+qyfUpPo=",
   "Source": "panasonic_machine_checker",
   "BasePath": "_content/panasonic_machine_checker",
   "Mode": "Default",
@@ -1231,6 +1231,44 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Identity": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\f4cd717a856df3e605e351d66fc2d23e.jpg",
+      "SourceId": "panasonic_machine_checker",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\",
+      "BasePath": "_content/panasonic_machine_checker",
+      "RelativePath": "uploads/f4cd717a856df3e605e351d66fc2d23e.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\f4cd717a856df3e605e351d66fc2d23e.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\r6zb2xwbmqea.jpg",
+      "SourceId": "panasonic_machine_checker",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\",
+      "BasePath": "_content/panasonic_machine_checker",
+      "RelativePath": "uploads/r6zb2xwbmqea.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\r6zb2xwbmqea.jpg"
     }
   ]
 }

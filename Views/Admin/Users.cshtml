@@ -196,8 +196,10 @@
                     .then((response) => response.json())
                     .then((data) => {
                         alert('User Saved');
-                        console.log(data);
                         document.getElementById('form_modal').click();
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
                     });
             }
 

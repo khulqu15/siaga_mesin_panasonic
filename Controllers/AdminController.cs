@@ -25,6 +25,17 @@ namespace panasonic_machine_checker.Controllers
             _passwordHasher = new PasswordHasher<User>();
         }
 
+        [HttpGet("/Admin/UserData/{id}")]
+        public JsonResult getUser(int id)
+        {
+            var user = _context.Users.Find(id);
+            if (user == null)
+            {
+                return Json(new { success = false });
+            }
+            return Json(new { success = true, data = user });
+        }
+
         public IActionResult Index()
         {
             return View();

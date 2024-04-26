@@ -1,4 +1,7 @@
-﻿@{
+﻿@model panasonic_machine_checker.Models.CasesModel;
+@{
+    var machineList = ViewBag.MachineList as List<Machines>;
+    var statusList = ViewBag.StatusList as List<StatusCases>;
     Layout = "~/Views/Shared/_App_Layout.cshtml";
 }
 
@@ -7,61 +10,75 @@
     <div class="modal" role="dialog">
         <div class="modal-box max-w-xl">
             <h3 class="font-bold text-lg">Case's Form</h3>
-            <form>
+            <form id="formData">
                 <div class="form-control my-3">
-                    <label for="machine">Select Machine</label>
-                    <select class="select select-bordered w-full mt-1" id="machine" name="machine">
-                        <option disabled selected>CNC Tools</option>
-                        <option>3D Printer</option>
+                    <label for="machine_id">Select Machine</label>
+                    <select required class="select select-bordered w-full mt-1" id="machine_id" name="machine_id">
+                        <option value="" disabled selected>Select Machine</option>
+                        @foreach (var machine in machineList)
+                        {
+                            <option value="@machine.Id">@machine.Name</option>
+                        }
                     </select>
                 </div>
+                <div class="form-control my-3 hidden">
+                    <label for="reported_at_id">Reported By (Id)</label>
+                    <input readonly type="text" class="input input-bordered w-full" id="reported_by_id" name="reported_by_id" />
+                </div>
                 <div class="form-control my-3">
-                    <label for="reported">Reported By</label>
-                    <select class="select select-bordered w-full text-black mt-1" id="reported" name="reported">
-                        <option disabled selected>Bayu Purnama</option>
-                    </select>
+                    <label for="reported_at_id">Reported By</label>
+                    <input readonly type="text" class="input input-bordered w-full" id="reported_by" name="reported_by" />
                 </div>
                 <div class="form-control my-3">
                     <label for="status">Current Status</label>
-                    <select class="select select-bordered w-full mt-1" id="status" name="status">
-                        <option disabled selected>Pending</option>
-                        <option>Progress</option>
-                        <option>Completed</option>
+                    <select required class="select select-bordered w-full mt-1" id="status" name="status">
+                        <option value="" disabled selected>Select Status</option>
+                        @foreach (var status in statusList)
+                        {
+                            <option value="@status.Id">@status.Name</option>
+                        }
                     </select>
                 </div>
                 <div class="form-control my-3">
-                    <label for="location">Description</label>
-                    <textarea id="description" name="description" class="textarea textarea-bordered w-full" placeholder="Enter cases's description"></textarea>
+                    <label for="reported_at">Completed At</label>
+                    <input type="date" class="input input-bordered w-full" id="completed_at" name="completed_at" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="reported_at">Description</label>
+                    <textarea type="date" class="textarea textarea-bordered w-full" id="description" name="description"></textarea>
+                </div>
+                <div class="modal-action">
+                    <label for="form_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Submit Data</button>
                 </div>
             </form>
-            <div class="modal-action">
-                <label for="form_modal" class="btn">Cancel</label>
-                <button class="btn btn-primary text-white">Submit Data</button>
-            </div>
         </div>
     </div>
 
     <input type="checkbox" id="delete_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box">
-            <h3 class="font-bold text-lg">Delete Case ?</h3>
-            <p class="text-sm">The case data will be deleted permanently</p>
+            <h3 class="font-bold text-lg">Delete Machine ?</h3>
+            <p class="text-sm">The mahchine data will be deleted permanently</p>
             <div class="modal-action">
                 <label for="delete_modal" class="btn">Cancel</label>
-                <button class="btn btn-error text-white">Delete</button>
+                <button id="deleteBtn" class="btn btn-error text-white">Delete</button>
             </div>
         </div>
     </div>
 
     <div>
         <div class="flex items-center justify-between w-full mb-3">
-            <h1 class="font-semibold">My Reported Cases <span class="badge badge-primary">02</span></h1>
-            <div>
-                <label for="form_modal" class="btn btn-sm btn-primary">Report new</label>
-                <select class="select w-24 select-sm select-bordered">
-                    <option disabled selected>Terbaru</option>
-                    <option>Terlama</option>
-                </select>
+            <div class="flex items-center justify-between w-full mb-3">
+                <h1 class="font-semibold">My Reported Cases <span class="badge badge-primary">@Model.TotalItems</span></h1>
+                <div>
+                    <label for="form_modal" id="btnAdd" class="btn btn-sm btn-primary">Add new</label>
+                    <select class="select w-24 select-sm select-bordered" id="sort-filter">
+                        <option disabled selected>Select Order</option>
+                        <option value="newest">Terbaru (Newest)</option>
+                        <option value="oldest">Terlama (Oldest)</option>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -78,38 +95,45 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>1</th>
-                        <td>CNC Tools</td>
-                        <td>Bayu Purnama</td>
-                        <td>Pending</td>
-                        <td>Monday, 18 March 2024 20:03</td>
-                        <td>-</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z"/></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg>
-                            </label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td>3D Printer</td>
-                        <td>Bayu Purnama</td>
-                        <td>Pending</td>
-                        <td>Monday, 18 March 2024 20:03</td>
-                        <td>-</td>
-                        <td>
-                            <label for="form_modal" class="btn btn-primary btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z"/></svg>
-                            </label>
-                            <label for="delete_modal" class="btn btn-error btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg>
-                            </label>
-                        </td>
-                    </tr  
+                    @if (Model.CasesList.Count > 0)
+                    {
+                        int counter = 1;
+                        foreach (var item in Model.CasesList)
+                        {
+                            <tr id="item-@item.Id">
+                                <th class="case_counter">@counter</th>
+                                <td class="hidden case_machine_id">@item.MachineId</td>
+                                <td class="case_machine">@item.Machine.Name</td>
+                                <td class="hidden case_reported_by_id">@item.ReportedById</td>
+                                <td class="case_reported_by">@item.ReportedByNavigation.Name</td>
+                                <td class="case_date_reported">@item.DateReported</td>
+                                <td class="case_date_completed">@item.DateCompleted</td>
+                                <td class="hidden case_status_id">@item.StatusId</td>
+                                <td class="hidden case_description">@item.Description</td>
+                                <td class="case_status">@item.Status.Name</td>
+                                <td>
+                                    <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                    </label>
+                                    <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                    </label>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+                                <div class="w-full bg-error text-white p-3 rounded-xl text-center">
+                                    Cases Not Found
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
                 <tfoot>
                     <tr>
                         <th></th>
@@ -125,10 +149,171 @@
         </div>
         <div class="w-full flex mt-10 justify-end">
             <div class="join">
-                <button class="btn join-item"><</button>
-                <button class="btn btn-primary join-item">1</button>
-                <button class="btn join-item">></button>
+                <button class="btn join-item" onclick="location.href='@Url.Action("Leader", new { page = Model.CurrentPage - 1 })'" @(Model.CurrentPage == 1 ? "disabled" : "")><</button>
+                @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+                {
+                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Machines", new { page = i })'">@i</button>
+                }
+                <button class="btn join-item" onclick="location.href='@Url.Action("Leader", new { page = Model.CurrentPage + 1 })'" @(Model.CurrentPage * Model.PageSize >= Model.TotalItems ? "disabled" : "")>></button>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+         document.addEventListener('DOMContentLoaded', () => {
+            let user_id = 0;
+
+            let checkToken = sessionStorage.getItem('authToken')
+            if (checkToken != null && checkToken != undefined) {
+                let separator = checkToken.split('-')
+                let role = separator.pop()
+                let suffix = checkToken.split('-')[1]
+                let user_id_selection = checkToken.slice(5, checkToken.indexOf('-'))
+                user_id = parseInt(checkToken.split("-")[1])
+
+                fetchUser(user_id, role)
+            } else window.location.href = "/Login"
+
+            function fetchUser(user_id, role) {
+                fetch("/Admin/UserData/" + user_id, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        return response.json()
+                    })
+                    .then((data) => {
+                        console.log(data.data)
+                        document.getElementById('reported_by').value = data.data.name
+                        document.getElementById('reported_by_id').value = data.data.id
+                    })
+            }
+
+            let data = null
+            function updateMachine() {
+                let machine_id = parseInt(document.getElementById('machine_id').value);
+                let reported_by = parseInt(document.getElementById('reported_by_id').value);
+                let status_id = parseInt(document.getElementById('status').value);
+                let date = new Date();
+                date.setHours(date.getHours() + 1)
+                date.setMinutes(date.getMinutes() + 30)
+                date.setSeconds(date.getSeconds() + 45)
+                let date_reported = date.toISOString();
+                let date_completed = document.getElementById('completed_at').value;
+                let description = document.getElementById('description').value;
+                let case_data = {
+                    Description: description,
+                    MachineId: machine_id,
+                    ReportedById: reported_by,
+                    StatusId: status_id,
+                    DateReported: date_reported,
+                    DateCompleted: date_completed,
+                }
+                if(data != null) case_data.Id = data
+                let url = data != null ? '/Production/UpdateCase/'+data : '/Production/CreateCase';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(case_data)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setTimeout(() => {
+                            generateJobOrder(data.case_data)
+                        }, 200)
+                    })
+            }
+
+             function generateJobOrder(case_data) {
+                 console.log(case_data)
+                let scheduled_date = new Date(case_data.dateCompleted)
+                fetch('/Production/CreateJobOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        CaseId: case_data.id,
+                        ScheduledBy: user_id,
+                        ScheduledDate: scheduled_date.toISOString().split('T')[0],
+                        StatusId: case_data.statusId,
+                    })
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert('Case Saved');
+                    document.getElementById('form_modal').click()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 300)
+                })
+             }
+
+            document.getElementById('sort-filter').addEventListener('change', (event) => {
+                window.location.href = '?page=1&sortOrder='+event.target.value;
+            })
+
+            document.getElementById('btnAdd').addEventListener('click', (event) => {
+                data = null
+                document.getElementById('machine_id').value = ''
+                document.getElementById('status').value = ''
+                document.getElementById('completed_at').value = ''
+                document.getElementById('description').value = ''
+            })
+            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+                element.addEventListener('click', (event) => {
+                    data = event.target.getAttribute('data-itemid')
+                    let itemData = document.getElementById('item-' + data)
+                    const completedAt = new Date(itemData.querySelector('.case_date_completed').innerHTML);
+                    document.getElementById('machine_id').value = Array.from(itemData.getElementsByClassName('case_machine_id'))[0].innerHTML
+                    document.getElementById('status').value = Array.from(itemData.getElementsByClassName('case_status_id'))[0].innerHTML
+                    document.getElementById('completed_at').value = completedAt.toISOString().split('T')[0];
+                    document.getElementById('description').value = Array.from(itemData.getElementsByClassName('case_description'))[0].innerHTML
+                })
+            })
+            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+                element.addEventListener('click', (event) => {
+                    data = event.target.getAttribute('data-itemid')
+                })
+            })
+
+            function deleteMachine() {
+                fetch('/Admin/DeleteCase/' + data, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: data })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Case deleted');
+                            document.getElementById('delete_modal').click()
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 300)
+                        } else {
+                            alert('Error deleting case');
+                        }
+                    });
+            }
+
+            document.getElementById('formData').addEventListener('submit', (event) => {
+                event.preventDefault()
+                updateMachine()
+            });
+            document.getElementById('deleteBtn').addEventListener('click', function () {
+                deleteMachine();
+            });
+
+        })
+    </script>
+}
