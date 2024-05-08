@@ -1,264 +1,559 @@
-﻿@{
+﻿@model panasonic_machine_checker.Models.CasesModel;
+@{
+    var repairScheduleList = ViewBag.RepairScheduleList as List<RepairSchedules>;
+    var machineList = ViewBag.MachineList as List<Machines>;
+    var userList = ViewBag.UserList as List<Users>;
+    var statusList = ViewBag.StatusList as List<StatusCases>;
     Layout = "~/Views/Shared/_App_Layout.cshtml";
 }
 
-<div class="space-y-4 mt-5">
-    <div class="w-full grid xl:grid-cols-4 grid-cols-2 gap-4">
-        <div>
-            <div class="w-full flex items-center justify-between bg-primary p-4 rounded-xl text-white">
-                <p class="text-sm">Machines</p>
-                <h2 class="text-3xl">07</h2>
-            </div>
+<div class="w-full bg-base-100 p-6 rounded-xl mt-5">
+
+    <input type="checkbox" id="call_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl">
+            <h3 class="font-bold text-lg">Call Vendor Form</h3>
+            <form id="formCallData">
+                <div class="form-control my-3 hidden">
+                    <label for="call_case_id">Case Id</label>
+                    <input type="text" id="call_case_id" name="call_case_id" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="call_case_name">Selected Case</label>
+                    <input type="text" id="call_case_name" name="call_case_name" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3 hidden">
+                    <label for="call_reported_by_id">Scheduled By</label>
+                    <input type="text" id="call_reported_by_id" name="call_reported_by_id" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="call_reported_by">Scheduled By</label>
+                    <input type="text" id="call_reported_by" name="call_reported_by" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="call_call_date">Call with vendor (date)</label>
+                    <input type="date" id="call_call_date" name="call_call_date" required class="input input-bordered w-full" />
+                </div>
+                <div class="modal-action">
+                    <label for="call_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Save schedule</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <div class="w-full flex items-center justify-between bg-primary p-4 rounded-xl text-white">
-                <p class="text-sm">Cases</p>
-                <h2 class="text-3xl">12</h2>
-            </div>
+    </div>
+
+    <input type="checkbox" id="kyt_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl">
+            <h3 class="font-bold text-lg">Take Case (KYT Form)</h3>
+            <form id="formKYTData">
+                <div class="form-control my-3 hidden">
+                    <label for="kyt_case_id">Case Id</label>
+                    <input type="text" id="kyt_case_id" name="call_case_id" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="kyt_case_name">Selected Case</label>
+                    <input readonly type="text" id="kyt_case_name" name="kyt_case_name" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3 hidden">
+                    <label for="kyt_filled_by_id">Filled By</label>
+                    <input readonly type="text" id="kyt_filled_by_id" name="kyt_filled_by_id" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="kyt_filled_by_name">Filled By</label>
+                    <input readonly type="text" id="kyt_filled_by" name="kyt_filled_by" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="potential_hazard">Potential Hazard</label>
+                    <textarea id="potential_hazard" name="potential_hazard" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="modal-action">
+                    <label for="kyt_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Take Case</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <div class="w-full flex items-center justify-between bg-primary p-4 rounded-xl text-white">
-                <p class="text-sm">KYT Forms</p>
-                <h2 class="text-3xl">02</h2>
-            </div>
+    </div>
+
+
+    <input type="checkbox" id="machine_repair_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl">
+            <h3 class="font-bold text-lg">Machine Repairs Form</h3>
+            <form id="machineRepairData">
+                <div class="form-control my-3">
+                    <label for="schedule_id">Select Schedule</label>
+                    <select required class="select select-bordered w-full mt-1" id="schedule_id" name="schedule_id">
+                        <option value="" disabled selected>Select Scheduled Repair</option>
+                        @foreach (var item in repairScheduleList)
+                        {
+                            <option class="case-data case-@item.Case.Id" value="@item.Id">@item.Id, @item.CallDate @item.Case.ReportedByNavigation.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="reviewed_by">Reviewed By</label>
+                    <select required class="select select-bordered w-full text-black mt-1" id="reviewed_by" name="reviewed_by">
+                        <option value="" disabled selected>Select User</option>
+                        @foreach (var item in userList)
+                        {
+                            <option value="@item.Id">@item.Name (@item.Email)</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="repair_date">Repair date</label>
+                    <input type="date" id="repair_date" name="repair_date" class="input input-bordered w-full" />
+                </div>
+                <div class="modal-action">
+                    <label for="machine_repair_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Submit Data</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <div class="w-full flex items-center justify-between bg-primary p-4 rounded-xl text-white">
-                <p class="text-sm">KYT Forms</p>
-                <h2 class="text-3xl">08</h2>
+    </div>
+
+    <input type="checkbox" id="form_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl">
+            <h3 class="font-bold text-lg">Case's Form</h3>
+            <form id="formData">
+                <div class="form-control my-3">
+                    <label for="machine_id">Select Machine</label>
+                    <select required class="select select-bordered w-full mt-1" id="machine_id" name="machine_id">
+                        <option value="" disabled selected>Select Machine</option>
+                        @foreach (var machine in machineList)
+                        {
+                            <option value="@machine.Id">@machine.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-control my-3 hidden">
+                    <label for="reported_at_id">Reported By (Id)</label>
+                    <input readonly type="text" class="input input-bordered w-full" id="reported_by_id" name="reported_by_id" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="reported_at_id">Reported By</label>
+                    <input readonly type="text" class="input input-bordered w-full" id="reported_by" name="reported_by" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="status">Current Status</label>
+                    <select required class="select select-bordered w-full mt-1" id="status" name="status">
+                        <option value="" disabled selected>Select Status</option>
+                        @foreach (var status in statusList)
+                        {
+                            <option value="@status.Id">@status.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="reported_at">Completed At</label>
+                    <input type="date" class="input input-bordered w-full" id="completed_at" name="completed_at" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="reported_at">Description</label>
+                    <textarea type="date" class="textarea textarea-bordered w-full" id="description" name="description"></textarea>
+                </div>
+                <div class="modal-action">
+                    <label for="form_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Approve</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <input type="checkbox" id="delete_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Delete Case ?</h3>
+            <p class="text-sm">The case data will be deleted permanently</p>
+            <div class="modal-action">
+                <label for="delete_modal" class="btn">Cancel</label>
+                <button id="deleteBtn" class="btn btn-error text-white">Delete</button>
             </div>
         </div>
     </div>
-    <div class="w-full grid lg:grid-cols-2 grid-cols-1 gap-4">
-        <div>
-            <div class="w-full bg-base-100 p-6 rounded-xl">
-                <div class="flex items-center justify-between w-full mb-3">
-                    <h1 class="font-semibold">Repair Schedule <span class="badge badge-primary">03</span></h1>
-                    <div>
-                        <button class="btn btn-sm btn-primary">Add new</button>
-                        <div class="dropdown dropdown-end">
-                            <div tabindex="0" role="button" class="btn btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                            </div>
-                            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                <li><a>Select to Edit</a></li>
-                                <li><a>Delete All</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2">
-                            <h1 class="">Automation Machine Troubleshoot</h1>
-                            <p class="text-xs mt-2">Scheduled at: Wednesday, 20 March 2024</p>
-                            <p class="text-xs mt-1">By: Bayu Purnama</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2">
-                            <h1 class="">Automation Machine Troubleshoot</h1>
-                            <p class="text-xs mt-2">Scheduled at: Wednesday, 20 March 2024</p>
-                            <p class="text-xs mt-1">By: Peter</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2">
-                            <h1 class="">Automation Machine Troubleshoot</h1>
-                            <p class="text-xs mt-2">Scheduled at: Wednesday, 20 March 2024</p>
-                            <p class="text-xs mt-1">By: Peter</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-full flex justify-end">
-                        <div class="join">
-                            <button class="btn join-item"><</button>
-                            <button class="btn btn-primary join-item">1</button>
-                            <button class="btn join-item">></button>
-                        </div>
-                    </div>
+
+    <div>
+        <div class="flex items-center justify-between w-full mb-3">
+            <div class="flex items-center justify-between w-full mb-3">
+                <h1 class="font-semibold">Cases <span class="badge badge-primary">@Model.TotalItems</span></h1>
+                <div>
+                    <select class="select w-24 select-sm select-bordered" id="sort-filter">
+                        <option disabled selected>Select Order</option>
+                        <option value="newest">Terbaru (Newest)</option>
+                        <option value="oldest">Terlama (Oldest)</option>
+                    </select>
                 </div>
             </div>
         </div>
-        <div>
-            <div class="w-full bg-base-100 p-6 rounded-xl">
-                <div class="flex items-center justify-between w-full mb-3">
-                    <h1 class="font-semibold">User Staff <span class="badge badge-primary">05</span></h1>
-                    <div>
-                        <button class="btn btn-sm btn-primary">Add new</button>
-                        <div class="dropdown dropdown-end">
-                            <div tabindex="0" role="button" class="btn btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                            </div>
-                            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                <li><a>Select to Edit</a></li>
-                                <li><a>Delete All</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2 gap-4 flex items-center">
-                            <div class="avatar">
-                                <div class="w-12 mask mask-squircle">
-                                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+        <div class="overflow-x-auto">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Machine</th>
+                        <th>Reported By</th>
+                        <th>Reported At</th>
+                        <th>Completed At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.CasesList.Count > 0)
+                    {
+                        int counter = 1;
+                        foreach (var item in Model.CasesList)
+                        {
+                            <tr id="item-@item.Id">
+                                <th class="case_counter">@counter</th>
+                                <td class="hidden case_machine_id">@item.MachineId</td>
+                                <td class="case_machine">@item.Machine.Name</td>
+                                <td class="hidden case_reported_by_id">@item.ReportedById</td>
+                                <td class="case_reported_by">@item.ReportedByNavigation.Name</td>
+                                <td class="case_date_reported">@item.DateReported</td>
+                                <td class="case_date_completed">@item.DateCompleted</td>
+                                <td class="hidden case_status_id">@item.StatusId</td>
+                                <td class="hidden case_description">@item.Description</td>
+                                <td class="case_status">@item.Status.Name</td>
+                                <td class="flex align-items-center gap-1">
+                                    <label for="call_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnCall bg-primary/10 text-primary btn-sm">
+                                        Call Vendor
+                                    </label>
+                                    <label for="machine_repair_modal" data-itemid="@item.Id" class="btn btnSchedules bg-primary/10 text-primary btn-sm">
+                                        Schedule
+                                    </label>
+                                    <label for="form_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnEdit btn-primary btn-sm">
+                                        Approve
+                                    </label>
+                                    <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                    </label>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+                                <div class="w-full bg-error text-white p-3 rounded-xl text-center">
+                                    Cases Not Found
                                 </div>
-                            </div>
-                            <div>
-                                <h1 class="">Bayu Purnama</h1>
-                                <p class="text-xs mt-1">Leader Production</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2 gap-4 flex items-center">
-                            <div class="avatar">
-                                <div class="w-12 mask mask-squircle">
-                                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                                </div>
-                            </div>
-                            <div>
-                                <h1 class="">Peter Sabit</h1>
-                                <p class="text-xs mt-1">Manager Production</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2 gap-4 flex items-center">
-                            <div class="avatar">
-                                <div class="w-12 mask mask-squircle">
-                                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                                </div>
-                            </div>
-                            <div>
-                                <h1 class="">Khusnul Khuluq</h1>
-                                <p class="text-xs mt-1">Leader MTC</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2 gap-4 flex items-center">
-                            <div class="avatar">
-                                <div class="w-12 mask mask-squircle">
-                                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                                </div>
-                            </div>
-                            <div>
-                                <h1 class="">Faiz Surya</h1>
-                                <p class="text-xs mt-1">Member MTC</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 w-full hover:border rounded-xl p-3">
-                        <div class="col-span-2 gap-4 flex items-center">
-                            <div class="avatar">
-                                <div class="w-12 mask mask-squircle">
-                                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                                </div>
-                            </div>
-                            <div>
-                                <h1 class="">Vicko Gusnaidi</h1>
-                                <p class="text-xs mt-1">Manager MTC</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-sm bg-base-100 hover:bg-base-100 border-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="currentColor" d="M8 2.5a1.22 1.22 0 0 1 1.25 1.17A1.21 1.21 0 0 1 8 4.84a1.21 1.21 0 0 1-1.25-1.17A1.22 1.22 0 0 1 8 2.5m0 8.66a1.17 1.17 0 1 1-1.25 1.17A1.21 1.21 0 0 1 8 11.16m0-4.33a1.17 1.17 0 1 1 0 2.34a1.17 1.17 0 1 1 0-2.34" /></svg>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li><a>Edit</a></li>
-                                    <li><a>Delete</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-full flex justify-end">
-                        <div class="join">
-                            <button class="btn join-item"><</button>
-                            <button class="btn btn-primary join-item">1</button>
-                            <button class="btn join-item">></button>
-                        </div>
-                    </div>
-                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Machine</th>
+                        <th>Reported By</th>
+                        <th>Reported At</th>
+                        <th>Completed At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="w-full flex mt-10 justify-end">
+            <div class="join">
+                <button class="btn join-item" onclick="location.href='@Url.Action("Leader", new { page = Model.CurrentPage - 1 })'" @(Model.CurrentPage == 1 ? "disabled" : "")><</button>
+                @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+                {
+                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Leader", new { page = i })'">@i</button>
+                }
+                <button class="btn join-item" onclick="location.href='@Url.Action("Leader", new { page = Model.CurrentPage + 1 })'" @(Model.CurrentPage * Model.PageSize >= Model.TotalItems ? "disabled" : "")>></button>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let user_id = 0
+            let user_name = ''
+            let case_id = 0
+            let case_name = ''
+
+            let checkToken = sessionStorage.getItem('authToken')
+            if (checkToken != null && checkToken != undefined) {
+                let separator = checkToken.split('-')
+                let role = separator.pop()
+                let suffix = checkToken.split('-')[1]
+                let user_id_selection = checkToken.slice(5, checkToken.indexOf('-'))
+                user_id = parseInt(checkToken.split("-")[1])
+
+                fetchUser(user_id, role)
+            } else window.location.href = "/Login"
+
+            function fetchUser(user_id, role) {
+                fetch("/Admin/UserData/" + user_id, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then((response) => {
+                        return response.json()
+                    })
+                    .then((data) => {
+                        console.log(data.data)
+                        document.getElementById('call_reported_by').value = data.data.name
+                        document.getElementById('call_reported_by_id').value = data.data.id
+                        document.getElementById('kyt_filled_by').value = data.data.name
+                        document.getElementById('kyt_filled_by_id').value = data.data.id
+                        document.getElementById('reported_by').value = data.data.name
+                        document.getElementById('reported_by_id').value = data.data.id
+                    })
+            }
+
+
+            function updateMachineRepair() {
+                let schedule_id = parseInt(document.getElementById('schedule_id').value);
+                let reviewed_by = parseInt(document.getElementById('reviewed_by').value);
+                let repair_date = document.getElementById('repair_date').value;
+                let case_data = {
+                    ScheduleId: schedule_id,
+                    ReviewedBy: reviewed_by,
+                    StatusId: 1,
+                    RepairDate: repair_date,
+                    Corrections: ' ',
+                    Result: ' ',
+                }
+                let url ='/MTC/Leader/CreateMachineRepairs';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(case_data)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Machine Repair Data Saved');
+                        document.getElementById('machine_repair_modal').click()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    })
+            }
+
+            async function updateCallVendor() {
+                let case_id = parseInt(document.getElementById('call_case_id').value);
+                let scheduled_by = parseInt(document.getElementById('call_reported_by_id').value);
+                let call_date = new Date(document.getElementById('call_call_date').value)
+                let case_data = {
+                    StatusId: 1,
+                    CaseId: case_id,
+                    ScheduledBy: scheduled_by,
+                    CallDate: call_date,
+                    RepairDate: call_date,
+                }
+                let url = '/Mtc/Leader/CreateRepairSchedule';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(case_data)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Repair Schedule Data Saved');
+                        document.getElementById('call_modal').click()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    })
+            }
+
+            let data = null
+            function updateMachine() {
+                let machine_id = parseInt(document.getElementById('machine_id').value);
+                let reported_by = parseInt(document.getElementById('reported_by_id').value);
+                let status_id = parseInt(document.getElementById('status').value);
+                let date = new Date();
+                date.setHours(date.getHours() + 1)
+                date.setMinutes(date.getMinutes() + 30)
+                date.setSeconds(date.getSeconds() + 45)
+                let date_reported = date.toISOString();
+                let date_completed = document.getElementById('completed_at').value;
+                let description = document.getElementById('description').value;
+                let case_data = {
+                    Description: description,
+                    MachineId: machine_id,
+                    ReportedById: reported_by,
+                    StatusId: status_id,
+                    DateReported: date_reported,
+                    DateCompleted: date_completed,
+                    IsApproved: 1,
+                }
+                if (data != null) case_data.Id = data
+                let url = data != null ? '/MTC/Leader/UpdateCase/' + data : '/MTC/Leader/CreateCase';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(case_data)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Case Approved')
+                        document.getElementById('form_modal').click()
+                        document.getElementById('kyt_modal').click()
+                    })
+            }
+
+            function generateJobOrder(case_data) {
+                console.log(case_data)
+                let scheduled_date = new Date(case_data.dateCompleted)
+                fetch('/Production/CreateJobOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        CaseId: case_data.id,
+                        ScheduledBy: user_id,
+                        ScheduledDate: scheduled_date.toISOString().split('T')[0],
+                        StatusId: case_data.statusId,
+                    })
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Case Saved');
+                        document.getElementById('form_modal').click()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    })
+            }
+
+            function updateKYT() {
+                let case_id = parseInt(document.getElementById('kyt_case_id').value);
+                let filled_by = parseInt(document.getElementById('kyt_filled_by_id').value);
+                let potential_hazard = document.getElementById('potential_hazard').value;
+                let case_data = {
+                    CaseId: case_id,
+                    FilledBy: filled_by,
+                    PotentialHazard: potential_hazard,
+                    Approval: 0,
+                }
+                let url = '/MTC/Leader/CreateKYTForms';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(case_data)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('KYT Forms Data Saved');
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    })
+            }
+
+            document.getElementById('sort-filter').addEventListener('change', (event) => {
+                window.location.href = '?page=1&sortOrder=' + event.target.value;
+            })
+
+            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+                element.addEventListener('click', async (event) => {
+                    data = await event.target.getAttribute('data-itemid')
+                    case_id = await event.target.getAttribute('data-casename')
+                    case_name = await event.target.getAttribute('data-reportedby') + ' - ' + event.target.getAttribute('data-casename')
+                    document.getElementById('kyt_case_id').value = case_id
+                    document.getElementById('kyt_case_name').value = case_name
+                    let itemData = document.getElementById('item-' + data)
+                    const completedAt = new Date(itemData.querySelector('.case_date_completed').innerHTML);
+                    document.getElementById('machine_id').value = Array.from(itemData.getElementsByClassName('case_machine_id'))[0].innerHTML
+                    document.getElementById('status').value = Array.from(itemData.getElementsByClassName('case_status_id'))[0].innerHTML
+                    document.getElementById('completed_at').value = completedAt.toISOString().split('T')[0];
+                    document.getElementById('description').value = Array.from(itemData.getElementsByClassName('case_description'))[0].innerHTML
+                })
+            })
+            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+                element.addEventListener('click', (event) => {
+                    data = event.target.getAttribute('data-itemid')
+                })
+            })
+            Array.from(document.getElementsByClassName('btnCall')).map((element, index) => {
+                element.addEventListener('click', async (event) => {
+                    data = await event.target.getAttribute('data-itemid')
+                    let casename = await event.target.getAttribute('data-casename')
+                    let reportedby = await event.target.getAttribute('data-reportedby')
+                    document.getElementById('call_case_id').value = data
+                    document.getElementById('call_case_name').value = casename + ' by ' + reportedby
+                })
+            })
+            Array.from(document.getElementsByClassName('btnSchedules')).map(async (element, index) => {
+                await Array.from(document.getElementsByClassName('case-data')).map((el, idx) => {
+                    el.classList.add('hidden')
+                })
+                element.addEventListener('click', async (event) => {
+                    data = await event.target.getAttribute('data-itemid')
+                    Array.from(document.getElementsByClassName('case-'+data)).map((el, idx) => {
+                        el.classList.remove('hidden')
+                    })
+                })
+            })
+
+            function deleteMachine() {
+                fetch('/Admin/DeleteCase/' + data, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: data })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Case deleted');
+                            document.getElementById('delete_modal').click()
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 300)
+                        } else {
+                            alert('Error deleting case');
+                        }
+                    });
+            }
+
+            document.getElementById('formData').addEventListener('submit', (event) => {
+                event.preventDefault()
+                updateMachine()
+            });
+            document.getElementById('formCallData').addEventListener('submit', (event) => {
+                event.preventDefault()
+                updateCallVendor()
+            });
+            document.getElementById('machineRepairData').addEventListener('submit', (event) => {
+                event.preventDefault()
+                updateMachineRepair()
+            })
+            document.getElementById('formKYTData').addEventListener('submit', (event) => {
+                event.preventDefault()
+                updateKYT()
+            })
+
+            document.getElementById('deleteBtn').addEventListener('click', function () {
+                deleteMachine();
+            });
+
+        })
+    </script>
+}

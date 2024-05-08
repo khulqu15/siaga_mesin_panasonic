@@ -18,11 +18,9 @@ namespace panasonic_machine_checker.Models
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public int CaseId { get; set; }
+        public int? CaseId { get; set; }
 
-        [Required]
-        public int ScheduledById { get; set; }
+        public int? ScheduledById { get; set; }
 
         [Required]
         public int StatusId { get; set; }

@@ -481,6 +481,14 @@ namespace panasonic_machine_checker.Controllers
             return View("~/Views/Production/Manager/Index.cshtml", model);
         }
 
+        [HttpPost("/Production/CreateJobOrder")]
+        public JsonResult CreateJobOrder([FromBody] JobOrder data)
+        {
+            _context.JobOrders.Add(data);
+            _context.SaveChanges();
+            return Json(new { success = true, machine = data });
+        }
+
         [HttpPost("/Production/UpdateJobOrder/{id}")]
         public JsonResult UpdateJobOrder(int id, [FromBody] JobOrder data)
         {

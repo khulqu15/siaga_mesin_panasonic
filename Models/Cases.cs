@@ -20,14 +20,13 @@ namespace panasonic_machine_checker.Models
         [Required]
         public required string Description { get; set; }
         
-        [Required]
-        public required int MachineId { get; set; }
-        
-        [Required]
-        public required int ReportedById { get; set; }
+        public int? MachineId { get; set; }
+     
+        public int? ReportedById { get; set; }
 
-        [Required]
-        public required int StatusId { get; set; }
+        public int? StatusId { get; set; }
+
+        public int? IsApproved { get; set; }
 
         public DateTime? DateReported { get; set; }
         public DateTime? DateCompleted { get; set; }
@@ -40,6 +39,8 @@ namespace panasonic_machine_checker.Models
 
         [ForeignKey("StatusId")]
         public virtual StatusCase Status { get; set; } = null!;
+
+        public virtual RepairSchedule RepairSchedule { get; set; } = null!;
 
     }
 }

@@ -94,6 +94,10 @@
                     <li><a class="@isActive("Production", "Manager") linkid" asp-area="" asp-controller="Production" asp-action="Manager">Job Order Lists</a></li>
                     <li><a class="@isActive("Production", "ManagerMachineRepairs") linkid" asp-area="" asp-controller="Production" asp-action="ManagerMachineRepairs">Machine Repairs</a></li>
                 }
+                @if (UserIsInRole("MTC Leader"))
+                {
+                    <li><a class="@isActive("Mtc", "Leader") linkid" asp-area="" asp-controller="Mtc" asp-action="Leader">Review Cases</a></li>
+                }
                 @if (UserIsInRole("MTC Member"))
                 {
                     <li><a class="@isActive("Mtc", "Member") linkid" asp-area="" asp-controller="Mtc" asp-action="Member">Case List & KYT Form</a></li>

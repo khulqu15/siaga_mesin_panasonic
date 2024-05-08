@@ -18,7 +18,7 @@
                         <option value="" disabled selected>Select Scheduled Repair</option>
                         @foreach (var item in scheduledList)
                         {
-                            <option value="@item.Id">@item.Id, @item.CallDate @item.Case.ReportedByNavigation.Name</option>
+                            <option class="case-@item.Case.Id" value="@item.Id">@item.Id, @item.CallDate @item.Case.ReportedByNavigation.Name</option>
                         }
                     </select>
                 </div>

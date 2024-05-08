@@ -9,8 +9,7 @@ public partial class RepairSchedule
 {
     public int Id { get; set; }
 
-    [Required]
-    public required int CaseId { get; set; }
+    public int? CaseId { get; set; }
 
     [Required]
     public required int ScheduledBy { get; set; }

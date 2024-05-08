@@ -7,13 +7,15 @@ public partial class Case
 {
     public int Id { get; set; }
 
-    public int MachineId { get; set; }
+    public int? MachineId { get; set; }
 
-    public int ReportedById { get; set; }
+    public int? ReportedById { get; set; }
 
     public string Description { get; set; } = null!;
 
-    public int StatusId { get; set; }
+    public int? StatusId { get; set; }
+
+    public int? IsApproved { get; set; }
 
     public DateTime? DateReported { get; set; }
 
