@@ -165,109 +165,107 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let data = null
-            let avatar = null
-            function updateRole() {
-                let name = document.getElementById('name').value;
-                let email = document.getElementById('email').value;
-                let phone = document.getElementById('phone').value;
-                let password = document.getElementById('password').value;
-                let role = document.getElementById('role').value;
+        let data = null
+        let avatar = null
+        function updateRole() {
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let phone = document.getElementById('phone').value;
+            let password = document.getElementById('password').value;
+            let role = document.getElementById('role').value;
 
-                let formData = new FormData();
-                formData.append('name', name);
-                formData.append('email', email);
-                formData.append('phone', phone);
-                formData.append('password', password);
-                formData.append('role', role);
+            let formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('phone', phone);
+            formData.append('password', password);
+            formData.append('role', role);
 
-                let avatar = document.getElementById('avatar').files[0];
-                if (avatar) {
-                    formData.append('avatar', avatar);
-                }
+            let avatar = document.getElementById('avatar').files[0];
+            if (avatar) {
+                formData.append('avatar', avatar);
+            }
 
-                let url = data != null ? `/Admin/UpdateUser/${data}` : '/Admin/CreateUser';
+            let url = data != null ? `/Admin/UpdateUser/${data}` : '/Admin/CreateUser';
 
-                fetch(url, {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        alert('User Saved');
-                        document.getElementById('form_modal').click();
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert('User Saved');
+                    document.getElementById('form_modal').click();
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 300)
+                });
+        }
+
+        document.getElementById('avatar').addEventListener('change', (event) => {
+            let fileInput = document.getElementById('avatar')
+            if (fileInput.files.length > 0) {
+                avatar = fileInput.files[0]
+            }
+        })
+
+        document.getElementById('sort-filter').addEventListener('change', (event) => {
+            window.location.href = `?page=1&sortOrder=${event.target.value}`;
+        })
+
+        document.getElementById('btnAdd').addEventListener('click', (event) => {
+            data = null
+            document.getElementById('name').value = ''
+            document.getElementById('email').value = ''
+            document.getElementById('phone').value = ''
+            document.getElementById('password').value = ''
+            document.getElementById('role').value = ''
+        })
+        Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+                let itemData = document.getElementById('item-' + data)
+                document.getElementById('name').value = Array.from(itemData.getElementsByClassName('user_name'))[0].innerHTML
+                document.getElementById('email').value = Array.from(itemData.getElementsByClassName('user_email'))[0].innerHTML
+                document.getElementById('phone').value = Array.from(itemData.getElementsByClassName('user_phone'))[0].innerHTML
+                document.getElementById('role').value = Array.from(itemData.getElementsByClassName('user_role'))[0].innerHTML
+            })
+        })
+        Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+                console.log(data)
+            })
+        })
+
+        function deleteMachine() {
+            fetch('/Admin/DeleteUser/' + data, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: data })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('User deleted');
+                        document.getElementById('delete_modal').click()
                         setTimeout(() => {
                             window.location.reload()
                         }, 300)
-                    });
-            }
+                    } else {
+                        alert('Error deleting user');
+                    }
+                });
+        }
 
-            document.getElementById('avatar').addEventListener('change', (event) => {
-                let fileInput = document.getElementById('avatar')
-                if (fileInput.files.length > 0) {
-                    avatar = fileInput.files[0]
-                }
-            })
-
-            document.getElementById('sort-filter').addEventListener('change', (event) => {
-                window.location.href = `?page=1&sortOrder=${event.target.value}`;
-            })
-
-            document.getElementById('btnAdd').addEventListener('click', (event) => {
-                data = null
-                document.getElementById('name').value = ''
-                document.getElementById('email').value = ''
-                document.getElementById('phone').value = ''
-                document.getElementById('password').value = ''
-                document.getElementById('role').value = ''
-            })
-            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                    let itemData = document.getElementById('item-' + data)
-                    document.getElementById('name').value = Array.from(itemData.getElementsByClassName('user_name'))[0].innerHTML
-                    document.getElementById('email').value = Array.from(itemData.getElementsByClassName('user_email'))[0].innerHTML
-                    document.getElementById('phone').value = Array.from(itemData.getElementsByClassName('user_phone'))[0].innerHTML
-                    document.getElementById('role').value = Array.from(itemData.getElementsByClassName('user_role'))[0].innerHTML
-                })
-            })
-            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                    console.log(data)
-                })
-            })
-
-            function deleteMachine() {
-                fetch('/Admin/DeleteUser/' + data, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: data })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('User deleted');
-                            document.getElementById('delete_modal').click()
-                            setTimeout(() => {
-                                window.location.reload()
-                            }, 300)
-                        } else {
-                            alert('Error deleting user');
-                        }
-                    });
-            }
-
-            document.getElementById('formMachine').addEventListener('submit', (event) => {
-                event.preventDefault()
-                updateRole()
-            });
-            document.getElementById('deleteBtn').addEventListener('click', function () {
-                deleteMachine();
-            });
-        })
+        document.getElementById('formMachine').addEventListener('submit', (event) => {
+            event.preventDefault()
+            updateRole()
+        });
+        document.getElementById('deleteBtn').addEventListener('click', function () {
+            deleteMachine();
+        });
     </script>
 }

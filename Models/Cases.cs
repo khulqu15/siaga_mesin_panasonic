@@ -26,6 +26,10 @@ namespace panasonic_machine_checker.Models
 
         public int? StatusId { get; set; }
 
+        public int? ApprovedAt { get; set; }
+
+        public int? CreatedAt { get; set; }
+
         public int? IsApproved { get; set; }
 
         public DateTime? DateReported { get; set; }

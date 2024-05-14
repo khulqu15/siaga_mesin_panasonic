@@ -156,7 +156,7 @@
                 <button class="btn join-item" onclick="location.href='@Url.Action("Cases", new { page = Model.CurrentPage - 1 })'" @(Model.CurrentPage == 1 ? "disabled" : "")><</button>
                 @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
                 {
-                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Machines", new { page = i })'">@i</button>
+                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Cases", new { page = i })'">@i</button>
                 }
                 <button class="btn join-item" onclick="location.href='@Url.Action("Cases", new { page = Model.CurrentPage + 1 })'" @(Model.CurrentPage * Model.PageSize >= Model.TotalItems ? "disabled" : "")>></button>
             </div>

@@ -68,6 +68,8 @@ public partial class DbPanasonicContext : DbContext
             entity.Property(e => e.ReportedById).HasColumnName("reported_by");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
             entity.Property(e => e.IsApproved).HasColumnName("is_approved");
+            entity.Property(e => e.ApprovedAt).HasColumnName("approved_at");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
 
             entity.HasOne(d => d.Machine).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.MachineId)

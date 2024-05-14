@@ -17,6 +17,10 @@ public partial class Case
 
     public int? IsApproved { get; set; }
 
+    public int? ApprovedAt { get; set; }
+    
+    public int? CreatedAt { get; set; }
+
     public DateTime? DateReported { get; set; }
 
     public DateTime? DateCompleted { get; set; }

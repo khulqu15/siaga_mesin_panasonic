@@ -9,6 +9,9 @@ using panasonic_machine_checker.Models;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Azure;
+using System.Drawing.Printing;
 
 namespace panasonic_machine_checker.Controllers
 {
@@ -38,7 +41,38 @@ namespace panasonic_machine_checker.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            CasesModel casesModel = new CasesModel();
+            casesModel.CasesList = new List<Cases>();
+
+            var query = _context.Cases.Include(c => c.Machine).Include(c => c.ReportedByNavigation).Include(c => c.Status).AsQueryable();
+            var count = query.Count();
+            var data = query.ToList();
+
+            foreach(var item in data)
+            {
+                casesModel.CasesList.Add(new Cases
+                {
+                    Id = item.Id,
+                    Description = item.Description,
+                    MachineId = item.MachineId,
+                    ReportedById = item.ReportedById,
+                    StatusId = item.StatusId,
+                    DateCompleted = item.DateCompleted,
+                    DateReported = item.DateReported,
+                    Machine = item.Machine,
+                    Status = item.Status,
+                    ReportedByNavigation = item.ReportedByNavigation,
+                    IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
+                    CreatedAt = item.CreatedAt,
+                });
+            }
+
+            casesModel.TotalItems = count;
+            casesModel.CurrentPage = 1;
+            casesModel.PageSize = 10;
+
+            return View(casesModel);
         }
 
         [HttpGet]
@@ -87,6 +121,9 @@ namespace panasonic_machine_checker.Controllers
                     Machine = item.Machine,
                     Status = item.Status,
                     ReportedByNavigation = item.ReportedByNavigation,
+                    IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
+                    CreatedAt = item.CreatedAt,
                 });
             }
             caseModel.TotalItems = itemCount;
