@@ -1,6 +1,8 @@
 ﻿@model panasonic_machine_checker.Models.MachinesModel;
 @{
     Layout = "~/Views/Shared/_App_Layout.cshtml";
+    var LiniesList = ViewBag.LiniesList as List<Linies>;
+
 }
 
 <div class="w-full bg-base-100 p-6 rounded-xl mt-5">
@@ -12,6 +14,16 @@
                 <div class="form-control my-3">
                     <label for="name">Machine Name</label>
                     <input required type="text" name="name" placeholder="Enter machine's name" id="name" class="input input-bordered mt-1 w-full"/>
+                </div>
+                <div class="form-control my-3">
+                    <label for="linies_id">Lini</label>
+                    <select required class="select select-bordered w-full text-black mt-1" id="linies_id" name="linies_id">
+                        <option value="" disabled selected>Select User</option>
+                        @foreach (var user in LiniesList)
+                        {
+                            <option value="@user.Id">@user.Name - @user.UserLeaderId.Name</option>
+                        }
+                    </select>
                 </div>
                 <div class="form-control my-3">
                     <label for="type">Type Machine</label>
@@ -67,6 +79,7 @@
                     <tr>
                         <th></th>
                         <th>Name</th>
+                        <th>BU - Lini</th>
                         <th>Type</th>
                         <th>Location</th>
                         <th>Action</th>
@@ -81,6 +94,8 @@
                             <tr id="item-@machine.Id">
                                 <th class="machine_counter">@counter</th>
                                 <td class="machine_name">@machine.Name</td>
+                                <td class="machine_lini_id hidden">@machine.LiniId</td>
+                                <td class="machine_lini_name">@machine.BUName - @machine.MachineLiniId.Name</td>
                                 <td class="machine_type">@machine.Type</td>
                                 <td class="machine_location">@machine.Location</td>
                                 <td>
@@ -109,6 +124,7 @@
                     <tr>
                         <th></th>
                         <th>Name</th>
+                        <th>BU - Lini</th>
                         <th>Type</th>
                         <th>Location</th>
                         <th>Action</th>
@@ -131,86 +147,93 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let data = null
-            function updateMachine() {
-                let name = document.getElementById('name').value;
-                let type = document.getElementById('type').value;
-                let location = document.getElementById('location').value;
-                let machine = data != null ? { data, name, type, location } : { name, type, location };
-                let url = data != null ? `/Admin/UpdateMachine/${data}` : '/Admin/CreateMachine';
+    let data = null
+    function updateMachine() {
+        let name = document.getElementById('name').value;
+        let type = document.getElementById('type').value;
+        let location = document.getElementById('location').value;
+        let lini_id = parseInt(document.getElementById('linies_id').value);
+        let url = data != null ? `/Admin/UpdateMachine/${data}` : '/Admin/CreateMachine';
 
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(machine)
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    alert('Machine Saved');
-                    document.getElementById('form_modal').click()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 300)
-                })
-            }
+        let item = {
+            Name: name,
+            Type: type,
+            Location: location,
+            LiniId: lini_id,
+        }
 
-            document.getElementById('sort-filter').addEventListener('change', (event) => {
-                window.location.href = `?page=1&sortOrder=${event.target.value}`;
-            })
-
-            document.getElementById('btnAdd').addEventListener('click', (event) => {
-                data = null
-                document.getElementById('name').value = ''
-                document.getElementById('type').value = ''
-                document.getElementById('location').value = ''
-            })
-            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                    let itemData = document.getElementById('item-'+data)
-                    document.getElementById('name').value = Array.from(itemData.getElementsByClassName('machine_name'))[0].innerHTML
-                    document.getElementById('type').value = Array.from(itemData.getElementsByClassName('machine_type'))[0].innerHTML
-                    document.getElementById('location').value = Array.from(itemData.getElementsByClassName('machine_location'))[0].innerHTML
-                })
-            })
-            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                })
-            })
-
-            function deleteMachine() {
-                fetch('/Admin/DeleteMachine/'+data, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: data })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Machine deleted');
-                        document.getElementById('delete_modal').click()
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 300)
-                    } else {
-                        alert('Error deleting machine');
-                    }
-                });
-            }
-
-            document.getElementById('formMachine').addEventListener('submit', (event) => {
-                event.preventDefault()
-                updateMachine()
-            });
-            document.getElementById('deleteBtn').addEventListener('click', function () {
-                deleteMachine();
-            });
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
         })
+        .then((response) => response.json())
+        .then((data) => {
+            alert('Machine Saved');
+            document.getElementById('form_modal').click()
+            setTimeout(() => {
+                window.location.reload()
+            }, 300)
+        })
+    }
+
+    document.getElementById('sort-filter').addEventListener('change', (event) => {
+        window.location.href = `?page=1&sortOrder=${event.target.value}`;
+    })
+
+    document.getElementById('btnAdd').addEventListener('click', (event) => {
+        data = null
+        document.getElementById('name').value = ''
+        document.getElementById('type').value = ''
+        document.getElementById('location').value = ''
+        document.getElementById('linies_id').value = ''
+    })
+    Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+        element.addEventListener('click', (event) => {
+            data = event.target.getAttribute('data-itemid')
+            let itemData = document.getElementById('item-'+data)
+            document.getElementById('name').value = Array.from(itemData.getElementsByClassName('machine_name'))[0].innerHTML
+            document.getElementById('type').value = Array.from(itemData.getElementsByClassName('machine_type'))[0].innerHTML
+            document.getElementById('location').value = Array.from(itemData.getElementsByClassName('machine_location'))[0].innerHTML
+            document.getElementById('linies_id').value = Array.from(itemData.getElementsByClassName('machine_lini_id'))[0].innerHTML
+        })
+    })
+    Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+        element.addEventListener('click', (event) => {
+            data = event.target.getAttribute('data-itemid')
+        })
+    })
+
+    function deleteMachine() {
+        fetch('/Admin/DeleteMachine/'+data, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: data })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Machine deleted');
+                document.getElementById('delete_modal').click()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 300)
+            } else {
+                alert('Error deleting machine');
+            }
+        });
+    }
+
+    document.getElementById('formMachine').addEventListener('submit', (event) => {
+        event.preventDefault()
+        updateMachine()
+    });
+    document.getElementById('deleteBtn').addEventListener('click', function () {
+        deleteMachine();
+    });
     </script>
 }

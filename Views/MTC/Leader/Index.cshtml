@@ -197,6 +197,7 @@
                         <th>Reported At</th>
                         <th>Completed At</th>
                         <th>Status</th>
+                        <th>Approval</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -217,6 +218,16 @@
                                 <td class="hidden case_status_id">@item.StatusId</td>
                                 <td class="hidden case_description">@item.Description</td>
                                 <td class="case_status">@item.Status.Name</td>
+                                <td class="case_approval">
+                                    @if(item.IsApproved == 1)
+                                    {
+                                        <span class="badge badge-success text-white">Approved</span>
+                                    }
+                                    else 
+                                    {
+                                        <span class="badge badge-error text-white">Not Approve yet</span>
+                                    }
+                                </td>
                                 <td class="flex align-items-center gap-1">
                                     <label for="call_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnCall bg-primary/10 text-primary btn-sm">
                                         Call Vendor
@@ -224,9 +235,12 @@
                                     <label for="machine_repair_modal" data-itemid="@item.Id" class="btn btnSchedules bg-primary/10 text-primary btn-sm">
                                         Schedule
                                     </label>
-                                    <label for="form_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnEdit btn-primary btn-sm">
-                                        Approve
-                                    </label>
+                                    @if (item.IsApproved != 1)
+                                    {
+                                        <label for="form_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnEdit btn-primary btn-sm">
+                                            Approve
+                                        </label>
+                                    }
                                     <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
                                     </label>
@@ -473,7 +487,7 @@
             Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
                 element.addEventListener('click', async (event) => {
                     data = await event.target.getAttribute('data-itemid')
-                    case_id = await event.target.getAttribute('data-casename')
+                    case_id = await event.target.getAttribute('data-itemid')
                     case_name = await event.target.getAttribute('data-reportedby') + ' - ' + event.target.getAttribute('data-casename')
                     document.getElementById('kyt_case_id').value = case_id
                     document.getElementById('kyt_case_name').value = case_name

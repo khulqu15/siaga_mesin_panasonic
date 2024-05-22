@@ -1,0 +1,240 @@
+﻿@model panasonic_machine_checker.Models.LiniesModel;
+@{
+    Layout = "~/Views/Shared/_App_Layout.cshtml";
+    var userList = ViewBag.UserList as List<Users>;
+    var BUsList = ViewBag.BUsList as List<BUs>;
+}
+
+<div class="w-full bg-base-100 p-6 rounded-xl mt-5">
+    <input type="checkbox" id="form_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box max-w-xl">
+            <h3 class="font-bold text-lg">Lini's Form</h3>
+            <form id="formMachine">
+                <div class="form-control my-3">
+                    <label for="name">Name</label>
+                    <input required type="text" name="name" placeholder="Enter Lini's name" id="name" class="input input-bordered mt-1 w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="bu_id">BU</label>
+                    <select required class="select select-bordered w-full text-black mt-1" id="bu_id" name="bu_id">
+                        <option value="" disabled selected>Select BU</option>
+                        @foreach (var bu in BUsList)
+                        {
+                            <option value="@bu.Id">@bu.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-control my-3">
+                    <label for="leader_id">Leader</label>
+                    <select required class="select select-bordered w-full text-black mt-1" id="leader_id" name="leader_id">
+                        <option value="" disabled selected>Select User</option>
+                        @foreach (var user in userList)
+                        {
+                            <option value="@user.Id">@user.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="modal-action">
+                    <label for="form_modal" class="btn">Cancel</label>
+                    <button type="submit" class="btn btn-primary text-white">Submit Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <input type="checkbox" id="delete_modal" class="modal-toggle" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Delete Lini ?</h3>
+            <p class="text-sm">The Lini data will be deleted permanently</p>
+            <div class="modal-action">
+                <label for="delete_modal" class="btn">Cancel</label>
+                <button id="deleteBtn" class="btn btn-error text-white">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="w-full grid grid-cols-2 p-2 mb-4 border rounded-xl gap-3">
+            <div>
+                <a asp-area="" asp-controller="Admin" asp-action="BU" class="w-full btn btn-sm">BU</a>
+            </div>
+            <div>
+                <a asp-area="" asp-controller="Admin" asp-action="Lini" class="w-full btn btn-sm btn-primary">Lini</a>
+            </div>
+        </div>
+        <div class="flex items-center justify-between w-full mb-3">
+            <h1 class="font-semibold">BU's <span class="badge badge-primary">@Model.TotalItems</span></h1>
+            <div>
+                <label for="form_modal" id="btnAdd" class="btn btn-sm btn-primary">Add new</label>
+                <select class="select w-24 select-sm select-bordered" id="sort-filter">
+                    <option disabled selected>Select Order</option>
+                    <option value="newest">Terbaru (Newest)</option>
+                    <option value="oldest">Terlama (Oldest)</option>
+                </select>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="table table-sm" id="machinesTable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Manager</th>
+                        <th>BU</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.LiniesList.Count > 0)
+                    {
+                        int counter = 1;
+                        foreach (var item in Model.LiniesList)
+                        {
+                            <tr id="item-@item.Id">
+                                <th class="bu_counter">@counter</th>
+                                <td class="bu_name">@item.Name</td>
+                                <td class="bu_leader_id hidden">@item.LeaderId</td>
+                                <td class="bu_leader_name">@item.UserLeaderId.Name</td>
+                                <td class="bu_bu_id hidden">@item.BuId</td>
+                                <td class="bu_bu_name">@item.BU.Name</td>
+                                <td>
+                                    <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                    </label>
+                                    <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                    </label>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+                                <div class="w-full bg-error text-white p-3 rounded-xl text-center">
+                                    BU Not Found
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Manager</th>
+                        <th>BU</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="w-full flex mt-10 justify-end">
+            <div class="join">
+                <button class="btn join-item" onclick="location.href='@Url.Action("Machines", new { page = Model.CurrentPage - 1 })'" @(Model.CurrentPage == 1 ? "disabled" : "")><</button>
+                @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+                {
+                    <button class="btn join-item @(Model.CurrentPage == i ? "btn-primary" : "")" onclick="location.href='@Url.Action("Machines", new { page = i })'">@i</button>
+                }
+                <button class="btn join-item" onclick="location.href='@Url.Action("Machines", new { page = Model.CurrentPage + 1 })'" @(Model.CurrentPage * Model.PageSize >= Model.TotalItems ? "disabled" : "")>></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let data = null
+        function updateMachine() {
+            let name = document.getElementById('name').value;
+            let bu_id = parseInt(document.getElementById('bu_id').value);
+            let leader_id = parseInt(document.getElementById('leader_id').value);
+            let created_at = new Date().toISOString();
+            let updated_at = new Date().toISOString();
+
+            let url = data != null ? `/Admin/UpdateLini/${data}` : '/Admin/CreateLini';
+
+            let item = {
+                Name: name,
+                LeaderId: leader_id,
+                BUId: bu_id,
+                CreatedAt: created_at,
+                UpdatedAt: updated_at,
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item)
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert('Lini Saved');
+                    document.getElementById('form_modal').click()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 300)
+                })
+        }
+
+        document.getElementById('sort-filter').addEventListener('change', (event) => {
+            window.location.href = `?page=1&sortOrder=${event.target.value}`;
+        })
+
+        document.getElementById('btnAdd').addEventListener('click', (event) => {
+            data = null
+            document.getElementById('name').value = ''
+            document.getElementById('bu_id').value = ''
+            document.getElementById('leader_id').value = ''
+        })
+        Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+                let itemData = document.getElementById('item-' + data)
+                document.getElementById('name').value = Array.from(itemData.getElementsByClassName('bu_name'))[0].innerHTML
+                document.getElementById('bu_id').value = Array.from(itemData.getElementsByClassName('bu_bu_id'))[0].innerHTML
+                document.getElementById('leader_id').value = Array.from(itemData.getElementsByClassName('bu_leader_id'))[0].innerHTML
+            })
+        })
+        Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+            })
+        })
+
+        function deleteMachine() {
+            fetch('/Admin/DeleteLini/' + data, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: data })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Lini deleted');
+                        document.getElementById('delete_modal').click()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    } else {
+                        alert('Error deleting lini');
+                    }
+                });
+        }
+
+        document.getElementById('formMachine').addEventListener('submit', (event) => {
+            event.preventDefault()
+            updateMachine()
+        });
+        document.getElementById('deleteBtn').addEventListener('click', function () {
+            if (data) deleteMachine();
+        });
+    </script>
+}

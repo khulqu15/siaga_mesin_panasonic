@@ -41,6 +41,10 @@ public partial class DbPanasonicContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<BU> BUs { get; set; }
+
+    public virtual DbSet<Lini> Linis { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("Server=DESKTOP-2EGHJVD\\SQLEXPRESS;Database=db_panasonic;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -100,6 +104,7 @@ public partial class DbPanasonicContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("scheduled_date");
             entity.Property(e => e.StatusId).HasColumnName("status_id");
+            entity.Property(e => e.Description).HasColumnName("description");
 
             entity.HasOne(d => d.Case).WithMany(p => p.JobOrders)
                 .HasForeignKey(d => d.CaseId)
@@ -161,6 +166,12 @@ public partial class DbPanasonicContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("type");
+            entity.Property(e => e.LiniId).HasColumnName("lini_id");
+
+            entity.HasOne(e => e.MachineLiniId).WithMany(p => p.Machines)
+                .HasForeignKey(d => d.LiniId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_machine_linies");
         });
 
         modelBuilder.Entity<MachineRepair>(entity =>
@@ -230,6 +241,61 @@ public partial class DbPanasonicContext : DbContext
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_repairschedules_status");
+        });
+
+        modelBuilder.Entity<BU>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_bu");
+            entity.ToTable("bu");
+            entity.Property(e => e.Id);
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("name");
+            entity.Property(e => e.Description)
+                .IsUnicode(false)
+                .HasColumnName("description");
+            entity.Property(e => e.ManagerId).HasColumnName("manager_id");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.ManagerUserId).WithMany(p => p.BUs)
+                .HasForeignKey(d => d.ManagerId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_bus_users");
+        });
+
+        modelBuilder.Entity<Lini>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_linies");
+            entity.ToTable("linies");
+            entity.Property(e => e.Id);
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("name");
+            entity.Property(e => e.LeaderId).HasColumnName("leader_id");
+            entity.Property(e => e.BUId).HasColumnName("bu_id");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.BULiniId).WithMany(p => p.Lini)
+                .HasForeignKey(d => d.BUId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_linies_bu");
+
+            entity.HasOne(d => d.LeaderLiniId).WithMany(p => p.Lini)
+                .HasForeignKey(d => d.LeaderId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_linies_users");
         });
 
         modelBuilder.Entity<Role>(entity =>

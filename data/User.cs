@@ -34,5 +34,9 @@ public partial class User
 
     public virtual ICollection<RepairSchedule> RepairSchedules { get; set; } = new List<RepairSchedule>();
 
+    public virtual ICollection<BU> BUs { get; set; } = new List<BU>();
+
+    public virtual ICollection<Lini> Lini { get; set; } = new List<Lini>();
+
     public virtual Role RoleNavigation { get; set; } = null!;
 }

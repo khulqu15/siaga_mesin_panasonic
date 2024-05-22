@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using panasonic_machine_checker.data;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace panasonic_machine_checker.Models
 {
@@ -22,5 +24,13 @@ namespace panasonic_machine_checker.Models
 
         [Required]
         public string Location { get; set; }
+
+        public int? LiniId { get; set; }
+
+        [ForeignKey("LiniId")]
+        public virtual Lini MachineLiniId { get; set; } = null!;
+
+        [NotMapped]
+        public string? BUName => MachineLiniId?.BULiniId?.Name ?? "Not Assigned";
     }
 }

@@ -15,6 +15,8 @@ public partial class JobOrder
 
     public int StatusId { get; set; }
 
+    public string? Description { get; set; }
+
     public virtual Case Case { get; set; } = null!;
 
     public virtual User ScheduledByNavigation { get; set; } = null!;

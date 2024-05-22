@@ -75,6 +75,229 @@ namespace panasonic_machine_checker.Controllers
             return View(casesModel);
         }
 
+        [HttpGet("/Admin/Lini")]
+        public IActionResult Lini(int page = 1, string sortOrder = "newest")
+        {
+            int pageSize = 10;
+
+            LiniesModel model = new LiniesModel();
+            model.LiniesList = new List<Linies>();
+            var query = _context.Linis.Include(c => c.LeaderLiniId).Include(c => c.BULiniId).AsQueryable();
+            switch (sortOrder.ToLower())
+            {
+                case "newest":
+                    query = query.OrderByDescending(m => m.Id);
+                    break;
+                case "oldest":
+                    query = query.OrderBy(m => m.Id);
+                    break;
+            }
+            var data = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            UsersModel usersModel = new UsersModel();
+            usersModel.UserList = new List<Users>();
+            var users = _context.Users.Include(u => u.RoleNavigation).Where(u => u.RoleNavigation.Name == "Manager Production").ToList();
+
+            BUsModel BUsModel = new BUsModel();
+            BUsModel.BUsList = new List<BUs>();
+            var bus = _context.BUs.Include(b => b.ManagerUserId).ToList();
+
+            var itemCount = query.Count();
+
+            foreach (var item in data)
+            {
+                model.LiniesList.Add(new Linies
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    BuId = item.BUId,
+                    BU = item.BULiniId,
+                    LeaderId = item.LeaderId,
+                    UserLeaderId = item.LeaderLiniId,
+                    CreatedAt = item.CreatedAt,
+                    UpdatedAt = item.UpdatedAt,
+                });
+            }
+
+            model.PageSize = pageSize;
+            model.TotalItems = itemCount;
+            model.CurrentPage = page;
+
+            foreach (var item in users)
+            {
+                usersModel.UserList.Add(new Users
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Email = item.Email,
+                    Password = item.Password,
+                    RoleNavigation = item.RoleNavigation,
+                    Avatar = item.Avatar,
+                    Phone = item.Phone,
+                    VerifiedAt = item.VerifiedAt,
+                    RoleId = item.Role
+                });
+            }
+            ViewBag.UserList = usersModel.UserList;
+
+            foreach (var item in bus)
+            {
+                BUsModel.BUsList.Add(new BUs
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Description = item.Description,
+                    ManagerId = item.ManagerId,
+                    UserManagerId = item.ManagerUserId,
+                    CreatedAt = item.CreatedAt,
+                    UpdatedAt = item.UpdatedAt,
+                });
+            }
+            ViewBag.BUsList = BUsModel.BUsList;
+
+            return View("~/Views/Admin/Lini.cshtml", model);
+        }
+
+        [HttpPost("/Admin/CreateLini")]
+        public JsonResult CreateLini([FromBody] Lini data)
+        {
+            _context.Linis.Add(data);
+            _context.SaveChanges();
+            return Json(new { success = true, machine = data });
+        }
+
+        [HttpPost("/Admin/UpdateLini/{id}")]
+        public JsonResult UpdateLini(int id, [FromBody] Lini data)
+        {
+            var item = _context.Linis.Find(id);
+            if (item != null)
+            {
+                item.Name = data.Name;
+                item.LeaderId = data.LeaderId;
+                item.BUId = data.BUId;
+                item.CreatedAt = data.CreatedAt;
+                item.UpdatedAt = data.UpdatedAt;
+                _context.SaveChanges();
+                return Json(new { success = true, item = item });
+            }
+            return Json(new { success = false, message = "BU's not found." });
+        }
+
+        [HttpDelete("/Admin/DeleteLini/{id}")]
+        public JsonResult DeleteLini(int id)
+        {
+            var data = _context.Linis.Find(id);
+            if (data != null)
+            {
+                _context.Linis.Remove(data);
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+        [HttpGet("/Admin/BU")]
+        public IActionResult BU(int page = 1, string sortOrder = "newest")
+        {
+            int pageSize = 10;
+
+            BUsModel model = new BUsModel();
+            model.BUsList = new List<BUs>();
+            var query = _context.BUs.Include(c => c.ManagerUserId).Include(c => c.Lini).AsQueryable();
+            switch (sortOrder.ToLower())
+            {
+                case "newest":
+                    query = query.OrderByDescending(m => m.Id);
+                    break;
+                case "oldest":
+                    query = query.OrderBy(m => m.Id);
+                    break;
+            }
+            var data = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            UsersModel usersModel = new UsersModel();
+            usersModel.UserList = new List<Users>();
+            var users = _context.Users.Include(u => u.RoleNavigation).Where(u => u.RoleNavigation.Name == "Manager Production").ToList();
+
+            var itemCount = query.Count();
+            
+            foreach (var item in data)
+            {
+                model.BUsList.Add(new BUs
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Description = item.Description,
+                    ManagerId = item.ManagerId,
+                    UserManagerId = item.ManagerUserId,
+                    CreatedAt = item.CreatedAt,
+                    UpdatedAt = item.UpdatedAt,
+                });
+            }
+
+            model.PageSize = pageSize;
+            model.TotalItems = itemCount;
+            model.CurrentPage = page;
+
+            foreach (var item in users)
+            {
+                usersModel.UserList.Add(new Users
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Email = item.Email,
+                    Password = item.Password,
+                    RoleNavigation = item.RoleNavigation,
+                    Avatar = item.Avatar,
+                    Phone = item.Phone,
+                    VerifiedAt = item.VerifiedAt,
+                    RoleId = item.Role
+                });
+            }
+
+            ViewBag.UserList = usersModel.UserList;
+            return View("~/Views/Admin/BU.cshtml", model);
+        }
+
+
+        [HttpPost("/Admin/CreateBU")]
+        public JsonResult CreateBU([FromBody] BU data)
+        {
+            _context.BUs.Add(data);
+            _context.SaveChanges();
+            return Json(new { success = true, machine = data });
+        }
+
+        [HttpPost("/Admin/UpdateBU/{id}")]
+        public JsonResult UpdateBU(int id, [FromBody] BU data)
+        {
+            var item = _context.BUs.Find(id);
+            if (item != null)
+            {
+                item.Name = data.Name;
+                item.Description = data.Description;
+                item.ManagerId = data.ManagerId;
+                item.CreatedAt = data.CreatedAt;
+                item.UpdatedAt = data.UpdatedAt;
+                _context.SaveChanges();
+                return Json(new { success = true, item = item });
+            }
+            return Json(new { success = false, message = "BU's not found." });
+        }
+
+        [HttpDelete("/Admin/DeleteBU/{id}")]
+        public JsonResult DeleteBU(int id)
+        {
+            var data = _context.BUs.Find(id);
+            if (data != null)
+            {
+                _context.BUs.Remove(data);
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
         [HttpGet]
         public IActionResult Cases(int page = 1, string sortOrder = "newest")
         {
@@ -172,6 +395,7 @@ namespace panasonic_machine_checker.Controllers
             return View(caseModel);
         }
 
+
         [HttpPost("/Admin/CreateCase")]
         public JsonResult CreateCase([FromBody] Case data)
         {
@@ -217,7 +441,7 @@ namespace panasonic_machine_checker.Controllers
             MachinesModel machinesModel = new MachinesModel();
             machinesModel.MachinesList = new List<Machines>();
 
-            var query = _context.Machines.AsQueryable();
+            var query = _context.Machines.Include(m => m.MachineLiniId).ThenInclude(l => l.BULiniId).AsQueryable();
 
             switch (sortOrder.ToLower())
             {
@@ -239,13 +463,36 @@ namespace panasonic_machine_checker.Controllers
                     Id = item.Id,
                     Name = item.Name,
                     Type = item.Type,
-                    Location = item.Location
+                    Location = item.Location,
+                    LiniId = item.LiniId,
+                    MachineLiniId = item.MachineLiniId,
                 });
             }
 
             machinesModel.TotalItems = itemCount;
             machinesModel.CurrentPage = page;
             machinesModel.PageSize = pageSize;
+
+            LiniesModel model = new LiniesModel();
+            model.LiniesList = new List<Linies>();
+            var linies = _context.Linis.Include(c => c.LeaderLiniId).Include(c => c.BULiniId).ToList();
+
+            foreach (var item in linies)
+            {
+                model.LiniesList.Add(new Linies
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    BuId = item.BUId,
+                    BU = item.BULiniId,
+                    LeaderId = item.LeaderId,
+                    UserLeaderId = item.LeaderLiniId,
+                    CreatedAt = item.CreatedAt,
+                    UpdatedAt = item.UpdatedAt,
+                });
+            }
+
+            ViewBag.LiniesList = model.LiniesList;
 
             return View(machinesModel);
         }
@@ -267,6 +514,7 @@ namespace panasonic_machine_checker.Controllers
                 machineData.Name = machine.Name;
                 machineData.Type = machine.Type;
                 machineData.Location = machine.Location;
+                machineData.LiniId = machine.LiniId;
                 _context.SaveChanges();
                 return Json(new { success = true, machine = machine });
             }
@@ -462,7 +710,8 @@ namespace panasonic_machine_checker.Controllers
                     ScheduledBy = item.ScheduledByNavigation,
                     ScheduledDate = item.ScheduledDate,
                     Status = item.Status,
-                    StatusId = item.StatusId
+                    StatusId = item.StatusId,
+                    Description = item.Description,
                 });
             }
 
@@ -534,6 +783,7 @@ namespace panasonic_machine_checker.Controllers
                 case_data.ScheduledDate = data.ScheduledDate;
                 case_data.CaseId = data.CaseId;
                 case_data.StatusId = data.StatusId;
+                case_data.Description = data.Description;
                 _context.SaveChanges();
                 return Json(new { success = true, machine = case_data });
             }

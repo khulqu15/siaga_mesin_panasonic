@@ -101,7 +101,7 @@
                                 <td class="item_scheduled_by_id hidden">@item.ScheduledById</td>
                                 <td class="item_status_id hidden">@item.StatusId</td>
                                 <td class="item_reviewed_by">@item.ScheduledBy.Name</td>
-                                <td class="item_reviewed_date">@item.ScheduledDate</td>
+                                <td class="item_reviewed_date">@item.Case.DateCompleted</td>
                                 <td class="item_status">@item.Status.Name</td>
                                 <td>
                                     <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">

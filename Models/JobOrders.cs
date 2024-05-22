@@ -23,6 +23,8 @@ namespace panasonic_machine_checker.Models
 
         public DateTime? ScheduledDate { get; set; }
 
+        public string? Description { get; set; }
+
         [Required]
         public int StatusId { get; set; }
 

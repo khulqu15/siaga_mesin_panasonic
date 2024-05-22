@@ -10,7 +10,7 @@
     <input type="checkbox" id="form_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box max-w-xl">
-            <h3 class="font-bold text-lg">Kyt Form</h3>
+            <h3 class="font-bold text-lg">Job Orders Form</h3>
             <form id="formData">
                 <div class="form-control my-3">
                     <label for="case_id">Select Case</label>
@@ -22,29 +22,25 @@
                         }
                     </select>
                 </div>
-                <div class="form-control my-3">
-                    <label for="scheduled_by">Scheduled By</label>
-                    <select required class="select select-bordered w-full text-black mt-1" id="scheduled_by" name="scheduled_by">
-                        <option value="" disabled selected>Select User</option>
-                        @foreach (var item in userList)
-                        {
-                            <option value="@item.Id">@item.Name (@item.Email)</option>
-                        }
-                    </select>
+                <div class="grid grid-cols-2 gap-3 items-center">
+                    <div class="form-control">
+                        <label for="scheduled_by">Scheduled By</label>
+                        <select required class="select select-bordered w-full text-black" id="scheduled_by" name="scheduled_by">
+                            <option value="" disabled selected>Select User</option>
+                            @foreach (var item in userList)
+                            {
+                                <option value="@item.Id">@item.Name (@item.Email)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label for="repair_date">Scheduled date</label>
+                        <input type="date" id="scheduled_date" name="scheduled_date" class="input input-bordered w-full" />
+                    </div>
                 </div>
-                <div class="form-control my-3">
-                    <label for="status_id">Status</label>
-                    <select required class="select select-bordered w-full text-black mt-1" id="status_id" name="status_id">
-                        <option value="" disabled selected>Select Status</option>
-                        @foreach (var item in statusList)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-control my-3">
-                    <label for="repair_date">Scheduled date</label>
-                    <input type="date" id="scheduled_date" name="scheduled_date" class="input input-bordered w-full" />
+                <div class="form-control mt-3">
+                    <label for="scheduled_description">Description</label>
+                    <textarea required class="textarea textarea-bordered w-full mt-1" id="scheduled_description" name="scheduled_description"></textarea>
                 </div>
                 <div class="modal-action">
                     <label for="form_modal" class="btn">Cancel</label>
@@ -86,6 +82,7 @@
                         <th>Reviewed By</th>
                         <th>Reviewed At</th>
                         <th>Status</th>
+                        <th>Description</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -104,6 +101,7 @@
                                 <td class="item_reviewed_by">@item.ScheduledBy.Name</td>
                                 <td class="item_reviewed_date">@item.ScheduledDate</td>
                                 <td class="item_status">@item.Status.Name</td>
+                                <td class="item_status">@item.Description</td>
                                 <td>
                                     <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
@@ -153,97 +151,96 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let data = null
-            function updateMachine() {
-                let case_id = parseInt(document.getElementById('case_id').value);
-                let scheduled_by = parseInt(document.getElementById('scheduled_by').value);
-                let scheduled_date = document.getElementById('scheduled_date').value;
-                let status_id = document.getElementById('status_id').value;
-                let case_data = {
-                    CaseId: case_id,
-                    ScheduledBy: scheduled_by,
-                    ScheduledDate: scheduled_date,
-                    StatusId: status_id,
-                }
-                if (data != null) case_data.Id = data
-                let url = data != null ? '/Admin/UpdateJobOrder/' + data : '/Admin/CreateJobOrder';
+    let data = null
+    function updateMachine() {
+        let case_id = parseInt(document.getElementById('case_id').value);
+        let scheduled_by = parseInt(document.getElementById('scheduled_by').value);
+        let scheduled_date = document.getElementById('scheduled_date').value;
+        let description = document.getElementById('scheduled_description').value;
+        let status_id = 1;
+        let case_data = {
+            CaseId: case_id,
+            ScheduledBy: scheduled_by,
+            ScheduledDate: scheduled_date,
+            StatusId: status_id,
+            Description: description,
+        }
+        if (data != null) case_data.Id = data
+        let url = data != null ? '/Admin/UpdateJobOrder/' + data : '/Admin/CreateJobOrder';
 
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(case_data)
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        alert('Job Orders Data Saved');
-                        document.getElementById('form_modal').click()
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 300)
-                    })
-            }
-
-            document.getElementById('sort-filter').addEventListener('change', (event) => {
-                window.location.href = '?page=1&sortOrder=' + event.target.value;
-            })
-
-            document.getElementById('btnAdd').addEventListener('click', (event) => {
-                data = null
-                document.getElementById('case_id').value = ''
-                document.getElementById('scheduled_by').value = ''
-                document.getElementById('scheduled_date').value = ''
-                document.getElementById('status_id').value = ''
-            })
-            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                    console.log(data)
-                    let itemData = document.getElementById('item-' + data)
-                    const reviewedAt = new Date(itemData.querySelector('.item_reviewed_date').innerHTML);
-                    document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
-                    document.getElementById('status_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
-                    document.getElementById('scheduled_by').value = Array.from(itemData.getElementsByClassName('item_scheduled_by_id'))[0].innerHTML
-                    document.getElementById('scheduled_date').value = reviewedAt.toISOString().split('T')[0]
-                })
-            })
-            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                })
-            })
-
-            function deleteMachine() {
-                fetch('/Admin/DeleteJobOrder/' + data, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: data })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Job Orders Data deleted');
-                            document.getElementById('delete_modal').click()
-                            setTimeout(() => {
-                                window.location.reload()
-                            }, 300)
-                        } else {
-                            alert('Error deleting Job Orders Data');
-                        }
-                    });
-            }
-
-            document.getElementById('formData').addEventListener('submit', (event) => {
-                event.preventDefault()
-                updateMachine()
-            });
-            document.getElementById('deleteBtn').addEventListener('click', function () {
-                deleteMachine();
-            });
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(case_data)
         })
+            .then((response) => response.json())
+            .then((data) => {
+                alert('Job Orders Data Saved');
+                document.getElementById('form_modal').click()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 300)
+            })
+    }
+
+    document.getElementById('sort-filter').addEventListener('change', (event) => {
+        window.location.href = '?page=1&sortOrder=' + event.target.value;
+    })
+
+    document.getElementById('btnAdd').addEventListener('click', (event) => {
+        data = null
+        document.getElementById('case_id').value = ''
+        document.getElementById('scheduled_by').value = ''
+        document.getElementById('scheduled_date').value = ''
+    })
+    Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+        element.addEventListener('click', (event) => {
+            data = event.target.getAttribute('data-itemid')
+            if(data) {
+                let itemData = document.getElementById('item-' + data)
+                const reviewedAt = new Date(itemData.querySelector('.item_reviewed_date').innerHTML);
+                document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
+                document.getElementById('scheduled_by').value = Array.from(itemData.getElementsByClassName('item_scheduled_by_id'))[0].innerHTML
+                document.getElementById('scheduled_date').value = reviewedAt.toISOString().split('T')[0]
+            }
+        })
+    })
+    Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+        element.addEventListener('click', (event) => {
+            data = event.target.getAttribute('data-itemid')
+        })
+    })
+
+    function deleteMachine() {
+        fetch('/Admin/DeleteJobOrder/' + data, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: data })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Job Orders Data deleted');
+                    document.getElementById('delete_modal').click()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 300)
+                } else {
+                    alert('Error deleting Job Orders Data');
+                }
+            });
+    }
+
+    document.getElementById('formData').addEventListener('submit', (event) => {
+        event.preventDefault()
+        updateMachine()
+    });
+    document.getElementById('deleteBtn').addEventListener('click', function () {
+        deleteMachine();
+    });
     </script>
 }

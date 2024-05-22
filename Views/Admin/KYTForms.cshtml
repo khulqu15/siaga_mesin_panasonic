@@ -145,6 +145,7 @@
                     CaseId: case_id,
                     FilledBy: filled_by,
                     PotentialHazard: potential_hazard,
+                    Approval: 0,
                 }
                 if (data != null) case_data.Id = data
                 let url = data != null ? '/Admin/UpdateKYTForms/' + data : '/Admin/CreateKYTForms';
