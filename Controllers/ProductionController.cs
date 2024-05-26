@@ -63,7 +63,7 @@ namespace panasonic_machine_checker.Controllers
             statusModel.StatusList = new List<StatusCases>();
             var status = _context.StatusCases.ToList();
 
-            var query = _context.Cases.Include(c => c.Machine).Include(c => c.ReportedByNavigation).Include(c => c.Status).AsQueryable();
+            var query = _context.Cases.Include(c => c.ReportedByNavigation).Include(c => c.Status).Include(c => c.Machine).Include(c => c.RepairSchedules).AsQueryable();
             query = query.Where(c => c.ReportedByNavigation.Id == id);
             switch (sortOrder.ToLower())
             {
@@ -90,6 +90,7 @@ namespace panasonic_machine_checker.Controllers
                     DateReported = item.DateReported,
                     Machine = item.Machine,
                     Status = item.Status,
+                    RepairSchedule = item.RepairSchedules,
                     ReportedByNavigation = item.ReportedByNavigation,
                 });
             }

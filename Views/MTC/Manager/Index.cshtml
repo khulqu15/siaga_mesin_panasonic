@@ -61,6 +61,7 @@
         <div class="flex items-center justify-between w-full mb-3">
             <h1 class="font-semibold">KYT Forms <span class="badge badge-primary">@Model.KytFormsList.Count</span></h1>
             <div>
+                <button class="btn btn-primary btn-sm btnExport" id="btnExport">Export Excel</button>
                 <select class="select w-24 select-sm select-bordered" id="sort-filter">
                     <option disabled selected>Terbaru</option>
                     <option>Terlama</option>
@@ -88,7 +89,7 @@
                             <tr id="item-@item.Id">
                                 <th class="item_counter">@counter</th>
                                 <td class="item_case_id hidden">@item.CaseId</td>
-                                <td class="item_case"><span class="badge badge-primary">@item.Case.Id</span> @item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
+                                <td class="item_case">@item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
                                 <td class="item_filled_by_id hidden">@item.FilledById</td>
                                 <td class="item_filled_by">@item.FilledBy.Name</td>
                                 <td class="item_potential_hazard">@item.PotentialHazard</td>
@@ -156,6 +157,59 @@
     <script>
             let data = null
             let approval_status = null;
+
+            function exportExcel() {
+                filename = 'exported_case.xlsx'
+                excel_data = []
+                console.log(Array.from(document.getElementsByClassName('case_list')))
+                Array.from(document.getElementsByClassName('case_list')).map((element, index) => {
+                    let xlsx_machine_name = Array.from(element.getElementsByClassName('case_machine'))[0].innerHTML
+                    let xlsx_reported_at = Array.from(element.getElementsByClassName('case_date_reported'))[0].innerHTML
+                    let xlsx_reported_by = Array.from(element.getElementsByClassName('case_reported_by'))[0].innerHTML
+                    let xlsx_completed_at = Array.from(element.getElementsByClassName('case_date_completed'))[0].innerHTML
+                    let xlsx_site_name = Array.from(element.getElementsByClassName('case_lini_name'))[0].innerHTML
+                    let xlsx_section = Array.from(element.getElementsByClassName('case_bu_name'))[0].innerHTML
+                    let xlsx_trouble = Array.from(element.getElementsByClassName('case_description'))[0].innerHTML
+                    let xlsx_analytics = Array.from(element.getElementsByClassName('case_analysis'))[0].innerHTML
+                    let xlsx_action = Array.from(element.getElementsByClassName('case_potential_hazard'))[0].innerHTML
+                    let xlsx_closed = Array.from(element.getElementsByClassName('case_closed'))[0].innerHTML
+
+                    let total_minutes = 0
+                    let total_hours = 0
+                    if (xlsx_reported_at != null) {
+                        let end_date = new Date()
+                        if (xlsx_completed_at != null) end_date = new Date(xlsx_completed_at)
+
+                        let num = Math.round(0xffffff * Math.random())
+
+                        let reported = new Date(xlsx_reported_at)
+                        let difference = Math.abs(end_date.getTime() - reported.getTime())
+                        total_minutes = Math.round(difference / 60000)
+                        total_hours = Math.round(difference / 3600000)
+                    }
+                    let xlsx_duration = total_minutes
+                    let xlsx_duration_hour = total_hours
+
+                    excel_data.push({
+                        '#': index + 1,
+                        'Issued': xlsx_machine_name + ' - ' + xlsx_reported_at,
+                        'Finished': xlsx_completed_at,
+                        'Section': xlsx_site_name,
+                        'Site Name': xlsx_section,
+                        'Trouble': xlsx_trouble,
+                        'Analisis': xlsx_analytics,
+                        'Action': xlsx_action,
+                        'Duration': xlsx_duration_hour + ' Hour, ' + xlsx_duration + ' Minutes',
+                        'Closed': xlsx_closed
+                    })
+                })
+                console.log(excel_data)
+                var ws = XLSX.utils.json_to_sheet(excel_data);
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "People");
+                XLSX.writeFile(wb, filename);
+            }
+
             function updateMachine() {
                 let case_id = parseInt(document.getElementById('case_id').value);
                 let filled_by = parseInt(document.getElementById('filled_by').value);
@@ -185,6 +239,11 @@
                         }, 300)
                     })
             }
+
+            document.getElementById('btnExport').addEventListener('click', (event) => {
+                event.preventDefault()
+                exportExcel()
+            })
 
             document.getElementById('sort-filter').addEventListener('change', (event) => {
                 window.location.href = '?page=1&sortOrder=' + event.target.value;

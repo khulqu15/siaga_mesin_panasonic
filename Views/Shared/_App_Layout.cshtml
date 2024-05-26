@@ -106,6 +106,7 @@
                 @if (UserIsInRole("MTC Manager"))
                 {
                     <li><a class="@isActive("Mtc", "Manager") linkid" asp-area="" asp-controller="Mtc" asp-action="Manager">KYT Form Lists</a></li>
+                    <li><a class="@isActive("Mtc", "ManagerCase") linkid" asp-area="" asp-controller="Mtc" asp-action="ManagerCase">Case Lists</a></li>
                 }
             </ul>
 

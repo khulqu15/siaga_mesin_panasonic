@@ -44,7 +44,14 @@ namespace panasonic_machine_checker.Models
         [ForeignKey("StatusId")]
         public virtual StatusCase Status { get; set; } = null!;
 
-        public virtual RepairSchedule RepairSchedule { get; set; } = null!;
+        public virtual ICollection<RepairSchedule> RepairSchedule { get; set; }
 
+        public virtual ICollection<Kytform> Kytforms { get; set; }
+
+        public virtual BU BU { get; set; }
+
+        public virtual Lini Lini { get; set; }
+
+        public virtual User ClosedData { get; set; } = null!;
     }
 }

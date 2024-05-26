@@ -33,16 +33,6 @@
                     </select>
                 </div>
                 <div class="form-control my-3">
-                    <label for="status_id">Status</label>
-                    <select required class="select select-bordered w-full text-black mt-1" id="status_id" name="status_id">
-                        <option value="" disabled selected>Select Status</option>
-                        @foreach (var item in statusList)
-                        {
-                            <option disabled value="@item.Id">@item.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-control my-3">
                     <label for="repair_date">Scheduled date</label>
                     <input type="date" id="scheduled_date" name="scheduled_date" class="input input-bordered w-full" />
                 </div>
@@ -97,7 +87,7 @@
                             <tr id="item-@item.Id">
                                 <th class="item_counter">@counter</th>
                                 <td class="item_case_id hidden">@item.CaseId</td>
-                                <td class="item_case"><span class="badge badge-primary">@item.Case.Id</span> @item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
+                                <td class="item_case">@item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
                                 <td class="item_scheduled_by_id hidden">@item.ScheduledById</td>
                                 <td class="item_status_id hidden">@item.StatusId</td>
                                 <td class="item_reviewed_by">@item.ScheduledBy.Name</td>
@@ -170,7 +160,7 @@
             let case_id = parseInt(document.getElementById('case_id').value);
             let scheduled_by = parseInt(document.getElementById('scheduled_by').value);
             let scheduled_date = document.getElementById('scheduled_date').value;
-            let status_id = document.getElementById('status_id').value;
+            let status_id = 3;
             let case_data = {
                 CaseId: case_id,
                 ScheduledBy: scheduled_by,
@@ -257,7 +247,6 @@
                     let itemData = document.getElementById('item-' + data)
                     const reviewedAt = new Date(itemData.querySelector('.item_reviewed_date').innerHTML);
                     document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
-                    document.getElementById('status_id').value = Array.from(itemData.getElementsByClassName('item_status_id'))[0].innerHTML
                     document.getElementById('scheduled_by').value = Array.from(itemData.getElementsByClassName('item_scheduled_by_id'))[0].innerHTML
                     document.getElementById('scheduled_date').value = reviewedAt.toISOString().split('T')[0]
                 }, 300)

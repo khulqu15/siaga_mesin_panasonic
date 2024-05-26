@@ -27,6 +27,10 @@ namespace panasonic_machine_checker.Models
         [Column(TypeName = "text")]
         public required string PotentialHazard { get; set; }
 
+        [Required]
+        [Column(TypeName = "text")]
+        public string Description { get; set; }
+
         public int? Approval { get; set; }
 
         public virtual Case Case { get; set; } = null!;

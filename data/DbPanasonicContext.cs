@@ -136,6 +136,10 @@ public partial class DbPanasonicContext : DbContext
                 .HasColumnType("text")
                 .HasColumnName("potential_hazard");
 
+            entity.Property(e => e.Description)
+                .HasColumnType("text")
+                .HasColumnName("description");
+
             entity.HasOne(d => d.Case).WithMany(p => p.Kytforms)
                 .HasForeignKey(d => d.CaseId)
                 .OnDelete(DeleteBehavior.Cascade)

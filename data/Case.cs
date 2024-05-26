@@ -27,7 +27,7 @@ public partial class Case
 
     public virtual ICollection<JobOrder> JobOrders { get; set; } = new List<JobOrder>();
 
-    public virtual ICollection<Kytform> Kytforms { get; set; } = new List<Kytform>();
+    public virtual ICollection<Kytform> Kytforms { get; set; }
 
     public virtual ICollection<RepairSchedule> RepairSchedules { get; set; } = new List<RepairSchedule>();
 

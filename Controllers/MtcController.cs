@@ -68,11 +68,16 @@ namespace panasonic_machine_checker.Controllers
             var repair_schedules = _context.RepairSchedules.Include(item => item.ScheduledByNavigation).Include(item => item.Case).Include(item => item.Status).ToList();
 
             var query = _context.Cases
-                .Include(c => c.Machine)
+                .Include(c => c.Kytforms)
+                .ThenInclude(k => k.FilledByNavigation)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
                 .Include(c => c.RepairSchedules)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .ThenInclude(l => l.BULiniId)
                 .AsQueryable();
+
             switch (sortOrder.ToLower())
             {
                 case "newest":
@@ -87,6 +92,11 @@ namespace panasonic_machine_checker.Controllers
 
             foreach (var item in data)
             {
+                var lini = item.Machine?.MachineLiniId;
+                var bu = lini?.BULiniId;
+                var kyt = item.Kytforms.FirstOrDefault();
+                var filled = kyt?.FilledByNavigation;
+
                 caseModel.CasesList.Add(new Cases
                 {
                     Id = item.Id,
@@ -100,6 +110,10 @@ namespace panasonic_machine_checker.Controllers
                     Machine = item.Machine,
                     Status = item.Status,
                     ReportedByNavigation = item.ReportedByNavigation,
+                    Kytforms = item.Kytforms,
+                    Lini = lini,
+                    BU = bu,
+                    ClosedData = filled,
                 });
             }
             caseModel.TotalItems = itemCount;
@@ -163,6 +177,142 @@ namespace panasonic_machine_checker.Controllers
             ViewBag.UserList = usersModel.UserList;
             ViewBag.StatusList = statusModel.StatusList;
             return View("~/Views/MTC/Leader/Index.cshtml", caseModel);
+        }
+
+        [HttpGet("/MTC/ManagerCase/{id}")]
+        public IActionResult ManagerCase(int id, int page = 1, string sortOrder = "newest")
+        {
+            ViewData["UserRole"] = "MTC Manager";
+            int pageSize = 10;
+            CasesModel caseModel = new CasesModel();
+            caseModel.CasesList = new List<Cases>();
+
+            MachinesModel machinesModel = new MachinesModel();
+            machinesModel.MachinesList = new List<Machines>();
+            var machines = _context.Machines.ToList();
+
+            UsersModel usersModel = new UsersModel();
+            usersModel.UserList = new List<Users>();
+            var users = _context.Users.ToList();
+
+            StatusModel statusModel = new StatusModel();
+            statusModel.StatusList = new List<StatusCases>();
+            var status = _context.StatusCases.ToList();
+
+            RepairSchedulesModel repairSchedulesModel = new RepairSchedulesModel();
+            repairSchedulesModel.RepairSchedulesList = new List<RepairSchedules>();
+            var repair_schedules = _context.RepairSchedules.Include(item => item.ScheduledByNavigation).Include(item => item.Case).Include(item => item.Status).ToList();
+
+            var query = _context.Cases
+                .Include(c => c.Kytforms)
+                .ThenInclude(k => k.FilledByNavigation)
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.RepairSchedules)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .ThenInclude(l => l.BULiniId)
+                .AsQueryable();
+
+            switch (sortOrder.ToLower())
+            {
+                case "newest":
+                    query = query.OrderByDescending(m => m.Id);
+                    break;
+                case "oldest":
+                    query = query.OrderBy(m => m.Id);
+                    break;
+            }
+            var itemCount = query.Count();
+            var data = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            foreach (var item in data)
+            {
+                var lini = item.Machine?.MachineLiniId;
+                var bu = lini?.BULiniId;
+                var kyt = item.Kytforms.FirstOrDefault();
+                var filled = kyt?.FilledByNavigation;
+
+                caseModel.CasesList.Add(new Cases
+                {
+                    Id = item.Id,
+                    Description = item.Description,
+                    MachineId = item.MachineId,
+                    ReportedById = item.ReportedById,
+                    StatusId = item.StatusId,
+                    DateCompleted = item.DateCompleted,
+                    DateReported = item.DateReported,
+                    IsApproved = item.IsApproved,
+                    Machine = item.Machine,
+                    Status = item.Status,
+                    ReportedByNavigation = item.ReportedByNavigation,
+                    Kytforms = item.Kytforms,
+                    Lini = lini,
+                    BU = bu,
+                    ClosedData = filled,
+                });
+            }
+            caseModel.TotalItems = itemCount;
+            caseModel.CurrentPage = page;
+            caseModel.PageSize = pageSize;
+
+            foreach (var machine in machines)
+            {
+                machinesModel.MachinesList.Add(new Machines
+                {
+                    Id = machine.Id,
+                    Name = machine.Name,
+                    Type = machine.Type,
+                    Location = machine.Location
+                });
+            }
+
+            foreach (var item in users)
+            {
+                usersModel.UserList.Add(new Users
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Email = item.Email,
+                    Password = item.Password,
+                    RoleNavigation = item.RoleNavigation,
+                    Avatar = item.Avatar,
+                    Phone = item.Phone,
+                    VerifiedAt = item.VerifiedAt,
+                    RoleId = item.Role
+                });
+            }
+
+            foreach (var item in status)
+            {
+                statusModel.StatusList.Add(new StatusCases
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                });
+            }
+
+            foreach (var item in repair_schedules)
+            {
+                repairSchedulesModel.RepairSchedulesList.Add(new RepairSchedules
+                {
+                    Id = item.Id,
+                    ScheduledById = item.ScheduledBy,
+                    CaseId = item.CaseId,
+                    CallDate = item.CallDate,
+                    Case = item.Case,
+                    RepairDate = item.RepairDate,
+                    ScheduledByNavigation = item.ScheduledByNavigation,
+                    Status = item.Status,
+                    StatusId = item.StatusId,
+                });
+            }
+
+            ViewBag.RepairScheduleList = repairSchedulesModel.RepairSchedulesList;
+            ViewBag.MachineList = machinesModel.MachinesList;
+            ViewBag.UserList = usersModel.UserList;
+            ViewBag.StatusList = statusModel.StatusList;
+            return View("~/Views/MTC/Manager/Case.cshtml", caseModel);
         }
 
         [HttpPost("/MTC/Leader/CreateRepairSchedule")]

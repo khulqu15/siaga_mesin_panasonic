@@ -30,16 +30,6 @@
                     <input readonly type="text" class="input input-bordered w-full" id="reported_by" name="reported_by" />
                 </div>
                 <div class="form-control my-3">
-                    <label for="status">Current Status</label>
-                    <select required class="select select-bordered w-full mt-1" id="status" name="status">
-                        <option value="" disabled selected>Select Status</option>
-                        @foreach (var status in statusList)
-                        {
-                            <option value="@status.Id">@status.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-control my-3">
                     <label for="reported_at">Completed At</label>
                     <input type="date" class="input input-bordered w-full" id="completed_at" name="completed_at" />
                 </div>
@@ -88,9 +78,9 @@
                         <th></th>
                         <th>Machine</th>
                         <th>Reported By</th>
-                        <th>Status</th>
                         <th>Reported At</th>
                         <th>Completed At</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -100,6 +90,8 @@
                         int counter = 1;
                         foreach (var item in Model.CasesList)
                         {
+                            bool hasRepairSchedule = item.RepairSchedule.Any();
+
                             <tr id="item-@item.Id">
                                 <th class="case_counter">@counter</th>
                                 <td class="hidden case_machine_id">@item.MachineId</td>
@@ -118,8 +110,23 @@
                                     <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
                                     </label>
+
+                                    @if(hasRepairSchedule)
+                                    {
+                                        <button data-itemid="@item.Id" class="btn btnCollapse btn-info btn-sm">
+                                            Schedule
+                                        </button>
+                                    }
                                 </td>
                             </tr>
+                            foreach(var schedule in item.RepairSchedule)
+                            {
+                                <tr class="bg-base-200 hidden collapse-data" id="schedule-@item.Id">
+                                    <td>@schedule.Id</td>
+                                    <td colspan="3">Repair Date</td>
+                                    <td colspan="3">@schedule.RepairDate</td>
+                                </tr>   
+                            }
                             counter++;
                         }
                     }
@@ -139,9 +146,9 @@
                         <th></th>
                         <th>Machine</th>
                         <th>Reported By</th>
-                        <th>Status</th>
                         <th>Reported At</th>
                         <th>Completed At</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -162,159 +169,165 @@
 
 @section Scripts {
     <script>
-         document.addEventListener('DOMContentLoaded', () => {
-            let user_id = 0;
+        let user_id = 0;
 
-            let checkToken = sessionStorage.getItem('authToken')
-            if (checkToken != null && checkToken != undefined) {
-                let separator = checkToken.split('-')
-                let role = separator.pop()
-                let suffix = checkToken.split('-')[1]
-                let user_id_selection = checkToken.slice(5, checkToken.indexOf('-'))
-                user_id = parseInt(checkToken.split("-")[1])
+        let checkToken = sessionStorage.getItem('authToken')
+        if (checkToken != null && checkToken != undefined) {
+            let separator = checkToken.split('-')
+            let role = separator.pop()
+            let suffix = checkToken.split('-')[1]
+            let user_id_selection = checkToken.slice(5, checkToken.indexOf('-'))
+            user_id = parseInt(checkToken.split("-")[1])
 
-                fetchUser(user_id, role)
-            } else window.location.href = "/Login"
+            fetchUser(user_id, role)
+        } else window.location.href = "/Login"
 
-            function fetchUser(user_id, role) {
-                fetch("/Admin/UserData/" + user_id, {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then((response) => {
-                        return response.json()
-                    })
-                    .then((data) => {
-                        console.log(data.data)
-                        document.getElementById('reported_by').value = data.data.name
-                        document.getElementById('reported_by_id').value = data.data.id
-                    })
-            }
-
-            let data = null
-            function updateMachine() {
-                let machine_id = parseInt(document.getElementById('machine_id').value);
-                let reported_by = parseInt(document.getElementById('reported_by_id').value);
-                let status_id = parseInt(document.getElementById('status').value);
-                let date = new Date();
-                date.setHours(date.getHours() + 1)
-                date.setMinutes(date.getMinutes() + 30)
-                date.setSeconds(date.getSeconds() + 45)
-                let date_reported = date.toISOString();
-                let date_completed = document.getElementById('completed_at').value;
-                let description = document.getElementById('description').value;
-                let case_data = {
-                    Description: description,
-                    MachineId: machine_id,
-                    ReportedById: reported_by,
-                    StatusId: status_id,
-                    DateReported: date_reported,
-                    DateCompleted: date_completed,
+        function fetchUser(user_id, role) {
+            fetch("/Admin/UserData/" + user_id, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-                if(data != null) case_data.Id = data
-                let url = data != null ? '/Production/UpdateCase/'+data : '/Production/CreateCase';
-
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(case_data)
+            })
+                .then((response) => {
+                    return response.json()
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        setTimeout(() => {
-                            generateJobOrder(data.case_data)
-                        }, 200)
-                    })
+                .then((data) => {
+                    console.log(data.data)
+                    document.getElementById('reported_by').value = data.data.name
+                    document.getElementById('reported_by_id').value = data.data.id
+                })
+        }
+
+        let data = null
+        function updateMachine() {
+            let machine_id = parseInt(document.getElementById('machine_id').value);
+            let reported_by = parseInt(document.getElementById('reported_by_id').value);
+            let status_id = 1;
+            let date = new Date();
+            date.setHours(date.getHours() + 1)
+            date.setMinutes(date.getMinutes() + 30)
+            date.setSeconds(date.getSeconds() + 45)
+            let date_reported = date.toISOString();
+            let date_completed = document.getElementById('completed_at').value;
+            let description = document.getElementById('description').value;
+            let case_data = {
+                Description: description,
+                MachineId: machine_id,
+                ReportedById: reported_by,
+                StatusId: status_id,
+                DateReported: date_reported,
+                DateCompleted: date_completed,
             }
+            if(data != null) case_data.Id = data
+            let url = data != null ? '/Production/UpdateCase/'+data : '/Production/CreateCase';
 
-             function generateJobOrder(case_data) {
-                 console.log(case_data)
-                let scheduled_date = new Date(case_data.dateCompleted)
-                fetch('/Production/CreateJobOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        CaseId: case_data.id,
-                        ScheduledBy: user_id,
-                        ScheduledDate: scheduled_date.toISOString().split('T')[0],
-                        StatusId: case_data.statusId,
-                    })
-                })
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(case_data)
+            })
                 .then((response) => response.json())
                 .then((data) => {
-                    alert('Case Saved');
-                    document.getElementById('form_modal').click()
                     setTimeout(() => {
-                        window.location.reload()
-                    }, 300)
+                        generateJobOrder(data.case_data)
+                    }, 200)
                 })
-             }
+        }
 
-            document.getElementById('sort-filter').addEventListener('change', (event) => {
-                window.location.href = '?page=1&sortOrder='+event.target.value;
-            })
-
-            document.getElementById('btnAdd').addEventListener('click', (event) => {
-                data = null
-                document.getElementById('machine_id').value = ''
-                document.getElementById('status').value = ''
-                document.getElementById('completed_at').value = ''
-                document.getElementById('description').value = ''
-            })
-            Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                    let itemData = document.getElementById('item-' + data)
-                    const completedAt = new Date(itemData.querySelector('.case_date_completed').innerHTML);
-                    document.getElementById('machine_id').value = Array.from(itemData.getElementsByClassName('case_machine_id'))[0].innerHTML
-                    document.getElementById('status').value = Array.from(itemData.getElementsByClassName('case_status_id'))[0].innerHTML
-                    document.getElementById('completed_at').value = completedAt.toISOString().split('T')[0];
-                    document.getElementById('description').value = Array.from(itemData.getElementsByClassName('case_description'))[0].innerHTML
+            function generateJobOrder(case_data) {
+                console.log(case_data)
+            let scheduled_date = new Date(case_data.dateCompleted)
+            fetch('/Production/CreateJobOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    CaseId: case_data.id,
+                    ScheduledBy: user_id,
+                    ScheduledDate: scheduled_date.toISOString().split('T')[0],
+                    StatusId: case_data.statusId,
                 })
             })
-            Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
-                element.addEventListener('click', (event) => {
-                    data = event.target.getAttribute('data-itemid')
-                })
+            .then((response) => response.json())
+            .then((data) => {
+                alert('Case Saved');
+                document.getElementById('form_modal').click()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 300)
             })
-
-            function deleteMachine() {
-                fetch('/Admin/DeleteCase/' + data, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ id: data })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Case deleted');
-                            document.getElementById('delete_modal').click()
-                            setTimeout(() => {
-                                window.location.reload()
-                            }, 300)
-                        } else {
-                            alert('Error deleting case');
-                        }
-                    });
             }
 
-            document.getElementById('formData').addEventListener('submit', (event) => {
-                event.preventDefault()
-                updateMachine()
-            });
-
-            document.getElementById('deleteBtn').addEventListener('click', function () {
-                deleteMachine();
-            });
-
+        document.getElementById('sort-filter').addEventListener('change', (event) => {
+            window.location.href = '?page=1&sortOrder='+event.target.value;
         })
+
+        document.getElementById('btnAdd').addEventListener('click', (event) => {
+            data = null
+            document.getElementById('machine_id').value = ''
+            document.getElementById('completed_at').value = ''
+            document.getElementById('description').value = ''
+        })
+
+        Array.from(document.getElementsByClassName('btnCollapse')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                id = event.target.getAttribute('data-itemid')
+                Array.from(document.getElementsByClassName('collapse-data')).map((el, idx) => {
+                    el.classList.add('hidden')
+                })
+                document.getElementById('schedule-'+id).classList.remove('hidden')
+            })
+        })
+
+        Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+                let itemData = document.getElementById('item-' + data)
+                const completedAt = new Date(itemData.querySelector('.case_date_completed').innerHTML);
+                document.getElementById('machine_id').value = Array.from(itemData.getElementsByClassName('case_machine_id'))[0].innerHTML
+                document.getElementById('completed_at').value = completedAt.toISOString().split('T')[0];
+                document.getElementById('description').value = Array.from(itemData.getElementsByClassName('case_description'))[0].innerHTML
+            })
+        })
+        Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+            })
+        })
+
+        function deleteMachine() {
+            fetch('/Admin/DeleteCase/' + data, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: data })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Case deleted');
+                        document.getElementById('delete_modal').click()
+                        setTimeout(() => {
+                            window.location.reload()
+                        }, 300)
+                    } else {
+                        alert('Error deleting case');
+                    }
+                });
+        }
+
+        document.getElementById('formData').addEventListener('submit', (event) => {
+            event.preventDefault()
+            updateMachine()
+        });
+
+        document.getElementById('deleteBtn').addEventListener('click', function () {
+            deleteMachine();
+        });
     </script>
 }
