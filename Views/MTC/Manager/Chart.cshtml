@@ -8,7 +8,7 @@
         @if (Model.CasesList.Count > 0)
         {
             int counter = 1;
-            foreach(var item in Model.CasesList)
+            foreach (var item in Model.CasesList)
             {
                 <div class="case_data" id="case-@item.Id">
                     <span class="case_id">@counter</span>
@@ -20,14 +20,16 @@
                         @if (@item.ApprovedAt == null)
                         {
                             <span>Null</span>
-                        } else
+                        }
+                        else
                         {
                             <span>@item.ApprovedAt</span>
                         }
                     </span>
                 </div>
             }
-        } else
+        }
+        else
         {
             <div class="w-full bg-error text-white p-3 rounded-xl text-center">
                 Cases Not Found
@@ -55,7 +57,7 @@
     </div>
 </div>
 
-@section  Scripts {
+@section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         let cases_labels = []

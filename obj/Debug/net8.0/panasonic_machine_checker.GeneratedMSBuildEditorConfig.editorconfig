@@ -94,6 +94,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Leader/Chart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXExlYWRlclxDaGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Leader/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXExlYWRlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -102,12 +106,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXE1hbmFnZXJcQ2FzZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Manager/Chart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXE1hbmFnZXJcQ2hhcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Manager/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXE1hbmFnZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Member/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXE1lbWJlclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Leader/Chart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdGlvblxMZWFkZXJcQ2hhcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Leader/Index.cshtml]
@@ -120,6 +132,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Leader/MachineRepairs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdGlvblxMZWFkZXJcTWFjaGluZVJlcGFpcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Manager/Chart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdGlvblxNYW5hZ2VyXENoYXJ0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Manager/Index.cshtml]

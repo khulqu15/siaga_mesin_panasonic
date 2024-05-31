@@ -44,7 +44,12 @@ namespace panasonic_machine_checker.Controllers
             CasesModel casesModel = new CasesModel();
             casesModel.CasesList = new List<Cases>();
 
-            var query = _context.Cases.Include(c => c.Machine).Include(c => c.ReportedByNavigation).Include(c => c.Status).AsQueryable();
+            var query = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .AsQueryable();
             var count = query.Count();
             var data = query.ToList();
 
@@ -65,6 +70,7 @@ namespace panasonic_machine_checker.Controllers
                     IsApproved = item.IsApproved,
                     ApprovedAt = item.ApprovedAt,
                     CreatedAt = item.CreatedAt,
+                    Lini = item.Machine.MachineLiniId,
                 });
             }
 

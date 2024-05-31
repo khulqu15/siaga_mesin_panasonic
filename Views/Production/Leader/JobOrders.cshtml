@@ -37,7 +37,7 @@
                         <th></th>
                         <th>Case</th>
                         <th>Reviewed By</th>
-                        <th>Reviewed At</th>
+                        <th>Deadline</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -51,11 +51,18 @@
                             <tr id="item-@item.Id">
                                 <th class="item_counter">@counter</th>
                                 <td class="item_case_id hidden">@item.CaseId</td>
-                                <td class="item_case"><span class="badge badge-primary">@item.Case.Id</span> @item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
+                                <td class="item_case">@item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
                                 <td class="item_scheduled_by_id hidden">@item.ScheduledById</td>
                                 <td class="item_status_id hidden">@item.StatusId</td>
                                 <td class="item_reviewed_by">@item.ScheduledBy.Name</td>
-                                <td class="item_reviewed_date">@item.ScheduledDate</td>
+                                <td class="case_date_completed">@item.ScheduledDate</td>
+                                <td>
+                                    @if (item.ScheduledDate.HasValue)
+                                    {
+                                        <p class="mb-1">@item.ScheduledDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                                        <span class="badge @GetTimeDiffClass(item.ScheduledDate)">@FormatTimeDifference(item.ScheduledDate)</span>
+                                    }
+                                </td>
                                 <td class="item_status">@item.Status.Name</td>
                                 <td>
                                     <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
@@ -81,7 +88,7 @@
                         <th></th>
                         <th>Case</th>
                         <th>Reviewed By</th>
-                        <th>Reviewed At</th>
+                        <th>Deadline</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -100,6 +107,97 @@
         </div>
     </div>
 </div>
+
+@functions {
+    public static string GetTimeDiffClass(DateTime? targetDate)
+    {
+        if (!targetDate.HasValue)
+        {
+            return "badge-error text-white";
+        }
+
+        TimeSpan timeDiff = DateTime.Now - targetDate.Value;
+        if (timeDiff.TotalDays < 0)
+        {
+            if (timeDiff.Days == -1)
+            {
+                return "badge-warning";
+            }
+            else
+            {
+                return "badge-success text-white";
+            }
+        }
+        else
+        {
+            if (timeDiff.Days == 0)
+            {
+                return "badge-warning";
+            }
+            else
+            {
+                return "badge-error text-white";
+            }
+        }
+    }
+    public static string FormatTimeDifference(DateTime? targetDate)
+    {
+        if (!targetDate.HasValue)
+        {
+            return "Date not specified";
+        }
+
+        TimeSpan timeDiff = DateTime.Now - targetDate.Value;
+
+        if (timeDiff.TotalSeconds < 0)
+        {
+            timeDiff = timeDiff.Negate();
+
+            if (timeDiff.Days > 1)
+            {
+                return $"{timeDiff.Days} days from now";
+            }
+            else if (timeDiff.Days == 1)
+            {
+                return "Tomorrow";
+            }
+            else if (timeDiff.Hours > 0)
+            {
+                return $"{timeDiff.Hours} hours from now";
+            }
+            else if (timeDiff.Minutes > 0)
+            {
+                return $"{timeDiff.Minutes} minutes from now";
+            }
+            else
+            {
+                return "In the future";
+            }
+        }
+
+        if (timeDiff.Days > 1)
+        {
+            return $"{timeDiff.Days} days ago";
+        }
+        else if (timeDiff.Days == 1)
+        {
+            return "Yesterday";
+        }
+        else if (timeDiff.Hours > 0)
+        {
+            return $"{timeDiff.Hours} hours ago";
+        }
+        else if (timeDiff.Minutes > 0)
+        {
+            return $"{timeDiff.Minutes} minutes ago";
+        }
+        else
+        {
+            return "Just now";
+        }
+    }
+}
+
 
 @section Scripts {
     <script>

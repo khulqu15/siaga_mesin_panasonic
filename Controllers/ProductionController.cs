@@ -18,6 +18,94 @@ namespace panasonic_machine_checker.Controllers
             _passwordHasher = new PasswordHasher<User>();
         }
 
+        [HttpGet("/Production/Dashboard/{id}")]
+        public IActionResult Dashboard(int id)
+        {
+            ViewData["UserRole"] = "Production Leader";
+            CasesModel casesModel = new CasesModel();
+            casesModel.CasesList = new List<Cases>();
+
+            var query = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .AsQueryable();
+            var count = query.Count();
+            var data = query.ToList();
+
+            foreach (var item in data)
+            {
+                casesModel.CasesList.Add(new Cases
+                {
+                    Id = item.Id,
+                    Description = item.Description,
+                    MachineId = item.MachineId,
+                    ReportedById = item.ReportedById,
+                    StatusId = item.StatusId,
+                    DateCompleted = item.DateCompleted,
+                    DateReported = item.DateReported,
+                    Machine = item.Machine,
+                    Status = item.Status,
+                    ReportedByNavigation = item.ReportedByNavigation,
+                    IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
+                    CreatedAt = item.CreatedAt,
+                    Lini = item.Machine.MachineLiniId,
+                });
+            }
+
+            casesModel.TotalItems = count;
+            casesModel.CurrentPage = 1;
+            casesModel.PageSize = 10;
+
+            return View("~/Views/Production/Leader/Chart.cshtml", casesModel);
+        }
+
+        [HttpGet("/Production/ManagerDashboard/{id}")]
+        public IActionResult ManagerDashboard(int id)
+        {
+            ViewData["UserRole"] = "Production Manager";
+            CasesModel casesModel = new CasesModel();
+            casesModel.CasesList = new List<Cases>();
+
+            var query = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .AsQueryable();
+            var count = query.Count();
+            var data = query.ToList();
+
+            foreach (var item in data)
+            {
+                casesModel.CasesList.Add(new Cases
+                {
+                    Id = item.Id,
+                    Description = item.Description,
+                    MachineId = item.MachineId,
+                    ReportedById = item.ReportedById,
+                    StatusId = item.StatusId,
+                    DateCompleted = item.DateCompleted,
+                    DateReported = item.DateReported,
+                    Machine = item.Machine,
+                    Status = item.Status,
+                    ReportedByNavigation = item.ReportedByNavigation,
+                    IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
+                    CreatedAt = item.CreatedAt,
+                    Lini = item.Machine.MachineLiniId,
+                });
+            }
+
+            casesModel.TotalItems = count;
+            casesModel.CurrentPage = 1;
+            casesModel.PageSize = 10;
+
+            return View("~/Views/Production/Manager/Chart.cshtml", casesModel);
+        }
+
         [HttpGet("/Production/UserData/{id}")]
         public JsonResult getUser(int id)
         {
@@ -405,7 +493,12 @@ namespace panasonic_machine_checker.Controllers
             statusModel.StatusList = new List<StatusJobOrders>();
             var status = _context.StatusJoborders.ToList();
 
-            var query = _context.JobOrders.Include(item => item.Case).Include(item => item.ScheduledByNavigation).Include(c => c.Status).AsQueryable();
+            var query = _context.JobOrders
+                .Include(item => item.Case)
+                .Include(item => item.ScheduledByNavigation)
+                .Include(c => c.Status)
+                .Where(item => item.ScheduledDate == null)
+                .AsQueryable();
             switch (sortOrder.ToLower())
             {
                 case "newest":
@@ -502,6 +595,36 @@ namespace panasonic_machine_checker.Controllers
                 case_data.StatusId = data.StatusId;
                 _context.SaveChanges();
                 return Json(new { success = true, job_order = case_data });
+            }
+            return Json(new { success = false, message = "Machine not found." });
+        }
+
+        [HttpPut("/Production/UpdateManagerCase/{id}")]
+        public JsonResult UpdateManagerCase(int id, [FromBody] Case data)
+        {
+            var case_data = _context.Cases.Find(id);
+            if (case_data != null)
+            {
+                if(data.MachineId.HasValue)
+                    case_data.MachineId = data.MachineId;
+
+                if (data.ReportedById.HasValue)
+                    case_data.ReportedById = data.ReportedById;
+
+                if (!string.IsNullOrEmpty(data.Description))
+                    case_data.Description = data.Description;
+
+                if (data.StatusId.HasValue)
+                    case_data.StatusId = data.StatusId;
+
+                if (data.DateCompleted.HasValue)
+                    case_data.DateCompleted = data.DateCompleted;
+
+                if (data.DateReported.HasValue)
+                    case_data.DateReported = data.DateReported;
+
+                _context.SaveChanges();
+                return Json(new { success = true, machine = case_data });
             }
             return Json(new { success = false, message = "Machine not found." });
         }

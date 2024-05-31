@@ -32,9 +32,15 @@
                         }
                     </select>
                 </div>
-                <div class="form-control my-3">
-                    <label for="repair_date">Scheduled date</label>
-                    <input type="date" id="scheduled_date" name="scheduled_date" class="input input-bordered w-full" />
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control my-3">
+                        <label for="scheduled_date">Schedule (Date)</label>
+                        <input type="date" required class="input input-bordered w-full" id="scheduled_date" name="scheduled_date" />
+                    </div>
+                    <div class="form-control my-3">
+                        <label for="scheduled_time">Schedule (Time)</label>
+                        <input type="time" required class="input input-bordered w-full" id="scheduled_time" name="scheduled_time" />
+                    </div>
                 </div>
                 <div class="modal-action">
                     <label for="form_modal" class="btn">Cancel</label>
@@ -91,7 +97,10 @@
                                 <td class="item_scheduled_by_id hidden">@item.ScheduledById</td>
                                 <td class="item_status_id hidden">@item.StatusId</td>
                                 <td class="item_reviewed_by">@item.ScheduledBy.Name</td>
-                                <td class="item_reviewed_date">@item.Case.DateCompleted</td>
+                                <td class="item_reviewed_date hidden">@item.Case.DateCompleted</td>
+                                <td>
+                                    <span class="px-2 py-1 bg-base-300 rounded text-xs">None</span>
+                                </td>
                                 <td class="item_status">@item.Status.Name</td>
                                 <td>
                                     <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
@@ -160,11 +169,15 @@
             let case_id = parseInt(document.getElementById('case_id').value);
             let scheduled_by = parseInt(document.getElementById('scheduled_by').value);
             let scheduled_date = document.getElementById('scheduled_date').value;
+
+            let scheduled_time = document.getElementById('scheduled_time').value; // Time
+            let dateTimeString = scheduled_date + 'T' + scheduled_time;
+
             let status_id = 3;
             let case_data = {
                 CaseId: case_id,
                 ScheduledBy: scheduled_by,
-                ScheduledDate: scheduled_date,
+                ScheduledDate: dateTimeString,
                 StatusId: status_id,
             }
             if (data != null) case_data.Id = data
@@ -179,8 +192,26 @@
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    generateRepairSchedule(data.job_order)
+                    updateCase(data.job_order, dateTimeString, case_id)
                     alert('Job Orders Data Saved');
+                })
+        }
+
+        function updateCase(job, schedule, id) {
+            fetch("/Production/UpdateManagerCase/" + id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    DateCompleted: schedule
+                })
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log()
+                    generateRepairSchedule(job)
+                    alert('Case Data Updated');
                 })
         }
 
@@ -202,7 +233,6 @@
                 .then((data) => {
                     setTimeout(() => {
                         generateMachineRepair(data.schedule, job_order)
-                        alert('Repair Schedule Data Saved');
                     }, 300)
                 })
         }
@@ -248,7 +278,6 @@
                     const reviewedAt = new Date(itemData.querySelector('.item_reviewed_date').innerHTML);
                     document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
                     document.getElementById('scheduled_by').value = Array.from(itemData.getElementsByClassName('item_scheduled_by_id'))[0].innerHTML
-                    document.getElementById('scheduled_date').value = reviewedAt.toISOString().split('T')[0]
                 }, 300)
             })
         })

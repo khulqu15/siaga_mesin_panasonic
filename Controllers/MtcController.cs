@@ -21,6 +21,94 @@ namespace panasonic_machine_checker.Controllers
             _passwordHasher = new PasswordHasher<User>();
         }
 
+        [HttpGet("/Mtc/Dashboard/{id}")]
+        public IActionResult Dashboard(int id)
+        {
+            ViewData["UserRole"] = "MTC Leader";
+            CasesModel casesModel = new CasesModel();
+            casesModel.CasesList = new List<Cases>();
+
+            var query = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .AsQueryable();
+            var count = query.Count();
+            var data = query.ToList();
+
+            foreach (var item in data)
+            {
+                casesModel.CasesList.Add(new Cases
+                {
+                    Id = item.Id,
+                    Description = item.Description,
+                    MachineId = item.MachineId,
+                    ReportedById = item.ReportedById,
+                    StatusId = item.StatusId,
+                    DateCompleted = item.DateCompleted,
+                    DateReported = item.DateReported,
+                    Machine = item.Machine,
+                    Status = item.Status,
+                    ReportedByNavigation = item.ReportedByNavigation,
+                    IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
+                    CreatedAt = item.CreatedAt,
+                    Lini = item.Machine.MachineLiniId,
+                });
+            }
+
+            casesModel.TotalItems = count;
+            casesModel.CurrentPage = 1;
+            casesModel.PageSize = 10;
+
+            return View("~/Views/MTC/Leader/Chart.cshtml", casesModel);
+        }
+
+        [HttpGet("/Mtc/ManagerDashboard/{id}")]
+        public IActionResult ManagerDashboard(int id)
+        {
+            ViewData["UserRole"] = "MTC Manager";
+            CasesModel casesModel = new CasesModel();
+            casesModel.CasesList = new List<Cases>();
+
+            var query = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .AsQueryable();
+            var count = query.Count();
+            var data = query.ToList();
+
+            foreach (var item in data)
+            {
+                casesModel.CasesList.Add(new Cases
+                {
+                    Id = item.Id,
+                    Description = item.Description,
+                    MachineId = item.MachineId,
+                    ReportedById = item.ReportedById,
+                    StatusId = item.StatusId,
+                    DateCompleted = item.DateCompleted,
+                    DateReported = item.DateReported,
+                    Machine = item.Machine,
+                    Status = item.Status,
+                    ReportedByNavigation = item.ReportedByNavigation,
+                    IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
+                    CreatedAt = item.CreatedAt,
+                    Lini = item.Machine.MachineLiniId,
+                });
+            }
+
+            casesModel.TotalItems = count;
+            casesModel.CurrentPage = 1;
+            casesModel.PageSize = 10;
+
+            return View("~/Views/MTC/Manager/Chart.cshtml", casesModel);
+        }
+
         [HttpGet("/MTC/LeaderProfile")]
         public IActionResult LeaderProfile()
         {
@@ -337,15 +425,26 @@ namespace panasonic_machine_checker.Controllers
             var case_data = _context.Cases.Find(id);
             if (case_data != null)
             {
-                case_data.MachineId = data.MachineId;
-                case_data.ReportedById = data.ReportedById;
-                case_data.Description = data.Description;
-                case_data.StatusId = data.StatusId;
-                case_data.DateCompleted = data.DateCompleted;
-                case_data.DateReported = data.DateReported;
-                case_data.IsApproved = data.IsApproved;
+                if (data.MachineId.HasValue)
+                    case_data.MachineId = data.MachineId;
+
+                if (data.ReportedById.HasValue)
+                    case_data.ReportedById = data.ReportedById;
+
+                if (!string.IsNullOrEmpty(data.Description))
+                    case_data.Description = data.Description;
+
+                if (data.StatusId.HasValue)
+                    case_data.StatusId = data.StatusId;
+
+                if (data.DateCompleted.HasValue)
+                    case_data.DateCompleted = data.DateCompleted;
+
+                if (data.DateReported.HasValue)
+                    case_data.DateReported = data.DateReported;
+
                 _context.SaveChanges();
-                return Json(new { success = true, case_data = case_data });
+                return Json(new { success = true, machine = case_data });
             }
             return Json(new { success = false, message = "Machine not found." });
         }
@@ -372,9 +471,18 @@ namespace panasonic_machine_checker.Controllers
 
             CasesModel caseModel = new CasesModel();
             caseModel.CasesList = new List<Cases>();
-            var cases = _context.Cases.Include(c => c.Machine).Include(c => c.ReportedByNavigation).Include(c => c.Status).ToList();
+            var cases = _context.Cases
+                .Include(c => c.Machine)
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .ToList();
 
-            var query = _context.Kytforms.Include(item => item.Case).Include(item => item.FilledByNavigation).AsQueryable();
+            var now = DateTime.Now;
+            var query = _context.Kytforms
+                .Include(item => item.FilledByNavigation)
+                .Include(item => item.Case)
+                .Where(item => item.Case.DateCompleted.HasValue && item.Case.DateCompleted.Value >= now)
+                .AsQueryable();
             switch (sortOrder.ToLower())
             {
                 case "newest":
