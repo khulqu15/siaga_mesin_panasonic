@@ -155,7 +155,7 @@
 
             if (timeDiff.Days > 1)
             {
-                return $"{timeDiff.Days} days from now";
+                return $"{timeDiff.Days} days";
             }
             else if (timeDiff.Days == 1)
             {
@@ -163,11 +163,11 @@
             }
             else if (timeDiff.Hours > 0)
             {
-                return $"{timeDiff.Hours} hours from now";
+                return $"{timeDiff.Hours} hours";
             }
             else if (timeDiff.Minutes > 0)
             {
-                return $"{timeDiff.Minutes} minutes from now";
+                return $"{timeDiff.Minutes} min";
             }
             else
             {
@@ -177,7 +177,7 @@
 
         if (timeDiff.Days > 1)
         {
-            return $"{timeDiff.Days} days ago";
+            return $"{timeDiff.Days} days   ";
         }
         else if (timeDiff.Days == 1)
         {
@@ -185,11 +185,11 @@
         }
         else if (timeDiff.Hours > 0)
         {
-            return $"{timeDiff.Hours} hours ago";
+            return $"{timeDiff.Hours} hours";
         }
         else if (timeDiff.Minutes > 0)
         {
-            return $"{timeDiff.Minutes} minutes ago";
+            return $"{timeDiff.Minutes} min";
         }
         else
         {
@@ -197,7 +197,6 @@
         }
     }
 }
-
 
 @section Scripts {
     <script>

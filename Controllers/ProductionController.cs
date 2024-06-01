@@ -151,7 +151,14 @@ namespace panasonic_machine_checker.Controllers
             statusModel.StatusList = new List<StatusCases>();
             var status = _context.StatusCases.ToList();
 
-            var query = _context.Cases.Include(c => c.ReportedByNavigation).Include(c => c.Status).Include(c => c.Machine).Include(c => c.RepairSchedules).AsQueryable();
+            var query = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.RepairSchedules)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .Where(c => c.Machine.MachineLiniId.LeaderId == id)
+                .AsQueryable();
             query = query.Where(c => c.ReportedByNavigation.Id == id);
             switch (sortOrder.ToLower())
             {
@@ -284,7 +291,15 @@ namespace panasonic_machine_checker.Controllers
             statusModel.StatusList = new List<StatusJobOrders>();
             var status = _context.StatusJoborders.ToList();
 
-            var query = _context.JobOrders.Include(item => item.Case).Include(item => item.ScheduledByNavigation).Include(c => c.Status).AsQueryable();
+            var query = _context.JobOrders
+                .Include(item => item.ScheduledByNavigation)
+                .Include(item => item.Status)
+                .Include(item => item.Case)
+                .ThenInclude(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .ThenInclude(l => l.BULiniId)
+                .Where(item => item.Case.Machine.MachineLiniId.LeaderId == id)
+                .AsQueryable();
             query = query.Where(c => c.ScheduledByNavigation.Id == id);
             switch (sortOrder.ToLower())
             {
@@ -365,8 +380,17 @@ namespace panasonic_machine_checker.Controllers
             statusModel.StatusList = new List<StatusMachineRepairs>();
             var status = _context.StatusMachinerepairs.ToList();
 
-            var query = _context.MachineRepairs.Include(item => item.Schedule).Include(item => item.ReviewedByNavigation).Include(item => item.Status).AsQueryable();
-            query = query.Where(item => item.ReviewedByNavigation.Id == id);
+            var query = _context.MachineRepairs
+                .Include(item => item.ReviewedByNavigation)
+                .Include(item => item.Status)
+                .Include(item => item.Schedule)
+                .ThenInclude(schedule => schedule.Case)
+                .ThenInclude(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .Where(item => item.Schedule.Case.Machine.MachineLiniId.LeaderId == id)
+                .AsQueryable();
+            
+            // query = query.Where(item => item.ReviewedByNavigation.Id == id);
 
             switch (sortOrder.ToLower())
             {
@@ -474,7 +498,8 @@ namespace panasonic_machine_checker.Controllers
             return Json(new { success = false });
         }
 
-        public IActionResult Manager(int page = 1, string sortOrder = "newest")
+        [HttpGet("/Production/Manager/{id}")]
+        public IActionResult Manager(int id, int page = 1, string sortOrder = "newest")
         {
             ViewData["UserRole"] = "Production Manager";
             int pageSize = 10;
@@ -494,11 +519,15 @@ namespace panasonic_machine_checker.Controllers
             var status = _context.StatusJoborders.ToList();
 
             var query = _context.JobOrders
-                .Include(item => item.Case)
                 .Include(item => item.ScheduledByNavigation)
                 .Include(c => c.Status)
-                .Where(item => item.ScheduledDate == null)
+                .Include(item => item.Case)
+                .ThenInclude(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .ThenInclude(l => l.BULiniId)
+                .Where(item => item.Case.Machine.MachineLiniId.BULiniId.ManagerId == id)
                 .AsQueryable();
+
             switch (sortOrder.ToLower())
             {
                 case "newest":
@@ -646,8 +675,18 @@ namespace panasonic_machine_checker.Controllers
             statusModel.StatusList = new List<StatusMachineRepairs>();
             var status = _context.StatusMachinerepairs.ToList();
 
-            var query = _context.MachineRepairs.Include(item => item.Schedule).Include(item => item.ReviewedByNavigation).Include(item => item.Status).AsQueryable();
-            query = query.Where(item => item.ReviewedByNavigation.Id == id);
+            var query = _context.MachineRepairs
+                .Include(item => item.ReviewedByNavigation)
+                .Include(item => item.Status)
+                .Include(item => item.Schedule)
+                .ThenInclude(s => s.Case)
+                .ThenInclude(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .ThenInclude(l => l.BULiniId)
+                .Where(item => item.Schedule.Case.Machine.MachineLiniId.BULiniId.ManagerId == id)
+                .AsQueryable();
+            
+            // query = query.Where(item => item.ReviewedByNavigation.Id == id);
 
             switch (sortOrder.ToLower())
             {

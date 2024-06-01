@@ -45,6 +45,8 @@ public partial class DbPanasonicContext : DbContext
 
     public virtual DbSet<Lini> Linis { get; set; }
 
+    public virtual DbSet<KytMember> KytMembers { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("Server=DESKTOP-2EGHJVD\\SQLEXPRESS;Database=db_panasonic;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -140,6 +142,16 @@ public partial class DbPanasonicContext : DbContext
                 .HasColumnType("text")
                 .HasColumnName("description");
 
+            entity.Property(e => e.Action).HasColumnType("text").HasColumnName("action");
+            entity.Property(e => e.DangerousMode).HasColumnType("text").HasColumnName("dangerous_mode");
+            entity.Property(e => e.PrepareProcess).HasColumnType("text").HasColumnName("prepare_process");
+            entity.Property(e => e.PreparePrediction).HasColumnType("text").HasColumnName("prepare_prediction");
+            entity.Property(e => e.MainProcess).HasColumnType("text").HasColumnName("main_process");
+            entity.Property(e => e.MainPrediction).HasColumnType("text").HasColumnName("main_prediction");
+            entity.Property(e => e.ConfirmProcess).HasColumnType("text").HasColumnName("confirm_process");
+            entity.Property(e => e.ConfirmPrediction).HasColumnType("text").HasColumnName("confirm_prediction");
+            entity.Property(e => e.ApproveAt).HasColumnName("approve_at");
+
             entity.HasOne(d => d.Case).WithMany(p => p.Kytforms)
                 .HasForeignKey(d => d.CaseId)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -176,6 +188,27 @@ public partial class DbPanasonicContext : DbContext
                 .HasForeignKey(d => d.LiniId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_machine_linies");
+        });
+
+        modelBuilder.Entity<KytMember>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_kyt_member");
+            entity.ToTable("kyt_member");
+            entity.Property(e => e.Id);
+            entity.Property(e => e.MemberId).HasColumnName("member_id");
+            entity.Property(e => e.KytId).HasColumnName("kyt_id");
+            entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+            entity.HasOne(d => d.UserMember).WithMany(p => p.Member)
+                .HasForeignKey(d => d.MemberId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_kyt_member_users");
+
+            entity.HasOne(d => d.Kyform).WithMany(p => p.Member)
+                .HasForeignKey(d => d.KytId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_kyt_member_kytforms");
         });
 
         modelBuilder.Entity<MachineRepair>(entity =>

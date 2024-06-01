@@ -36,6 +36,8 @@ public partial class User
 
     public virtual ICollection<BU> BUs { get; set; } = new List<BU>();
 
+    public virtual ICollection<KytMember> Member { get; set; } = new List<KytMember>();
+
     public virtual ICollection<Lini> Lini { get; set; } = new List<Lini>();
 
     public virtual Role RoleNavigation { get; set; } = null!;

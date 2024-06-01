@@ -26,7 +26,7 @@ namespace panasonic_machine_checker.Models
 
         public int? StatusId { get; set; }
 
-        public int? ApprovedAt { get; set; }
+        public DateTime? ApprovedAt { get; set; }
 
         public int? CreatedAt { get; set; }
 
@@ -52,6 +52,6 @@ namespace panasonic_machine_checker.Models
 
         public virtual Lini Lini { get; set; }
 
-        public virtual User ClosedData { get; set; } = null!;
+        public virtual ICollection<KytMember> ClosedData { get; set; }
     }
 }

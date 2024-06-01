@@ -102,7 +102,7 @@ namespace panasonic_machine_checker.Controllers
 
             UsersModel usersModel = new UsersModel();
             usersModel.UserList = new List<Users>();
-            var users = _context.Users.Include(u => u.RoleNavigation).Where(u => u.RoleNavigation.Name == "Manager Production").ToList();
+            var users = _context.Users.Include(u => u.RoleNavigation).Where(u => u.RoleNavigation.Name == "Manager Production" || u.RoleNavigation.Name == "Leader Production").ToList();
 
             BUsModel BUsModel = new BUsModel();
             BUsModel.BUsList = new List<BUs>();

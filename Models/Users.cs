@@ -45,5 +45,6 @@ namespace panasonic_machine_checker.Models
 
         [ForeignKey("RoleId")]
         public virtual Role RoleNavigation { get; set; } = null!;
+
     }
 }

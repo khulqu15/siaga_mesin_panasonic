@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using panasonic_machine_checker.data;
 using panasonic_machine_checker.Models;
+using System.Dynamic;
 
 namespace panasonic_machine_checker.Controllers
 {
@@ -147,6 +148,10 @@ namespace panasonic_machine_checker.Controllers
             usersModel.UserList = new List<Users>();
             var users = _context.Users.ToList();
 
+            UsersModel member = new UsersModel();
+            member.UserList = new List<Users>();
+            var members = _context.Users.Include(u => u.RoleNavigation).Where(u => u.RoleNavigation.Name == "Member MTC").ToList();
+
             StatusModel statusModel = new StatusModel();
             statusModel.StatusList = new List<StatusCases>();
             var status = _context.StatusCases.ToList();
@@ -157,7 +162,8 @@ namespace panasonic_machine_checker.Controllers
 
             var query = _context.Cases
                 .Include(c => c.Kytforms)
-                .ThenInclude(k => k.FilledByNavigation)
+                .ThenInclude(k => k.Member)
+                .ThenInclude(m => m.UserMember)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
                 .Include(c => c.RepairSchedules)
@@ -183,7 +189,7 @@ namespace panasonic_machine_checker.Controllers
                 var lini = item.Machine?.MachineLiniId;
                 var bu = lini?.BULiniId;
                 var kyt = item.Kytforms.FirstOrDefault();
-                var filled = kyt?.FilledByNavigation;
+                var filled = kyt?.Member;
 
                 caseModel.CasesList.Add(new Cases
                 {
@@ -195,6 +201,7 @@ namespace panasonic_machine_checker.Controllers
                     DateCompleted = item.DateCompleted,
                     DateReported = item.DateReported,
                     IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
                     Machine = item.Machine,
                     Status = item.Status,
                     ReportedByNavigation = item.ReportedByNavigation,
@@ -222,6 +229,22 @@ namespace panasonic_machine_checker.Controllers
             foreach (var item in users)
             {
                 usersModel.UserList.Add(new Users
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Email = item.Email,
+                    Password = item.Password,
+                    RoleNavigation = item.RoleNavigation,
+                    Avatar = item.Avatar,
+                    Phone = item.Phone,
+                    VerifiedAt = item.VerifiedAt,
+                    RoleId = item.Role
+                });
+            }
+
+            foreach (var item in members)
+            {
+                member.UserList.Add(new Users
                 {
                     Id = item.Id,
                     Name = item.Name,
@@ -263,6 +286,7 @@ namespace panasonic_machine_checker.Controllers
             ViewBag.RepairScheduleList = repairSchedulesModel.RepairSchedulesList;
             ViewBag.MachineList = machinesModel.MachinesList;
             ViewBag.UserList = usersModel.UserList;
+            ViewBag.MemberList = member.UserList;
             ViewBag.StatusList = statusModel.StatusList;
             return View("~/Views/MTC/Leader/Index.cshtml", caseModel);
         }
@@ -283,6 +307,10 @@ namespace panasonic_machine_checker.Controllers
             usersModel.UserList = new List<Users>();
             var users = _context.Users.ToList();
 
+            UsersModel member = new UsersModel();
+            member.UserList = new List<Users>();
+            var members = _context.Users.Include(u => u.RoleNavigation).Where(u => u.RoleNavigation.Name == "Member MTC").ToList();
+
             StatusModel statusModel = new StatusModel();
             statusModel.StatusList = new List<StatusCases>();
             var status = _context.StatusCases.ToList();
@@ -293,7 +321,8 @@ namespace panasonic_machine_checker.Controllers
 
             var query = _context.Cases
                 .Include(c => c.Kytforms)
-                .ThenInclude(k => k.FilledByNavigation)
+                .ThenInclude(k => k.Member)
+                .ThenInclude(m => m.UserMember)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
                 .Include(c => c.RepairSchedules)
@@ -319,7 +348,7 @@ namespace panasonic_machine_checker.Controllers
                 var lini = item.Machine?.MachineLiniId;
                 var bu = lini?.BULiniId;
                 var kyt = item.Kytforms.FirstOrDefault();
-                var filled = kyt?.FilledByNavigation;
+                var filled = kyt?.Member;
 
                 caseModel.CasesList.Add(new Cases
                 {
@@ -331,6 +360,7 @@ namespace panasonic_machine_checker.Controllers
                     DateCompleted = item.DateCompleted,
                     DateReported = item.DateReported,
                     IsApproved = item.IsApproved,
+                    ApprovedAt = item.ApprovedAt,
                     Machine = item.Machine,
                     Status = item.Status,
                     ReportedByNavigation = item.ReportedByNavigation,
@@ -358,6 +388,22 @@ namespace panasonic_machine_checker.Controllers
             foreach (var item in users)
             {
                 usersModel.UserList.Add(new Users
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Email = item.Email,
+                    Password = item.Password,
+                    RoleNavigation = item.RoleNavigation,
+                    Avatar = item.Avatar,
+                    Phone = item.Phone,
+                    VerifiedAt = item.VerifiedAt,
+                    RoleId = item.Role
+                });
+            }
+
+            foreach (var item in members)
+            {
+                member.UserList.Add(new Users
                 {
                     Id = item.Id,
                     Name = item.Name,
@@ -399,6 +445,7 @@ namespace panasonic_machine_checker.Controllers
             ViewBag.RepairScheduleList = repairSchedulesModel.RepairSchedulesList;
             ViewBag.MachineList = machinesModel.MachinesList;
             ViewBag.UserList = usersModel.UserList;
+            ViewBag.MemberList = member.UserList;
             ViewBag.StatusList = statusModel.StatusList;
             return View("~/Views/MTC/Manager/Case.cshtml", caseModel);
         }
@@ -418,6 +465,25 @@ namespace panasonic_machine_checker.Controllers
             _context.SaveChanges();
             return Json(new { success = true, machine = data });
         }
+
+        [HttpPost("/MTC/Manager/UpdateCase/{id}")]
+        public JsonResult ManagerUpdateCase(int id, [FromBody] Case data)
+        {
+            var case_data = _context.Cases.Find(id);
+            if (case_data != null)
+            {
+                if (data.ApprovedAt.HasValue)
+                    case_data.ApprovedAt = data.ApprovedAt;
+
+                if (data.IsApproved.HasValue)
+                    case_data.IsApproved = data.IsApproved;
+
+                _context.SaveChanges();
+                return Json(new { success = true, machine = case_data });
+            }
+            return Json(new { success = false, message = "Machine not found." });
+        }
+
 
         [HttpPost("/MTC/Leader/UpdateCase/{id}")]
         public JsonResult UpdateCase(int id, [FromBody] Case data)
@@ -457,6 +523,20 @@ namespace panasonic_machine_checker.Controllers
             return Json(new { success = true, machine = data });
         }
 
+        [HttpPost("/MTC/Leader/CreateKYTMember")]
+        public JsonResult LeaderCreateKYTMember([FromBody] KytMember data)
+        {
+            var userExists = _context.Users.Any(u => u.Id == data.MemberId);
+            if (!userExists)
+            {
+                return Json(new { success = false, message = "MemberId does not exist in the user table.", memberId = data.MemberId });
+            }
+            _context.KytMembers.Add(data);
+            _context.SaveChanges();
+            return Json(new { success = true, machine = data });
+        }
+
+
         [HttpGet("/MTC/Manager/{id}")]
         public IActionResult Manager(int id, int page = 1, string sortOrder = "newest") {
             ViewData["UserRole"] = "MTC Manager";
@@ -481,7 +561,6 @@ namespace panasonic_machine_checker.Controllers
             var query = _context.Kytforms
                 .Include(item => item.FilledByNavigation)
                 .Include(item => item.Case)
-                .Where(item => item.Case.DateCompleted.HasValue && item.Case.DateCompleted.Value >= now)
                 .AsQueryable();
             switch (sortOrder.ToLower())
             {
@@ -556,6 +635,7 @@ namespace panasonic_machine_checker.Controllers
             _context.SaveChanges();
             return Json(new { success = true, machine = data });
         }
+
 
         [HttpPost("/MTC/UpdateKYTForms/{id}")]
         public JsonResult UpdateKYTForms(int id, [FromBody] Kytform data)

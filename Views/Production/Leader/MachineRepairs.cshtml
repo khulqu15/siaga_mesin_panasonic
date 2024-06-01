@@ -18,7 +18,10 @@
                         <option value="" disabled selected>Select Scheduled Repair</option>
                         @foreach (var item in scheduledList)
                         {
-                            <option disabled value="@item.Id">@item.Id, @item.CallDate @item.Case.ReportedByNavigation.Name</option>
+                            if (item.Case.ReportedByNavigation.Name != null)
+                            {
+                                <option disabled value="@item.Id">@item.Id, @item.CallDate @item.Case.ReportedByNavigation.Name</option>
+                            }
                         }
                     </select>
                 </div>
@@ -30,9 +33,15 @@
                     <label for="reviewed_by">Reviewed By</label>
                     <input readonly type="text" class="input input-bordered w-full" id="reviewed_by" name="reviewed_by" />
                 </div>
-                <div class="form-control my-3">
-                    <label for="repair_date">Repair date</label>
-                    <input type="date" readonly id="repair_date" name="repair_date" class="input input-bordered w-full" />
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control my-3">
+                        <label for="repair_date">Repair date</label>
+                        <input type="date" id="repair_date" name="repair_date" class="input input-bordered w-full" />
+                    </div>
+                    <div class="form-control my-3">
+                        <label for="repair_date">Repair time</label>
+                        <input type="time" id="repair_time" name="repair_time" class="input input-bordered w-full" />
+                    </div>
                 </div>
                 <div class="form-control my-3">
                     <label for="status_id">Current Status</label>
@@ -114,13 +123,15 @@
                                 <td class="item_corrections">@item.Corrections</td>
                                 <td class="item_result">@item.Result</td>
                                 <td>
-                                    <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                                        Check
-                                    </label>
-                                    <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                                    </label>
+                                    <div class="flex gap-2">
+                                        <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                            Check
+                                        </label>
+                                        <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                        </label>
+                                    </div>
                                 </td>
                             </tr>
                             counter++;
@@ -129,7 +140,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="7">
+                            <td colspan="8">
                                 <div class="w-full bg-error text-white p-3 rounded-xl text-center">
                                     Machine Repair Data Not Found
                                 </div>
@@ -241,6 +252,10 @@
                 document.getElementById('status_id').value = Array.from(itemData.getElementsByClassName('item_status_id'))[0].innerHTML
                 document.getElementById('corrections').value = Array.from(itemData.getElementsByClassName('item_corrections'))[0].innerHTML
                 document.getElementById('result').value = Array.from(itemData.getElementsByClassName('item_result'))[0].innerHTML
+                const hours = repairDate.getHours().toString().padStart(2, '0');
+                const minutes = repairDate.getMinutes().toString().padStart(2, '0');
+                const seconds = repairDate.getSeconds().toString().padStart(2, '0');
+                document.getElementById('repair_time').value = `${hours}:${minutes}:${seconds}`;
                 document.getElementById('repair_date').value = repairDate.toISOString().split('T')[0];
             })
         })

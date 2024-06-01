@@ -3,6 +3,7 @@
     var repairScheduleList = ViewBag.RepairScheduleList as List<RepairSchedules>;
     var machineList = ViewBag.MachineList as List<Machines>;
     var userList = ViewBag.UserList as List<Users>;
+    var memberList = ViewBag.MemberList as List<Users>;
     var statusList = ViewBag.StatusList as List<StatusCases>;
     Layout = "~/Views/Shared/_App_Layout.cshtml";
 }
@@ -51,9 +52,25 @@
                     <label for="kyt_case_id">Case Id</label>
                     <input type="text" id="kyt_case_id" name="call_case_id" required class="input input-bordered w-full" />
                 </div>
-                <div class="form-control my-3">
-                    <label for="kyt_case_name">Selected Case</label>
-                    <input readonly type="text" id="kyt_case_name" name="kyt_case_name" required class="input input-bordered w-full" />
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control my-3">
+                        <label for="kyt_case_name">Selected Case</label>
+                        <input readonly type="text" id="kyt_case_name" name="kyt_case_name" required class="input input-bordered w-full" />
+                    </div>
+                    <div class="form-control my-3">
+                        <label for="kyt_machine_name">Machine Selected</label>
+                        <input readonly type="text" id="kyt_machine_name" name="kyt_machine_name" required class="input input-bordered w-full" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control my-3">
+                        <label for="kyt_bu_name">BU Selected</label>
+                        <input readonly type="text" id="kyt_bu_name" name="kyt_bu_name" required class="input input-bordered w-full" />
+                    </div>
+                    <div class="form-control my-3">
+                        <label for="kyt_lini_name">Lini Selected</label>
+                        <input readonly type="text" id="kyt_lini_name" name="kyt_lini_name" required class="input input-bordered w-full" />
+                    </div>
                 </div>
                 <div class="form-control my-3 hidden">
                     <label for="kyt_filled_by_id">Filled By</label>
@@ -63,9 +80,91 @@
                     <label for="kyt_filled_by_name">Filled By</label>
                     <input readonly type="text" id="kyt_filled_by" name="kyt_filled_by" required class="input input-bordered w-full" />
                 </div>
+                <div class="flex items-end gap-3 my-3">
+                    <div class="form-control grow">
+                        <label for="member">KYT Member</label>
+                        <select id="select_member_kyt" class="select select-bordered w-full">
+                            <option disabled selected value="">Select Member MTC</option>
+                            @foreach (var item in memberList)
+                            {
+                                <option value="@item.Id-@item.Name-@item.Email">@item.Name - @item.Email</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="button" id="btnAddMember" class="btn bg-primary/20 text-primary">Add</button>
+                </div>
+                <div id="added_members" class="p-4 bg-primary/10 rounded-xl hidden">
+                    <h5 class="text-primary font-semibold">Member added</h5>
+                </div>
                 <div class="form-control my-3">
-                    <label for="potential_hazard">Potential Hazard</label>
+                    <label for="potential_hazard">Crash Analisys</label>
                     <textarea id="potential_hazard" name="potential_hazard" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="kyt_description">Description</label>
+                    <textarea id="kyt_description" name="kyt_description" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="kyt_action">Action Needed</label>
+                    <textarea id="kyt_action" name="kyt_action" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="divider">Dangerous Mode</div>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="crash_danger" class="checkbox checkbox-primary" />
+                        <span class="label-text">Tertabrak / Terjatuh</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="voltage_danger" class="checkbox checkbox-primary" />
+                        <span class="label-text">Sengatan Listrik</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="bounce_danger" class="checkbox checkbox-primary" />
+                        <span class="label-text">Terpental</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="weight_danger" class="checkbox checkbox-primary" />
+                        <span class="label-text">Benda Berat</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="weight_danger" class="checkbox checkbox-primary" />
+                        <span class="label-text">Benda Berat</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="chemistry_danger" class="checkbox checkbox-primary" />
+                        <span class="label-text">Kandungan Kimia</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="stuck_danger" class="checkbox checkbox-primary" />
+                        <span class="label-text">Terjepit / Terlilit</span>
+                    </label>
+                </div>
+                <div class="divider">Prepare</div>
+                <div class="form-control my-3">
+                    <label for="prepare_process">Process</label>
+                    <textarea id="prepare_process" name="prepare_process" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="prepare_prediction">Danger Prediction</label>
+                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="divider">Main</div>
+                <div class="form-control my-3">
+                    <label for="main_process">Process</label>
+                    <textarea id="main_process" name="main_process" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="main_prediction">Danger Prediction</label>
+                    <textarea id="main_prediction" name="main_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="divider">Confirm</div>
+                <div class="form-control my-3">
+                    <label for="confirm_process">Process</label>
+                    <textarea id="confirm_process" name="confirm_process" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="confirm_prediction">Danger Prediction</label>
+                    <textarea id="confirm_prediction" name="confirm_prediction" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="modal-action">
                     <label for="kyt_modal" class="btn">Cancel</label>
@@ -136,7 +235,7 @@
                     <label for="reported_at_id">Reported By</label>
                     <input readonly type="text" class="input input-bordered w-full" id="reported_by" name="reported_by" />
                 </div>
-                <div class="form-control my-3">
+                <div class="form-control my-3 hidden">
                     <label for="status">Current Status</label>
                     <select required class="select select-bordered w-full mt-1" id="status" name="status">
                         <option value="" disabled selected>Select Status</option>
@@ -197,9 +296,11 @@
                         <th>Reported By</th>
                         <th>Reported At</th>
                         <th>Deadline</th>
+                        <th>BU</th>
+                        <th>Lini</th>
                         <th>Status</th>
-                        <th>Description</th>
                         <th>Approval</th>
+                        <th>Description</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -223,15 +324,9 @@
                                         <span class="div py-1 rounded px-2 text-xs @GetTimeDiffClass(item.DateCompleted)">@FormatTimeDifference(item.DateCompleted)</span>
                                     }
                                 </td>
-                                <td class="case_bu_name hidden">@item.BU.Name</td>
-                                <td class="case_lini_name hidden">@item.Lini.Name</td>
+                                <td class="case_bu_name">@item.BU.Name</td>
+                                <td class="case_lini_name">@item.Lini.Name</td>
                                 <td class="hidden case_status_id">@item.StatusId</td>
-                                <td class="hidden case_closed">
-                                    @if (@item.ClosedData != null)
-                                    {
-                                        @item.ClosedData.Name
-                                    }
-                                </td>
                                 <td class="hidden case_potential_hazard">
                                     @foreach (var potential in item.Kytforms)
                                     {
@@ -245,7 +340,32 @@
                                     }
                                 </td>
                                 <td class="case_status">@item.Status.Name</td>
-                                <td class="case_description">@item.Description</td>
+                                <td class="case_approved_at hidden">@item.ApprovedAt</td>
+                                <td class="case_kyt_analytics hidden">
+                                    @if (item.Kytforms.Any())
+                                    {
+                                        @item.Kytforms.First().PotentialHazard
+                                    }
+                                </td>
+                                <td class="case_kyt_action hidden">
+                                    @if (item.Kytforms.Any())
+                                    {
+                                        @item.Kytforms.First().Action
+                                    }
+                                </td>
+                                <td class="case_kyt_members">
+                                    @{
+                                        var names = item.Kytforms.SelectMany(data => data.Member)
+                                        .Select(kyt => kyt.UserMember.Name)
+                                        .Distinct()
+                                        .ToList();
+
+                                        foreach (var name in names)
+                                        {
+                                            <span>@name</span>
+                                        }
+                                    }
+                                </td>
                                 <td class="case_approval">
                                     @if (item.IsApproved == 1)
                                     {
@@ -256,6 +376,7 @@
                                         <span class="badge badge-error text-white">Waiting</span>
                                     }
                                 </td>
+                                <td class="case_description">@item.Description</td>
                             </tr>
                             counter++;
                         }
@@ -278,9 +399,11 @@
                         <th>Reported By</th>
                         <th>Reported At</th>
                         <th>Deadline</th>
+                        <th>BU</th>
+                        <th>Lini</th>
                         <th>Status</th>
-                        <th>Description</th>
                         <th>Approval</th>
+                        <th>Description</th>
                     </tr>
                 </tfoot>
             </table>
@@ -306,6 +429,22 @@
         let user_name = ''
         let case_id = 0
         let case_name = ''
+        let members_added = []
+        let dangerous_mode = ''
+
+        function updateDangerList() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            dangerous_modes = Array.from(checkboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.nextSibling.nextSibling.textContent)
+                .join(', ');
+
+            console.log(dangerous_modes);
+        }
+
+        document.querySelectorAll('.checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateDangerList);
+        });
 
         function exportExcel() {
             filename = 'exported_case.xlsx'
@@ -313,15 +452,23 @@
             console.log(Array.from(document.getElementsByClassName('case_list')))
             Array.from(document.getElementsByClassName('case_list')).map((element, index) => {
                 let xlsx_machine_name = Array.from(element.getElementsByClassName('case_machine'))[0].innerHTML
+                let xlsx_approved_at = Array.from(element.getElementsByClassName('case_approved_at'))[0].innerHTML
                 let xlsx_reported_at = Array.from(element.getElementsByClassName('case_date_reported'))[0].innerHTML
                 let xlsx_reported_by = Array.from(element.getElementsByClassName('case_reported_by'))[0].innerHTML
                 let xlsx_completed_at = Array.from(element.getElementsByClassName('case_date_completed'))[0].innerHTML
                 let xlsx_site_name = Array.from(element.getElementsByClassName('case_lini_name'))[0].innerHTML
                 let xlsx_section = Array.from(element.getElementsByClassName('case_bu_name'))[0].innerHTML
                 let xlsx_trouble = Array.from(element.getElementsByClassName('case_description'))[0].innerHTML
-                let xlsx_analytics = Array.from(element.getElementsByClassName('case_analysis'))[0].innerHTML
-                let xlsx_action = Array.from(element.getElementsByClassName('case_potential_hazard'))[0].innerHTML
-                let xlsx_closed = Array.from(element.getElementsByClassName('case_closed'))[0].innerHTML
+                let xlsx_analytics = Array.from(element.getElementsByClassName('case_kyt_analytics'))[0].innerHTML
+                let xlsx_action = Array.from(element.getElementsByClassName('case_kyt_action'))[0].innerHTML
+                var nameSpans = element.querySelectorAll('.case_kyt_members span');
+                var names = [];
+
+                nameSpans.forEach(function (span) {
+                    names.push(span.textContent.trim());
+                });
+
+                var namesString = names.join(', ');
 
                 let total_minutes = 0
                 let total_hours = 0
@@ -341,15 +488,15 @@
 
                 excel_data.push({
                     '#': index + 1,
-                    'Issued': xlsx_machine_name + ' - ' + xlsx_reported_at,
+                    'Issued': xlsx_approved_at == '' || xlsx_approved_at == null ? '-' : xlsx_approved_at,
                     'Finished': xlsx_completed_at,
                     'Section': xlsx_site_name,
-                    'Site Name': xlsx_section,
+                    'Site Name': xlsx_machine_name,
                     'Trouble': xlsx_trouble,
                     'Analisis': xlsx_analytics,
                     'Action': xlsx_action,
                     'Duration': xlsx_duration_hour + ' Hour, ' + xlsx_duration + ' Minutes',
-                    'Closed': xlsx_closed
+                    'Closed': namesString
                 })
             })
             console.log(excel_data)
@@ -409,7 +556,7 @@
                 Corrections: ' ',
                 Result: ' ',
             }
-            let url ='/MTC/Leader/CreateMachineRepairs';
+            let url = '/MTC/Leader/CreateMachineRepairs';
 
             fetch(url, {
                 method: 'POST',
@@ -462,7 +609,7 @@
         function updateMachine() {
             let machine_id = parseInt(document.getElementById('machine_id').value);
             let reported_by = parseInt(document.getElementById('reported_by_id').value);
-            let status_id = parseInt(document.getElementById('status').value);
+            let status_id = 3
             let date = new Date();
             date.setHours(date.getHours() + 1)
             date.setMinutes(date.getMinutes() + 30)
@@ -525,13 +672,38 @@
         function updateKYT() {
             let case_id = parseInt(document.getElementById('kyt_case_id').value);
             let filled_by = parseInt(document.getElementById('kyt_filled_by_id').value);
+            let action = document.getElementById('kyt_action').value;
             let potential_hazard = document.getElementById('potential_hazard').value;
+            let prepare_process = document.getElementById('prepare_process').value;
+            let prepare_prediction = document.getElementById('prepare_prediction').value;
+            let main_process = document.getElementById('main_process').value;
+            let description = document.getElementById('kyt_description').value;
+            let main_prediction = document.getElementById('main_prediction').value;
+            let confirm_process = document.getElementById('confirm_process').value;
+            let confirm_prediction = document.getElementById('confirm_prediction').value;
+
+            let members = []
+            members_added.map((item, index) => {
+                members.push(item.split('-')[0])
+            })
+
             let case_data = {
                 CaseId: case_id,
                 FilledBy: filled_by,
+                Action: action,
                 PotentialHazard: potential_hazard,
+                PrepareProcess: prepare_process,
+                PreparePrediction: prepare_prediction,
+                MainProcess: main_process,
+                MainPrediction: main_prediction,
+                ConfirmProcess: confirm_process,
+                Description: description,
+                ConfirmPrediction: confirm_prediction,
+                DangerousMode: dangerous_mode,
                 Approval: 0,
-            }
+                // Member: members
+            };
+
             let url = '/MTC/Leader/CreateKYTForms';
 
             fetch(url, {
@@ -543,11 +715,43 @@
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    alert('KYT Forms Data Saved');
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 300)
+                    let kyt_id = data.machine.id;
+                    let now = new Date().toISOString();
+
+                    let memberPromises = members_added.map((member) => {
+                        let member_id = member.split('-')[0];
+                        let member_item_data = {
+                            KytId: parseInt(kyt_id),
+                            MemberId: parseInt(member_id),
+                            CreatedAt: now,
+                            UpdatedAt: now,
+                        };
+                        return fetch('/MTC/Leader/CreateKYTMember', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(member_item_data)
+                        }).then(res => res.json());
+                    });
+
+                    Promise.all(memberPromises)
+                        .then((results) => {
+                            console.log("All member data saved successfully", results);
+                            alert('KYT Forms and Members Data Saved');
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 300);
+                        })
+                        .catch((error) => {
+                            console.error('Error saving member data:', error);
+                            alert('Failed to save all member data');
+                        });
                 })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Failed to save KYT form data');
+                });
         }
 
         document.getElementById('sort-filter').addEventListener('change', (event) => {
@@ -563,6 +767,9 @@
                 document.getElementById('kyt_case_name').value = case_name
                 let itemData = document.getElementById('item-' + data)
                 const completedAt = new Date(itemData.querySelector('.case_date_completed').innerHTML);
+                document.getElementById('kyt_machine_name').value = Array.from(itemData.getElementsByClassName('case_machine'))[0].innerHTML
+                document.getElementById('kyt_bu_name').value = Array.from(itemData.getElementsByClassName('case_bu_name'))[0].innerHTML
+                document.getElementById('kyt_lini_name').value = Array.from(itemData.getElementsByClassName('case_lini_name'))[0].innerHTML
                 document.getElementById('machine_id').value = Array.from(itemData.getElementsByClassName('case_machine_id'))[0].innerHTML
                 document.getElementById('status').value = Array.from(itemData.getElementsByClassName('case_status_id'))[0].innerHTML
                 document.getElementById('completed_at').value = completedAt.toISOString().split('T')[0];
@@ -574,6 +781,72 @@
                 data = event.target.getAttribute('data-itemid')
             })
         })
+
+        function setStatus(caseId, statusId) {
+            fetch("/MTC/Leader/UpdateCase/" + caseId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    StatusId: statusId
+                })
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 100)
+                })
+        }
+
+        Array.from(document.getElementsByClassName('btnFinish')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+                setStatus(data, 2)
+            })
+        })
+
+        document.getElementById('btnAddMember').addEventListener('click', (event) => {
+            event.preventDefault()
+            let member_select = document.getElementById('select_member_kyt').value
+            let existing_data = members_added.find((item) => item == member_select)
+            if (member_select != "" && existing_data == null) {
+                members_added.push(member_select)
+                if (members_added.length > 0) document.getElementById('added_members').classList.remove('hidden')
+                let id = member_select.split('-')[0]
+                let name = member_select.split('-')[1]
+                let email = member_select.split('-')[2]
+
+                let div = document.createElement('div');
+                div.id = 'member-' + id;
+                div.className = 'flex items-center justify-between';
+                div.innerHTML = '<span>' + name + ' - ' + email + '</span>' +
+                    '<button id="btnDeleteMember-' + id + '" type="button" data-id="' + id + '" class="btnDeleteMember btn-sm bg-primary/20 btn">Hapus</button>';
+
+                document.getElementById('added_members').appendChild(div);
+                Array.from(document.getElementsByClassName('btnDeleteMember')).map((element, index) => {
+                    element.addEventListener('click', (event) => {
+                        let data_id = event.target.getAttribute('data-id')
+                        let data_idx = members_added.findIndex((item) => item.split('-')[0] == data_id)
+                        if (data_idx >= 0) {
+                            if (members_added.length <= 1) document.getElementById('added_members').classList.add('hidden')
+                            console.log(data_idx)
+                            members_added.splice(data_idx, 1)
+                            document.getElementById('member-' + data_id).remove()
+                        }
+                    })
+                })
+            }
+        })
+
+        Array.from(document.getElementsByClassName('btnProgress')).map((element, index) => {
+            element.addEventListener('click', (event) => {
+                data = event.target.getAttribute('data-itemid')
+                setStatus(data, 3)
+            })
+        })
+
         Array.from(document.getElementsByClassName('btnCall')).map((element, index) => {
             element.addEventListener('click', async (event) => {
                 data = await event.target.getAttribute('data-itemid')
@@ -589,7 +862,7 @@
             })
             element.addEventListener('click', async (event) => {
                 data = await event.target.getAttribute('data-itemid')
-                Array.from(document.getElementsByClassName('case-'+data)).map((el, idx) => {
+                Array.from(document.getElementsByClassName('case-' + data)).map((el, idx) => {
                     el.classList.remove('hidden')
                 })
             })
@@ -640,7 +913,6 @@
 
     </script>
 }
-
 
 @functions {
     public static string GetTimeDiffClass(DateTime? targetDate)

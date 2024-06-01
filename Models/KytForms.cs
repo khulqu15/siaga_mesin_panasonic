@@ -29,10 +29,17 @@ namespace panasonic_machine_checker.Models
 
         [Required]
         [Column(TypeName = "text")]
-        public string Description { get; set; }
-
+        public string? Description { get; set; }
+        public string? Action { get; set; }
+        public string? DangerousMode { get; set; }
+        public string? PrepareProcess { get; set; }
+        public string? PreparePrediction { get; set; }
+        public string? MainProcess { get; set; }
+        public string? MainPrediction { get; set; }
+        public string? ConfirmProcess { get; set; }
+        public string? ConfirmPrediction { get; set; }
+        public DateTime? ApproveAt { get; set; }
         public int? Approval { get; set; }
-
         public virtual Case Case { get; set; } = null!;
         public virtual User FilledBy { get; set; } = null!;
     }
