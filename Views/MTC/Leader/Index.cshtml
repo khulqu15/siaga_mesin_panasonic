@@ -17,23 +17,27 @@
             <form id="formCallData">
                 <div class="form-control my-3 hidden">
                     <label for="call_case_id">Case Id</label>
-                    <input type="text" id="call_case_id" name="call_case_id" required class="input input-bordered w-full" />
+                    <input type="text" id="call_case_id" readonly name="call_case_id" required class="input input-bordered w-full" />
                 </div>
                 <div class="form-control my-3">
                     <label for="call_case_name">Selected Case</label>
-                    <input type="text" id="call_case_name" name="call_case_name" required class="input input-bordered w-full" />
+                    <input type="text" id="call_case_name" readonly name="call_case_name" required class="input input-bordered w-full" />
                 </div>
                 <div class="form-control my-3 hidden">
                     <label for="call_reported_by_id">Scheduled By</label>
-                    <input type="text" id="call_reported_by_id" name="call_reported_by_id" required class="input input-bordered w-full" />
+                    <input type="text" id="call_reported_by_id" readonly name="call_reported_by_id" required class="input input-bordered w-full" />
                 </div>
                 <div class="form-control my-3">
                     <label for="call_reported_by">Scheduled By</label>
-                    <input type="text" id="call_reported_by" name="call_reported_by" required class="input input-bordered w-full" />
+                    <input type="text" id="call_reported_by" readonly name="call_reported_by" required class="input input-bordered w-full" />
                 </div>
                 <div class="form-control my-3">
                     <label for="call_call_date">Call with vendor (date)</label>
                     <input type="date" id="call_call_date" name="call_call_date" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="reported_at">Description</label>
+                    <textarea type="date" class="textarea textarea-bordered w-full" id="description" name="description"></textarea>
                 </div>
                 <div class="modal-action">
                     <label for="call_modal" class="btn">Cancel</label>
@@ -55,7 +59,7 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="form-control my-3">
                         <label for="kyt_case_name">Selected Case</label>
-                        <input readonly type="text" id="kyt_case_name" name="kyt_case_name" required class="input input-bordered w-full" />
+                        <input readonly type="text" readonly id="kyt_case_name" name="kyt_case_name" required class="input input-bordered w-full" />
                     </div>
                     <div class="form-control my-3">
                         <label for="kyt_machine_name">Machine Selected</label>
@@ -128,7 +132,7 @@
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" id="weight_danger" class="checkbox checkbox-primary" />
-                        <span class="label-text">Benda Berat</span>
+                        <span class="label-text">Suhu tinggi</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" id="chemistry_danger" class="checkbox checkbox-primary" />
@@ -148,6 +152,10 @@
                     <label for="prepare_prediction">Danger Prediction</label>
                     <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
+                <div class="form-control my-3">
+                    <label for="prepare_prediction">Tindakan Pengendalian</label>
+                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
                 <div class="divider">Main</div>
                 <div class="form-control my-3">
                     <label for="main_process">Process</label>
@@ -157,6 +165,10 @@
                     <label for="main_prediction">Danger Prediction</label>
                     <textarea id="main_prediction" name="main_prediction" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
+                <div class="form-control my-3">
+                    <label for="prepare_prediction">Tindakan Pengendalian</label>
+                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
                 <div class="divider">Confirm</div>
                 <div class="form-control my-3">
                     <label for="confirm_process">Process</label>
@@ -165,6 +177,10 @@
                 <div class="form-control my-3">
                     <label for="confirm_prediction">Danger Prediction</label>
                     <textarea id="confirm_prediction" name="confirm_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="prepare_prediction">Tindakan Pengendalian</label>
+                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="modal-action">
                     <label for="kyt_modal" class="btn">Cancel</label>
@@ -180,29 +196,29 @@
         <div class="modal-box max-w-xl">
             <h3 class="font-bold text-lg">Machine Repairs Form</h3>
             <form id="machineRepairData">
-                <div class="form-control my-3">
-                    <label for="schedule_id">Select Schedule</label>
-                    <select required class="select select-bordered w-full mt-1" id="schedule_id" name="schedule_id">
-                        <option value="" disabled selected>Select Scheduled Repair</option>
-                        @foreach (var item in repairScheduleList)
-                        {
-                            <option class="case-data case-@item.Case.Id" value="@item.Id">@item.Id, @item.CallDate @item.Case.ReportedByNavigation.Name</option>
-                        }
-                    </select>
+                <div class="form-control my-3 hidden">
+                    <label for="schedule_id">Schedule Id</label>
+                    <input type="text" id="schedule_id" readonly name="schedule_id" required class="input input-bordered w-full" />
                 </div>
                 <div class="form-control my-3">
-                    <label for="reviewed_by">Reviewed By</label>
-                    <select required class="select select-bordered w-full text-black mt-1" id="reviewed_by" name="reviewed_by">
-                        <option value="" disabled selected>Select User</option>
-                        @foreach (var item in userList)
-                        {
-                            <option value="@item.Id">@item.Name (@item.Email)</option>
-                        }
-                    </select>
+                    <label for="schedule_name">Schedule</label>
+                    <input type="text" id="schedule_name" readonly name="schedule_name" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3 hidden">
+                    <label for="reviewed_by">Reviewed Id</label>
+                    <input type="text" id="reviewed_by" readonly name="reviewed_by" required class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="reviewed_name">Reviewed By</label>
+                    <input type="text" id="reviewed_name" readonly name="reviewed_name" required class="input input-bordered w-full" />
                 </div>
                 <div class="form-control my-3">
                     <label for="repair_date">Repair date</label>
                     <input type="date" id="repair_date" name="repair_date" class="input input-bordered w-full" />
+                </div>
+                <div class="form-control my-3">
+                    <label for="reported_at">Description</label>
+                    <textarea type="date" class="textarea textarea-bordered w-full" id="description" name="description"></textarea>
                 </div>
                 <div class="modal-action">
                     <label for="machine_repair_modal" class="btn">Cancel</label>
@@ -382,7 +398,7 @@
                                     <label for="call_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnCall bg-primary/10 text-primary btn-sm">
                                         Call Vendor
                                     </label>
-                                    <label for="machine_repair_modal" data-itemid="@item.Id" class="btn btnSchedules bg-primary/10 text-primary btn-sm">
+                                    <label for="machine_repair_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnSchedules bg-primary/10 text-primary btn-sm">
                                         Schedule
                                     </label>
                                     @if (item.IsApproved != 1)
@@ -410,7 +426,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="7">
+                            <td colspan="11">
                                 <div class="w-full bg-error text-white p-3 rounded-xl text-center">
                                     Cases Not Found
                                 </div>
@@ -563,6 +579,8 @@
                     console.log(data.data)
                     document.getElementById('call_reported_by').value = data.data.name
                     document.getElementById('call_reported_by_id').value = data.data.id
+                    document.getElementById('reviewed_by').value = data.data.id
+                    document.getElementById('reviewed_name').value = data.data.name
                     document.getElementById('kyt_filled_by').value = data.data.name
                     document.getElementById('kyt_filled_by_id').value = data.data.id
                     document.getElementById('reported_by').value = data.data.name
@@ -889,6 +907,10 @@
             })
             element.addEventListener('click', async (event) => {
                 data = await event.target.getAttribute('data-itemid')
+                let casename = await event.target.getAttribute('data-casename')
+                let reportedby = await event.target.getAttribute('data-reportedby')
+                document.getElementById('schedule_id').value = data
+                document.getElementById('schedule_name').value = casename + ' by ' + reportedby
                 Array.from(document.getElementsByClassName('case-'+data)).map((el, idx) => {
                     el.classList.remove('hidden')
                 })

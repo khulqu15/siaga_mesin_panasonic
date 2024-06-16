@@ -32,8 +32,14 @@ namespace panasonic_machine_checker.Models
 
         public int? IsApproved { get; set; }
 
+        public int? IsScheduled { get; set; }
+
         public DateTime? DateReported { get; set; }
         public DateTime? DateCompleted { get; set; }
+
+        public string? Vendor { get; set; }
+
+        public string? Reason { get; set; }
 
         [ForeignKey("MachineId")]
         public virtual Machine Machine { get; set; } = null!;

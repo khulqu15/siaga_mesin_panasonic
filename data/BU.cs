@@ -16,6 +16,8 @@
         
         public virtual ICollection<Lini> Lini { get; set; } = new List<Lini>();
 
+        public virtual ICollection<BuMaintenance> BuMaintenance { get; set; } = new List<BuMaintenance>();
+
         public virtual User ManagerUserId { get; set; } = null!;
     }
 }

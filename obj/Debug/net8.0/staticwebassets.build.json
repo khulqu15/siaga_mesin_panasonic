@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "h+N58oDwhChHf7AzE/ZpOBmfavE8coffqBVvAteHlR0=",
+  "Hash": "8JyOP3rM5BLfo/iNWdFN5AzJp0ezkgv8mXdH7lRGJ3o=",
   "Source": "panasonic_machine_checker",
   "BasePath": "_content/panasonic_machine_checker",
   "Mode": "Default",
@@ -1252,25 +1252,6 @@
       "OriginalItemSpec": "wwwroot\\uploads\\f4cd717a856df3e605e351d66fc2d23e.jpg"
     },
     {
-      "Identity": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\Frame 1 1.png",
-      "SourceId": "panasonic_machine_checker",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\",
-      "BasePath": "_content/panasonic_machine_checker",
-      "RelativePath": "uploads/Frame 1 1.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\uploads\\Frame 1 1.png"
-    },
-    {
       "Identity": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\r6zb2xwbmqea.jpg",
       "SourceId": "panasonic_machine_checker",
       "SourceType": "Discovered",
@@ -1290,12 +1271,12 @@
       "OriginalItemSpec": "wwwroot\\uploads\\r6zb2xwbmqea.jpg"
     },
     {
-      "Identity": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\WIN_20240311_17_53_13_Pro.jpg",
+      "Identity": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\uploads\\Screenshot 2024-06-04 201029.png",
       "SourceId": "panasonic_machine_checker",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\admin\\Documents\\Projects\\panasonic_machine_checker\\wwwroot\\",
       "BasePath": "_content/panasonic_machine_checker",
-      "RelativePath": "uploads/WIN_20240311_17_53_13_Pro.jpg",
+      "RelativePath": "uploads/Screenshot 2024-06-04 201029.png",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1306,7 +1287,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\uploads\\WIN_20240311_17_53_13_Pro.jpg"
+      "OriginalItemSpec": "wwwroot\\uploads\\Screenshot 2024-06-04 201029.png"
     }
   ]
 }

@@ -47,6 +47,10 @@ public partial class DbPanasonicContext : DbContext
 
     public virtual DbSet<KytMember> KytMembers { get; set; }
 
+    public virtual DbSet<LiniMaintenance> LiniMaintenances { get; set; }
+
+    public virtual DbSet<BuMaintenance> BuMaintenances { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer("Server=DESKTOP-2EGHJVD\\SQLEXPRESS;Database=db_panasonic;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -76,6 +80,9 @@ public partial class DbPanasonicContext : DbContext
             entity.Property(e => e.IsApproved).HasColumnName("is_approved");
             entity.Property(e => e.ApprovedAt).HasColumnName("approved_at");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            entity.Property(e => e.IsScheduled).HasColumnName("is_scheduled");
+            entity.Property(e => e.Vendor).HasColumnName("vendor");
+            entity.Property(e => e.Reason).HasColumnName("reason");
 
             entity.HasOne(d => d.Machine).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.MachineId)
@@ -304,6 +311,44 @@ public partial class DbPanasonicContext : DbContext
                 .HasForeignKey(d => d.ManagerId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_bus_users");
+        });
+
+        modelBuilder.Entity<BuMaintenance>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_bu_maintenances");
+            entity.ToTable("bu_maintenances");
+            entity.Property(e => e.Id);
+            entity.Property(e => e.ManagerId).HasColumnName("manager_id");
+            entity.Property(e => e.BUId).HasColumnName("bu_id");
+
+            entity.HasOne(d => d.BU).WithMany(p => p.BuMaintenance)
+                .HasForeignKey(d => d.BUId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_bu_maintenances_bu");
+
+            entity.HasOne(d => d.Manager).WithMany(p => p.BuMaintenance)
+                .HasForeignKey(d => d.ManagerId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_bu_maintenances_users");
+        });
+
+        modelBuilder.Entity<LiniMaintenance>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_bu_maintenances");
+            entity.ToTable("lini_maintenances");
+            entity.Property(e => e.Id);
+            entity.Property(e => e.LeaderId).HasColumnName("leader_id");
+            entity.Property(e => e.LiniId).HasColumnName("lini_id");
+
+            entity.HasOne(d => d.Lini).WithMany(p => p.LiniMaintenance)
+                .HasForeignKey(d => d.LiniId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_lini_maintenances_lini");
+
+            entity.HasOne(d => d.Leader).WithMany(p => p.LiniMaintenance)
+                .HasForeignKey(d => d.LeaderId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_lini_maintenances_user");
         });
 
         modelBuilder.Entity<Lini>(entity =>

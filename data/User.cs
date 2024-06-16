@@ -36,6 +36,10 @@ public partial class User
 
     public virtual ICollection<BU> BUs { get; set; } = new List<BU>();
 
+    public virtual ICollection<BuMaintenance> BuMaintenance { get; set; } = new List<BuMaintenance>();
+
+    public virtual ICollection<LiniMaintenance> LiniMaintenance { get; set; } = new List<LiniMaintenance>();
+
     public virtual ICollection<KytMember> Member { get; set; } = new List<KytMember>();
 
     public virtual ICollection<Lini> Lini { get; set; } = new List<Lini>();

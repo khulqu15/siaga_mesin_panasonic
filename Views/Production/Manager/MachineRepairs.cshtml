@@ -7,59 +7,6 @@
 }
 
 <div class="w-full bg-base-100 p-6 rounded-xl mt-5">
-    <input type="checkbox" id="form_modal" class="modal-toggle" />
-    <div class="modal" role="dialog">
-        <div class="modal-box max-w-xl">
-            <h3 class="font-bold text-lg">Machine Repairs Form</h3>
-            <form id="formData">
-                <div class="form-control my-3">
-                    <label for="schedule_id">Select Schedule</label>
-                    <select required class="select select-bordered w-full mt-1" id="schedule_id" name="schedule_id">
-                        <option value="" disabled selected>Select Scheduled Repair</option>
-                        @foreach (var item in scheduledList)
-                        {
-                            <option disabled value="@item.Id">@item.Id, @item.CallDate @item.Case.ReportedByNavigation.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-control my-3 hidden">
-                    <label for="reviewed_by_id">Reviewed By (Id)</label>
-                    <input readonly type="text" class="input input-bordered w-full" id="reviewed_by_id" name="reviewed_by_id" />
-                </div>
-                <div class="form-control my-3">
-                    <label for="reviewed_by">Reviewed By</label>
-                    <input readonly type="text" class="input input-bordered w-full" id="reviewed_by" name="reviewed_by" />
-                </div>
-                <div class="form-control my-3">
-                    <label for="repair_date">Repair date</label>
-                    <input type="date" readonly id="repair_date" name="repair_date" class="input input-bordered w-full" />
-                </div>
-                <div class="form-control my-3">
-                    <label for="status_id">Current Status</label>
-                    <select required class="select select-bordered w-full mt-1" id="status_id" name="status_id">
-                        <option value="" disabled selected>Select Status</option>
-                        @foreach (var item in statusList)
-                        {
-                            <option value="@item.Id">@item.Name</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-control my-3">
-                    <label for="corrections">Correction</label>
-                    <textarea id="corrections" name="corrections" required class="textarea textarea-bordered w-full"></textarea>
-                </div>
-                <div class="form-control my-3">
-                    <label for="result">Result</label>
-                    <textarea id="result" name="result" required class="textarea textarea-bordered w-full"></textarea>
-                </div>
-                <div class="modal-action">
-                    <label for="form_modal" class="btn">Cancel</label>
-                    <button type="submit" class="btn btn-primary text-white">Submit Data</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <input type="checkbox" id="delete_modal" class="modal-toggle" />
     <div class="modal" role="dialog">
         <div class="modal-box">
@@ -87,9 +34,9 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Scheduled</th>
+                        <th>Machine - Case - Reported by</th>
                         <th>Reviewed By</th>
-                        <th>Repaired at</th>
+                        <th>Repaired At</th>
                         <th>Status</th>
                         <th>Corrections</th>
                         <th>Result</th>
@@ -103,15 +50,33 @@
                         {
                             <tr id="item-@item.Id">
                                 <th class="item_counter">@counter</th>
+                                <td class="item_scheduled_case">@item.ScheduledBy.Case.Machine.Name - @item.ScheduledBy.Case.Machine.MachineLiniId.Name - @item.ScheduledBy.Case.ReportedByNavigation.Name</td>
                                 <td class="item_scheduled_id hidden">@item.ScheduledById</td>
-                                <td class="item_scheduled">@item.ScheduledBy.CallDate</td>
                                 <td class="item_status_id hidden">@item.StatusId</td>
                                 <td class="item_reviewed_by">@item.ReviewsBy.Name</td>
                                 <td class="item_reviewed_by_id hidden">@item.ReviewedById</td>
                                 <td class="item_repairdate">@item.RepairDate</td>
                                 <td class="item_status">@item.Status.Name</td>
-                                <td class="item_corrections">@item.Corrections</td>
-                                <td class="item_result">@item.Result</td>
+                                <td class="item_corrections">
+                                    @if (item.Corrections == "" || item.Corrections == null)
+                                    {
+                                        <span class="badge bg-base-300 text-sm">None</span>
+                                    }
+                                    else
+                                    {
+                                        @item.Corrections;
+                                    }
+                                </td>
+                                <td class="item_result">
+                                    @if(item.Result == "" || item.Result == null)
+                                    {
+                                        <span class="badge bg-base-300 text-sm">None</span>
+                                    }
+                                    else
+                                    {
+                                        @item.Result;
+                                    }
+                                </td>
                             </tr>
                             counter++;
                         }
@@ -131,7 +96,7 @@
                         <th></th>
                         <th>Scheduled</th>
                         <th>Reviewed By</th>
-                        <th>Repaired at</th>
+                        <th>Repaired At</th>
                         <th>Status</th>
                         <th>Corrections</th>
                         <th>Result</th>
@@ -182,91 +147,8 @@
                 })
         }
 
-        function updateMachine() {
-            let schedule_id = parseInt(document.getElementById('schedule_id').value);
-            let reviewed_by = parseInt(document.getElementById('reviewed_by_id').value);
-            let status_id = parseInt(document.getElementById('status_id').value);
-            let corrections = document.getElementById('corrections').value;
-            let result = document.getElementById('result').value;
-            let repair_date = document.getElementById('repair_date').value;
-            let case_data = {
-                ScheduleId: schedule_id,
-                ReviewedBy: reviewed_by,
-                StatusId: status_id,
-                RepairDate: repair_date,
-                Corrections: corrections,
-                Result: result,
-            }
-            if (data != null) case_data.Id = data
-            let url = data != null ? '/Production/UpdateMachineRepairs/' + data : '/Production/CreateMachineRepairs';
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(case_data)
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    alert('Repair Schedule Data Saved');
-                    document.getElementById('form_modal').click()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 300)
-                })
-        }
-
         document.getElementById('sort-filter').addEventListener('change', (event) => {
             window.location.href = '?page=1&sortOrder=' + event.target.value;
         })
-
-        Array.from(document.getElementsByClassName('btnEdit')).map((element, index) => {
-            element.addEventListener('click', (event) => {
-                data = event.target.getAttribute('data-itemid')
-                let itemData = document.getElementById('item-' + data)
-                const repairDate = new Date(itemData.querySelector('.item_repairdate').innerHTML);
-                document.getElementById('schedule_id').value = Array.from(itemData.getElementsByClassName('item_scheduled_id'))[0].innerHTML
-                document.getElementById('status_id').value = Array.from(itemData.getElementsByClassName('item_status_id'))[0].innerHTML
-                document.getElementById('corrections').value = Array.from(itemData.getElementsByClassName('item_corrections'))[0].innerHTML
-                document.getElementById('result').value = Array.from(itemData.getElementsByClassName('item_result'))[0].innerHTML
-                document.getElementById('repair_date').value = repairDate.toISOString().split('T')[0];
-            })
-        })
-        Array.from(document.getElementsByClassName('btnDelete')).map((element, index) => {
-            element.addEventListener('click', (event) => {
-                data = event.target.getAttribute('data-itemid')
-            })
-        })
-
-        function deleteMachine() {
-            fetch('/Production/DeleteMachineRepairs/' + data, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: data })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Repair Schedule Data deleted');
-                        document.getElementById('delete_modal').click()
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 300)
-                    } else {
-                        alert('Error deleting Repair Schedule Data ');
-                    }
-                });
-        }
-
-        document.getElementById('formData').addEventListener('submit', (event) => {
-            event.preventDefault()
-            updateMachine()
-        });
-        document.getElementById('deleteBtn').addEventListener('click', function () {
-            deleteMachine();
-        });
     </script>
 }

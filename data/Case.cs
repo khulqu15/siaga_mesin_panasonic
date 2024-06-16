@@ -21,9 +21,15 @@ public partial class Case
     
     public int? CreatedAt { get; set; }
 
+    public int? IsScheduled {  get; set; }
+
     public DateTime? DateReported { get; set; }
 
     public DateTime? DateCompleted { get; set; }
+
+    public string? Vendor { get; set; }
+
+    public string? Reason { get; set; }
 
     public virtual ICollection<JobOrder> JobOrders { get; set; } = new List<JobOrder>();
 

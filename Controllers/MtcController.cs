@@ -162,15 +162,19 @@ namespace panasonic_machine_checker.Controllers
 
             var query = _context.Cases
                 .Include(c => c.Kytforms)
-                .ThenInclude(k => k.Member)
-                .ThenInclude(m => m.UserMember)
+                    .ThenInclude(k => k.Member)
+                        .ThenInclude(m => m.UserMember)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
                 .Include(c => c.RepairSchedules)
                 .Include(c => c.Machine)
-                .ThenInclude(m => m.MachineLiniId)
-                .ThenInclude(l => l.BULiniId)
+                    .ThenInclude(m => m.MachineLiniId)
+                        .ThenInclude(l => l.BULiniId)
+                            .ThenInclude(b => b.BuMaintenance)
+                .Where(c => c.DateCompleted != null && c.IsScheduled != 0 && c.IsScheduled != null &&
+                            c.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
                 .AsQueryable();
+
 
             switch (sortOrder.ToLower())
             {
@@ -321,14 +325,17 @@ namespace panasonic_machine_checker.Controllers
 
             var query = _context.Cases
                 .Include(c => c.Kytforms)
-                .ThenInclude(k => k.Member)
-                .ThenInclude(m => m.UserMember)
+                    .ThenInclude(k => k.Member)
+                        .ThenInclude(m => m.UserMember)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
                 .Include(c => c.RepairSchedules)
                 .Include(c => c.Machine)
-                .ThenInclude(m => m.MachineLiniId)
-                .ThenInclude(l => l.BULiniId)
+                    .ThenInclude(m => m.MachineLiniId)
+                        .ThenInclude(l => l.BULiniId)
+                            .ThenInclude(b => b.BuMaintenance)
+                .Where(c => c.DateCompleted != null &&
+                            c.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
                 .AsQueryable();
 
             switch (sortOrder.ToLower())
@@ -552,16 +559,31 @@ namespace panasonic_machine_checker.Controllers
             CasesModel caseModel = new CasesModel();
             caseModel.CasesList = new List<Cases>();
             var cases = _context.Cases
-                .Include(c => c.Machine)
+                .Include(c => c.Kytforms)
+                    .ThenInclude(k => k.Member)
+                        .ThenInclude(m => m.UserMember)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
+                .Include(c => c.RepairSchedules)
+                .Include(c => c.Machine)
+                    .ThenInclude(m => m.MachineLiniId)
+                        .ThenInclude(l => l.BULiniId)
+                            .ThenInclude(b => b.BuMaintenance)
+                .Where(c => c.DateCompleted != null &&
+                            c.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
                 .ToList();
 
             var now = DateTime.Now;
             var query = _context.Kytforms
                 .Include(item => item.FilledByNavigation)
                 .Include(item => item.Case)
+                .ThenInclude(c => c.Machine)
+                    .ThenInclude(m => m.MachineLiniId)
+                        .ThenInclude(l => l.BULiniId)
+                            .ThenInclude(b => b.BuMaintenance)
+                .Where(c => c.Case.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
                 .AsQueryable();
+
             switch (sortOrder.ToLower())
             {
                 case "newest":

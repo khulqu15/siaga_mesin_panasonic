@@ -17,6 +17,8 @@
         public virtual BU BULiniId { get; set; } = null!;
 
         public virtual ICollection<Machine> Machines { get; set; } = new List<Machine>();
+        
+        public virtual ICollection<LiniMaintenance> LiniMaintenance { get; set; } = new List<LiniMaintenance>();
 
         public virtual User LeaderLiniId { get; set; } = null!;
     }

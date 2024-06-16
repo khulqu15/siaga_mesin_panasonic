@@ -77,6 +77,20 @@
                 </div>
             </div>
         </div>
+        <div class="w-full grid md:grid-cols-4 grid-cols-2 gap-3 mb-4">
+            <div>
+                <button id="btnStatusPending" class="btn btn-sm bg-base-200 text-base-content w-full">Pending</button>
+            </div>
+            <div>
+                <button id="btnStatusCalled" class="btn btn-sm bg-base-200 text-base-content w-full">Called</button>
+            </div>
+            <div>
+                <button id="btnStatusProgress" class="btn btn-sm bg-base-200 text-base-content w-full">Progress</button>
+            </div>
+            <div>
+                <button id="btnStatusComplete" class="btn btn-sm bg-base-200 text-base-content w-full">Complete</button>
+            </div>
+        </div>
         <div class="overflow-x-auto">
             <table class="table table-sm">
                 <thead>
@@ -86,8 +100,9 @@
                         <th>Reported By</th>
                         <th>Reported At</th>
                         <th>Deadline</th>
-                        <th>Status</th>
+                        <th>Vendor - Reason</th>
                         <th>Description</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -118,6 +133,11 @@
                                     }
                                 </td>
                                 <td class="hidden case_status_id">@item.StatusId</td>
+                                <td class="case_vendor hidden">@item.Vendor</td>
+                                <td class="case_reason hidden">@item.Reason</td>
+                                <td class="case_vendor_reason">
+                                    <span>@item.Vendor - @item.Reason</span>
+                                </td>
                                 <td class="hidden case_description">@item.Description</td>
                                 <td>
                                     @if(item.Description != "")
@@ -160,7 +180,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="7">
+                            <td colspan="9">
                                 <div class="w-full bg-error text-white p-3 rounded-xl text-center">
                                     Cases Not Found
                                 </div>
@@ -175,8 +195,8 @@
                         <th>Reported By</th>
                         <th>Reported At</th>
                         <th>Deadline</th>
-                        <th>Status</th>
                         <th>Description</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -287,6 +307,21 @@
 
 @section Scripts {
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const statusOrderUrl = urlParams.get('statusOrder');
+        if (statusOrderUrl == null || statusOrderUrl == undefined || statusOrderUrl == 'Pending') {
+            document.getElementById('btnStatusPending').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Called') {
+            document.getElementById('btnStatusCalled').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Progress') {
+            document.getElementById('btnStatusProgress').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Success') {
+            document.getElementById('btnStatusComplete').classList.add('bg-primary', 'text-white')
+        }
+
         let user_id = 0;
 
         let checkToken = sessionStorage.getItem('authToken')
@@ -384,8 +419,33 @@
             })
         }
 
+        function changeStatus(status) {
+            let sort_data = document.getElementById('sort-filter').value == 'Select Order' ? 'newest' : document.getElementById('sort-filter').value
+            console.log(sort_data)
+            let current_url = window.location.href
+            let baseUrl = current_url.split('?')[0]
+            window.location.href = baseUrl + '?page=1&sortOrder='+sort_data+'&statusOrder='+status
+        }
+
         document.getElementById('sort-filter').addEventListener('change', (event) => {
             window.location.href = '?page=1&sortOrder='+event.target.value;
+        })
+
+        document.getElementById('btnStatusPending').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Pending')
+        })
+        document.getElementById('btnStatusProgress').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Progress')
+        })
+        document.getElementById('btnStatusCalled').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Called')
+        })
+        document.getElementById('btnStatusComplete').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Success')
         })
 
         document.getElementById('btnAdd').addEventListener('click', (event) => {
