@@ -94,12 +94,14 @@
                 @if (UserIsInRole("Production Manager"))
                 {
                     <li><a class="@isActive("Production", "ManagerDashboard") linkid" asp-area="" asp-controller="Production" asp-action="ManagerDashboard">Dashboard</a></li>
+                    <li><a class="@isActive("Production", "ManagerReportedCase") linkid" asp-area="" asp-controller="Production" asp-action="ManagerReportedCase">Reported Case</a></li>
                     <li><a class="@isActive("Production", "Manager") linkid" asp-area="" asp-controller="Production" asp-action="Manager">Job Order Lists</a></li>
                     <li><a class="@isActive("Production", "ManagerMachineRepairs") linkid" asp-area="" asp-controller="Production" asp-action="ManagerMachineRepairs">Machine Repairs</a></li>
                 }
                 @if (UserIsInRole("MTC Leader"))
                 {
                     <li><a class="@isActive("Mtc", "Dashboard") linkid" asp-area="" asp-controller="Mtc" asp-action="Dashboard">Dashboard</a></li>
+                    <li><a class="@isActive("Mtc", "LeaderMtcReportedCase") linkid" asp-area="" asp-controller="Mtc" asp-action="LeaderMtcReportedCase">Reported Case</a></li>
                     <li><a class="@isActive("Mtc", "Leader") linkid" asp-area="" asp-controller="Mtc" asp-action="Leader">Review Cases</a></li>
                 }
                 @if (UserIsInRole("MTC Member"))
@@ -109,6 +111,7 @@
                 @if (UserIsInRole("MTC Manager"))
                 {
                     <li><a class="@isActive("Mtc", "ManagerDashboard") linkid" asp-area="" asp-controller="Mtc" asp-action="ManagerDashboard">Dashboard</a></li>
+                    <li><a class="@isActive("Mtc", "ManagerMtcReportedCase") linkid" asp-area="" asp-controller="Mtc" asp-action="ManagerMtcReportedCase">Reported Case</a></li>
                     <li><a class="@isActive("Mtc", "Manager") linkid" asp-area="" asp-controller="Mtc" asp-action="Manager">KYT Form Lists</a></li>
                     <li><a class="@isActive("Mtc", "ManagerCase") linkid" asp-area="" asp-controller="Mtc" asp-action="ManagerCase">Case Lists</a></li>
                 }

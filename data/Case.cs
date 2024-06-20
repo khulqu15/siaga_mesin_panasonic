@@ -23,6 +23,8 @@ public partial class Case
 
     public int? IsScheduled {  get; set; }
 
+    public int? DecisionManager {  get; set; }
+
     public DateTime? DateReported { get; set; }
 
     public DateTime? DateCompleted { get; set; }

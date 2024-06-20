@@ -165,6 +165,15 @@ namespace panasonic_machine_checker.Controllers
                 .Where(c => c.Machine.MachineLiniId.LeaderId == id)
                 .AsQueryable();
 
+            var checkPendingCase = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.RepairSchedules)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .Where(c => c.Machine.MachineLiniId.LeaderId == id && c.Status.Name == "Pending")
+                .Count();
+
             query = query.Where(c => c.Status.Name == statusOrder);
             query = query.Where(c => c.ReportedByNavigation.Id == id);
             switch (sortOrder.ToLower())
@@ -242,8 +251,10 @@ namespace panasonic_machine_checker.Controllers
             ViewBag.MachineList = machinesModel.MachinesList;
             ViewBag.UserList = usersModel.UserList;
             ViewBag.StatusList = statusModel.StatusList;
+            ViewBag.CountPendingCase = checkPendingCase;
             return View("~/Views/Production/Leader/Index.cshtml", caseModel);
         }
+
 
         [HttpPost("/Production/CreateCase")]
         public JsonResult CreateCase([FromBody] Case data)
@@ -506,6 +517,118 @@ namespace panasonic_machine_checker.Controllers
                 return Json(new { success = true });
             }
             return Json(new { success = false });
+        }
+
+        [HttpGet("/Production/ManagerReportedCase/{id}")]
+        public IActionResult ManagerReportedCase(int id, int page = 1, string sortOrder = "newest", string statusOrder = "Pending")
+        {
+            ViewData["UserRole"] = "Production Manager";
+            int pageSize = 10;
+            CasesModel caseModel = new CasesModel();
+            caseModel.CasesList = new List<Cases>();
+
+            MachinesModel machinesModel = new MachinesModel();
+            machinesModel.MachinesList = new List<Machines>();
+            var machines = _context.Machines
+                .Include(m => m.MachineLiniId)
+                .Where(m => m.MachineLiniId.LeaderId == id)
+                .ToList();
+
+            UsersModel usersModel = new UsersModel();
+            usersModel.UserList = new List<Users>();
+            var users = _context.Users.ToList();
+
+            StatusModel statusModel = new StatusModel();
+            statusModel.StatusList = new List<StatusCases>();
+            var status = _context.StatusCases.ToList();
+
+            var query = _context.Cases
+                .Include(c => c.ReportedByNavigation)
+                .Include(c => c.Status)
+                .Include(c => c.RepairSchedules)
+                .Include(c => c.Machine)
+                .ThenInclude(m => m.MachineLiniId)
+                .Where(c => c.Machine.MachineLiniId.LeaderId == id)
+                .AsQueryable();
+
+            query = query.Where(c => c.Status.Name == statusOrder);
+            query = query.Where(c => c.ReportedByNavigation.Id == id);
+            switch (sortOrder.ToLower())
+            {
+                case "newest":
+                    query = query.OrderByDescending(m => m.Id);
+                    break;
+                case "oldest":
+                    query = query.OrderBy(m => m.Id);
+                    break;
+            }
+            var itemCount = query.Count();
+            var data = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            foreach (var item in data)
+            {
+                caseModel.CasesList.Add(new Cases
+                {
+                    Id = item.Id,
+                    Description = item.Description,
+                    MachineId = item.MachineId,
+                    ReportedById = item.ReportedById,
+                    StatusId = item.StatusId,
+                    DateCompleted = item.DateCompleted,
+                    DateReported = item.DateReported,
+                    Machine = item.Machine,
+                    Status = item.Status,
+                    RepairSchedule = item.RepairSchedules,
+                    ReportedByNavigation = item.ReportedByNavigation,
+                    Vendor = item.Vendor,
+                    Reason = item.Reason,
+                });
+            }
+            caseModel.TotalItems = itemCount;
+            caseModel.CurrentPage = page;
+            caseModel.PageSize = pageSize;
+
+
+            foreach (var machine in machines)
+            {
+                machinesModel.MachinesList.Add(new Machines
+                {
+                    Id = machine.Id,
+                    Name = machine.Name,
+                    Type = machine.Type,
+                    Location = machine.Location
+                });
+            }
+
+            foreach (var item in users)
+            {
+                usersModel.UserList.Add(new Users
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Email = item.Email,
+                    Password = item.Password,
+                    RoleNavigation = item.RoleNavigation,
+                    Avatar = item.Avatar,
+                    Phone = item.Phone,
+                    VerifiedAt = item.VerifiedAt,
+                    RoleId = item.Role
+                });
+            }
+
+            foreach (var item in status)
+            {
+                statusModel.StatusList.Add(new StatusCases
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                });
+            }
+
+            ViewBag.MachineList = machinesModel.MachinesList;
+            ViewBag.UserList = usersModel.UserList;
+            ViewBag.StatusList = statusModel.StatusList;
+            return View("~/Views/Production/Manager/ReportedCase.cshtml", caseModel);
         }
 
         [HttpGet("/Production/Manager/{id}")]

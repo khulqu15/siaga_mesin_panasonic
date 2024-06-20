@@ -83,6 +83,7 @@ public partial class DbPanasonicContext : DbContext
             entity.Property(e => e.IsScheduled).HasColumnName("is_scheduled");
             entity.Property(e => e.Vendor).HasColumnName("vendor");
             entity.Property(e => e.Reason).HasColumnName("reason");
+            entity.Property(e => e.DecisionManager).HasColumnName("decision_manager");
 
             entity.HasOne(d => d.Machine).WithMany(p => p.Cases)
                 .HasForeignKey(d => d.MachineId)

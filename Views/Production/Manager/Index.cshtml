@@ -42,14 +42,7 @@
                         <input type="time" required class="input input-bordered w-full" id="scheduled_time" name="scheduled_time" />
                     </div>
                 </div>
-                <div class="form-control my-3">
-                    <label for="vendor">Vendor</label>
-                    <input type="text" required class="input input-bordered w-full" id="vendor" name="vendor" placeholder="Enter a vendor name"/>
-                </div>
-                <div class="form-control my-3">
-                    <label for="reason">Reason</label>
-                    <textarea type="text" required class="textarea textarea-bordered w-full" id="reason" name="reason" placeholder="Why we use that vendor ?"></textarea>
-                </div>
+              
                 <div class="modal-action">
                     <label for="form_modal" class="btn">Cancel</label>
                     <button type="submit" class="btn btn-primary text-white">Submit Data</button>
@@ -271,8 +264,8 @@
         })
 
         function updateCase(job, schedule, id) {
-            let vendor_input = document.getElementById('vendor').value
-            let reason_input = document.getElementById('reason').value
+            // let vendor_input = document.getElementById('vendor').value
+            // let reason_input = document.getElementById('reason').value
 
             fetch("/Production/UpdateManagerCase/" + id, {
                 method: "PUT",
@@ -283,8 +276,8 @@
                     DateCompleted: schedule,
                     IsScheduled: 1,
                     StatusId: 4,
-                    Vendor: vendor_input,
-                    Reason: reason_input,
+                    // Vendor: vendor_input,
+                    // Reason: reason_input,
                 })
             })
                 .then((response) => response.json())

@@ -34,6 +34,8 @@ namespace panasonic_machine_checker.Models
 
         public int? IsScheduled { get; set; }
 
+        public int? DecisionManager { get; set; }
+
         public DateTime? DateReported { get; set; }
         public DateTime? DateCompleted { get; set; }
 

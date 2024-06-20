@@ -2,7 +2,6 @@
 @{
     var machineList = ViewBag.MachineList as List<Machines>;
     var statusList = ViewBag.StatusList as List<StatusCases>;
-    var checkPending = ViewBag.CountPendingCase;
     Layout = "~/Views/Shared/_App_Layout.cshtml";
 }
 
@@ -69,10 +68,7 @@
             <div class="flex items-center justify-between w-full mb-3">
                 <h1 class="font-semibold">My Reported Cases <span class="badge badge-primary">@Model.TotalItems</span></h1>
                 <div>
-                    @if (checkPending == 0)
-                    {
-                        <label for="form_modal" id="btnAdd" class="btn btn-sm btn-primary">Add new</label>
-                    }
+                    <label for="form_modal" id="btnAdd" class="btn btn-sm btn-primary">Add new</label>
                     <select class="select w-24 select-sm select-bordered" id="sort-filter">
                         <option disabled selected>Select Order</option>
                         <option value="newest">Terbaru (Newest)</option>
@@ -126,14 +122,14 @@
                                 <td class="case_date_reported">@item.DateReported</td>
                                 <td class="hidden case_date_completed">@item.DateCompleted</td>
                                 <td>
-                                    @if(item.DateCompleted.HasValue)
+                                    @if (item.DateCompleted.HasValue)
                                     {
                                         <p class="mb-1">@item.DateCompleted?.ToString("dd/MM/yyyy HH:mm")</p>
                                         <span class="py-1 rounded px-2 text-xs @GetTimeDiffClass(item.DateCompleted)">@FormatTimeDifference(item.DateCompleted)</span>
-                                    } 
+                                    }
                                     else
                                     {
-                                        <span class="py-1 rounded px-2 text-xs bg-base-300">None</span>    
+                                        <span class="py-1 rounded px-2 text-xs bg-base-300">None</span>
                                     }
                                 </td>
                                 <td class="hidden case_status_id">@item.StatusId</td>
@@ -144,7 +140,7 @@
                                 </td>
                                 <td class="hidden case_description">@item.Description</td>
                                 <td>
-                                    @if(item.Description != "")
+                                    @if (item.Description != "")
                                     {
                                         @item.Description
                                     }
@@ -162,7 +158,7 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
                                     </label>
 
-                                    @if(hasRepairSchedule)
+                                    @if (hasRepairSchedule)
                                     {
                                         <button data-itemid="@item.Id" class="btn btnCollapse btn-info btn-sm">
                                             View Schedule
@@ -170,7 +166,7 @@
                                     }
                                 </td>
                             </tr>
-                            foreach(var schedule in item.RepairSchedule)
+                            foreach (var schedule in item.RepairSchedule)
                             {
                                 <tr class="bg-base-200 hidden collapse-data" id="schedule-@item.Id">
                                     <td>@schedule.Id</td>
@@ -191,7 +187,7 @@
                             </td>
                         </tr>
                     }
-                    </tbody>
+                </tbody>
                 <tfoot>
                     <tr>
                         <th></th>
@@ -380,8 +376,8 @@
                 DateReported: date_reported,
                 DateCompleted: dateTimeString,
             }
-            if(data != null) case_data.Id = data
-            let url = data != null ? '/Production/UpdateCase/'+data : '/Production/CreateCase';
+            if (data != null) case_data.Id = data
+            let url = data != null ? '/Production/UpdateCase/' + data : '/Production/CreateCase';
 
             fetch(url, {
                 method: 'POST',
@@ -413,14 +409,14 @@
                     StatusId: case_data.statusId,
                 })
             })
-            .then((response) => response.json())
-            .then((data) => {
-                alert('Case & Job Order Saved');
-                document.getElementById('form_modal').click()
-                setTimeout(() => {
-                    window.location.reload()
-                }, 300)
-            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert('Case & Job Order Saved');
+                    document.getElementById('form_modal').click()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 300)
+                })
         }
 
         function changeStatus(status) {
@@ -428,11 +424,11 @@
             console.log(sort_data)
             let current_url = window.location.href
             let baseUrl = current_url.split('?')[0]
-            window.location.href = baseUrl + '?page=1&sortOrder='+sort_data+'&statusOrder='+status
+            window.location.href = baseUrl + '?page=1&sortOrder=' + sort_data + '&statusOrder=' + status
         }
 
         document.getElementById('sort-filter').addEventListener('change', (event) => {
-            window.location.href = '?page=1&sortOrder='+event.target.value;
+            window.location.href = '?page=1&sortOrder=' + event.target.value;
         })
 
         document.getElementById('btnStatusPending').addEventListener('click', (event) => {
@@ -465,7 +461,7 @@
                 Array.from(document.getElementsByClassName('collapse-data')).map((el, idx) => {
                     el.classList.add('hidden')
                 })
-                document.getElementById('schedule-'+id).classList.remove('hidden')
+                document.getElementById('schedule-' + id).classList.remove('hidden')
             })
         })
 

@@ -102,6 +102,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXExlYWRlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Leader/ReportedCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXExlYWRlclxSZXBvcnRlZENhc2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Manager/Case.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXE1hbmFnZXJcQ2FzZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -112,6 +116,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Manager/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXE1hbmFnZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Manager/ReportedCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTVRDXE1hbmFnZXJcUmVwb3J0ZWRDYXNlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/MTC/Member/Index.cshtml]
@@ -144,6 +152,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Manager/MachineRepairs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdGlvblxNYW5hZ2VyXE1hY2hpbmVSZXBhaXJzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Manager/ReportedCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdGlvblxNYW5hZ2VyXFJlcG9ydGVkQ2FzZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/admin/Documents/Projects/panasonic_machine_checker/Views/Production/Profile.cshtml]
