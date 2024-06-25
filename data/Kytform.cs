@@ -20,10 +20,13 @@ public partial class Kytform
     public string? DangerousMode { get; set; }
     public string? PrepareProcess { get; set; }
     public string? PreparePrediction { get; set; }
+    public string? PrepareAction { get; set; }
     public string? MainProcess { get; set; }
     public string? MainPrediction { get; set; }
+    public string? MainAction { get; set; }
     public string? ConfirmProcess { get; set; }
     public string? ConfirmPrediction { get; set; }
+    public string? ConfirmAction { get; set; }
     public int? Approval { get; set; }
 
     public DateTime? ApproveAt { get; set; }

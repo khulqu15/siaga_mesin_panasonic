@@ -16,6 +16,8 @@ public partial class Machine
 
     public int? LiniId { get; set; }
 
+    public int? IsUsed { get; set; }
+
     public virtual ICollection<Case> Cases { get; set; } = new List<Case>();
 
     [ForeignKey("LiniId")]

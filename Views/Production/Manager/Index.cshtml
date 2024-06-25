@@ -73,12 +73,15 @@
                 </select>
             </div>
         </div>
-        <div class="w-full grid md:grid-cols-4 grid-cols-2 gap-3 mb-4">
+        <div class="w-full grid md:grid-cols-5 grid-cols-3 gap-3 mb-4">
             <div>
                 <button id="btnStatusPending" class="btn btn-sm bg-base-200 text-base-content w-full">Pending</button>
             </div>
             <div>
-                <button id="btnStatusCalled" class="btn btn-sm bg-base-200 text-base-content w-full">Called</button>
+                <button id="btnStatusCalled" class="btn btn-sm bg-base-200 text-base-content w-full">Scheduled</button>
+            </div>
+            <div>
+                <button id="btnStatusVendor" class="btn btn-sm bg-base-200 text-base-content w-full">Called</button>
             </div>
             <div>
                 <button id="btnStatusProgress" class="btn btn-sm bg-base-200 text-base-content w-full">Progress</button>
@@ -125,16 +128,19 @@
                                         <span class="badge bg-base-300 text-sm">Not Yet</span>
                                     }
                                 </td>
-                                <td class="item_status">@item.Status.Name</td>
+                                <td class="item_status">@item.Case.Status.Name</td>
                                 <td class="item_reviewed_by">@item.Case.Description</td>
                                 <td>
-                                    <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
-                                        Set Schedule
-                                    </label>
-                                    <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                                    </label>
+                                    @if (item.Case.Status.Name != "Progress" && item.Case.Status.Name != "Success")
+                                    {
+                                        <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                            Set Schedule
+                                        </label>
+                                        <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                        </label>
+                                    }
                                 </td>
                             </tr>
                             counter++;
@@ -185,6 +191,9 @@
         }
         if (statusOrderUrl == 'Called') {
             document.getElementById('btnStatusCalled').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Vendor') {
+            document.getElementById('btnStatusVendor').classList.add('bg-primary', 'text-white')
         }
         if (statusOrderUrl == 'Progress') {
             document.getElementById('btnStatusProgress').classList.add('bg-primary', 'text-white')
@@ -257,6 +266,10 @@
         document.getElementById('btnStatusCalled').addEventListener('click', (event) => {
             event.preventDefault()
             changeStatus('Called')
+        })
+        document.getElementById('btnStatusVendor').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Vendor')
         })
         document.getElementById('btnStatusComplete').addEventListener('click', (event) => {
             event.preventDefault()

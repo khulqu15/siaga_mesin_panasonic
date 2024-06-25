@@ -30,6 +30,8 @@ namespace panasonic_machine_checker.Models
         [ForeignKey("LiniId")]
         public virtual Lini MachineLiniId { get; set; } = null!;
 
+        public int? IsUsed { get; set; }
+
         [NotMapped]
         public string? BUName => MachineLiniId?.BULiniId?.Name ?? "Not Assigned";
     }

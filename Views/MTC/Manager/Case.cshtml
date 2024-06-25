@@ -476,8 +476,6 @@
                     let end_date = new Date()
                     if (xlsx_completed_at != null) end_date = new Date(xlsx_completed_at)
 
-                    let num = Math.round(0xffffff * Math.random())
-
                     let reported = new Date(xlsx_reported_at)
                     let difference = Math.abs(end_date.getTime() - reported.getTime())
                     total_minutes = Math.round(difference / 60000)

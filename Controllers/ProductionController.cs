@@ -4,6 +4,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using panasonic_machine_checker.data;
 using panasonic_machine_checker.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 
 namespace panasonic_machine_checker.Controllers
 {
@@ -145,7 +148,7 @@ namespace panasonic_machine_checker.Controllers
             machinesModel.MachinesList = new List<Machines>();
             var machines = _context.Machines
                 .Include(m => m.MachineLiniId)
-                .Where(m => m.MachineLiniId.LeaderId == id)
+                .Where(m => m.MachineLiniId.LeaderId == id && m.IsUsed != 1)
                 .ToList();
             
             UsersModel usersModel = new UsersModel();
@@ -262,6 +265,20 @@ namespace panasonic_machine_checker.Controllers
             _context.Cases.Add(data);
             _context.SaveChanges();
             return Json(new { success = true, case_data = data });
+        }
+
+        [HttpPost("/Production/UpdateMachines/{id}")]
+        public JsonResult UpdateMachines(int id, [FromBody] Machine data)
+        {
+            var machines = _context.Machines.Find(id);
+            if(machines != null)
+            {
+                machines.IsUsed = data.IsUsed;
+                _context.SaveChanges();
+                return Json(new { success = true, data = machines });
+            }
+            return Json(new { success = false, message = "Machines not found." });
+
         }
 
         [HttpPost("/Production/UpdateCase/{id}")]

@@ -154,10 +154,13 @@ public partial class DbPanasonicContext : DbContext
             entity.Property(e => e.DangerousMode).HasColumnType("text").HasColumnName("dangerous_mode");
             entity.Property(e => e.PrepareProcess).HasColumnType("text").HasColumnName("prepare_process");
             entity.Property(e => e.PreparePrediction).HasColumnType("text").HasColumnName("prepare_prediction");
+            entity.Property(e => e.PrepareAction).HasColumnType("text").HasColumnName("prepare_action");
             entity.Property(e => e.MainProcess).HasColumnType("text").HasColumnName("main_process");
             entity.Property(e => e.MainPrediction).HasColumnType("text").HasColumnName("main_prediction");
+            entity.Property(e => e.MainAction).HasColumnType("text").HasColumnName("main_action");
             entity.Property(e => e.ConfirmProcess).HasColumnType("text").HasColumnName("confirm_process");
             entity.Property(e => e.ConfirmPrediction).HasColumnType("text").HasColumnName("confirm_prediction");
+            entity.Property(e => e.ConfirmAction).HasColumnType("text").HasColumnName("confirm_action");
             entity.Property(e => e.ApproveAt).HasColumnName("approve_at");
 
             entity.HasOne(d => d.Case).WithMany(p => p.Kytforms)
@@ -191,6 +194,7 @@ public partial class DbPanasonicContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("type");
             entity.Property(e => e.LiniId).HasColumnName("lini_id");
+            entity.Property(e => e.IsUsed).HasColumnName("is_used");
 
             entity.HasOne(e => e.MachineLiniId).WithMany(p => p.Machines)
                 .HasForeignKey(d => d.LiniId)

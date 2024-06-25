@@ -35,6 +35,45 @@
                     <label for="potential_hazard">Potential Hazard</label>
                     <textarea id="potential_hazard" name="potential_hazard" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
+                <div class="divider">Prepare</div>
+                <div class="form-control my-3">
+                    <label for="prepare_process">Process</label>
+                    <textarea id="prepare_process" name="prepare_process" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="prepare_prediction">Danger Prediction</label>
+                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="prepare_action">Tindakan Pengendalian</label>
+                    <textarea id="prepare_action" name="prepare_action" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="divider">Main</div>
+                <div class="form-control my-3">
+                    <label for="main_process">Process</label>
+                    <textarea id="main_process" name="main_process" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="main_prediction">Danger Prediction</label>
+                    <textarea id="main_prediction" name="main_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="main_action">Tindakan Pengendalian</label>
+                    <textarea id="main_action" name="main_action" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="divider">Confirm</div>
+                <div class="form-control my-3">
+                    <label for="confirm_process">Process</label>
+                    <textarea id="confirm_process" name="confirm_process" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="confirm_prediction">Danger Prediction</label>
+                    <textarea id="confirm_prediction" name="confirm_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
+                <div class="form-control my-3">
+                    <label for="confirm_action">Tindakan Pengendalian</label>
+                    <textarea id="confirm_action" name="confirm_action" required class="textarea textarea-bordered w-full"></textarea>
+                </div>
                 <div class="modal-action">
                     <label for="form_modal" class="btn">Cancel</label>
                     <button type="button" id="rejectBtn" class="btn btn-error text-white">Reject</button>
@@ -75,6 +114,12 @@
                         <th>Case</th>
                         <th>Filled By</th>
                         <th>Potential Hazard</th>
+                        @* <th>Prepare Process</th>
+                        <th>Prepare Predict</th>
+                        <th>Main Process</th>
+                        <th>Main Predict</th>
+                        <th>Confirm Predict</th>
+                        <th>Confirm Process</th> *@
                         <th>Approval</th>
                         <th>Action</th>
                     </tr>
@@ -91,9 +136,22 @@
                                 <td class="item_case">@item.Case.Machine.Name by @item.Case.ReportedByNavigation.Name</td>
                                 <td class="item_filled_by_id hidden">@item.FilledById</td>
                                 <td class="item_filled_by">@item.FilledBy.Name</td>
-                                <td class="item_potential_hazard">@item.PotentialHazard</td>
-                                <td class="item_approval">@if(item.Approval == null) { <span>-</span>
-                                    } else
+                                <td class="item_potential_hazard hidden">@item.PotentialHazard</td>
+                                <td class="item_prepare_process hidden">@item.PrepareProcess</td>
+                                <td class="item_prepare_predict hidden">@item.PreparePrediction</td>
+                                <td class="item_prepare_action hidden">@item.PrepareAction</td>
+                                <td class="item_main_process hidden">@item.MainProcess</td>
+                                <td class="item_main_predict hidden">@item.MainPrediction</td>
+                                <td class="item_main_action hidden">@item.MainAction</td>
+                                <td class="item_confirm_predict hidden">@item.ConfirmPrediction</td>
+                                <td class="item_confirm_process hidden">@item.ConfirmProcess</td>
+                                <td class="item_confirm_action hidden">@item.ConfirmAction</td>
+                                <td class="item_approval">
+                                    @if(item.Approval == null) 
+                                    { 
+                                        <span>-</span>
+                                    } 
+                                    else
                                     {
                                         @if (item.Approval == 0)
                                         {
@@ -109,7 +167,7 @@
                                     @if(item.Case.DecisionManager == null)
                                     {
                                     <label for="form_modal" data-itemid="@item.Id" class="btn btnEdit btn-primary btn-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg>
+                                        @* <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="m11.4 18.161l7.396-7.396a10.289 10.289 0 0 1-3.326-2.234a10.29 10.29 0 0 1-2.235-3.327L5.839 12.6c-.577.577-.866.866-1.114 1.184a6.556 6.556 0 0 0-.749 1.211c-.173.364-.302.752-.56 1.526l-1.362 4.083a1.06 1.06 0 0 0 1.342 1.342l4.083-1.362c.775-.258 1.162-.387 1.526-.56c.43-.205.836-.456 1.211-.749c.318-.248.607-.537 1.184-1.114m9.448-9.448a3.932 3.932 0 0 0-5.561-5.561l-.887.887l.038.111a8.754 8.754 0 0 0 2.092 3.32a8.754 8.754 0 0 0 3.431 2.13z" /></svg> *@
                                         Review
                                     </label>
                                     }
@@ -137,6 +195,12 @@
                         <th>Case</th>
                         <th>Filled By</th>
                         <th>Potential Hazard</th>
+                        @* <th>Prepare Process</th>
+                        <th>Prepare Predict</th>
+                        <th>Main Process</th>
+                        <th>Main Predict</th>
+                        <th>Confirm Predict</th>
+                        <th>Confirm Process</th> *@
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -193,7 +257,8 @@
                         body: JSON.stringify({
                             ApprovedAt: now,
                             DecisionManager: 1,
-                            IsApproved: approval_status
+                            IsApproved: approval_status,
+                            StatusId: approval_status == 0 ? 4 : 3
                         })
                     });
                 })
@@ -225,6 +290,15 @@
                         document.getElementById('case_id').value = Array.from(itemData.getElementsByClassName('item_case_id'))[0].innerHTML
                         document.getElementById('filled_by').value = Array.from(itemData.getElementsByClassName('item_filled_by_id'))[0].innerHTML
                         document.getElementById('potential_hazard').value = Array.from(itemData.getElementsByClassName('item_potential_hazard'))[0].innerHTML
+                        document.getElementById('prepare_process').value = Array.from(itemData.getElementsByClassName('item_prepare_process'))[0].innerHTML
+                        document.getElementById('prepare_prediction').value = Array.from(itemData.getElementsByClassName('item_prepare_predict'))[0].innerHTML
+                        document.getElementById('prepare_action').value = Array.from(itemData.getElementsByClassName('item_prepare_action'))[0].innerHTML
+                        document.getElementById('main_process').value = Array.from(itemData.getElementsByClassName('item_main_process'))[0].innerHTML
+                        document.getElementById('main_prediction').value = Array.from(itemData.getElementsByClassName('item_main_predict'))[0].innerHTML
+                        document.getElementById('main_action').value = Array.from(itemData.getElementsByClassName('item_main_action'))[0].innerHTML
+                        document.getElementById('confirm_prediction').value = Array.from(itemData.getElementsByClassName('item_confirm_predict'))[0].innerHTML
+                        document.getElementById('confirm_process').value = Array.from(itemData.getElementsByClassName('item_confirm_process'))[0].innerHTML
+                        document.getElementById('confirm_action').value = Array.from(itemData.getElementsByClassName('item_confirm_action'))[0].innerHTML
                     }, 300)
                 })
             })

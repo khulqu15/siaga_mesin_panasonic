@@ -159,8 +159,8 @@
                     <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="form-control my-3">
-                    <label for="prepare_prediction">Tindakan Pengendalian</label>
-                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                    <label for="prepare_action">Tindakan Pengendalian</label>
+                    <textarea id="prepare_action" name="prepare_action" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="divider">Main</div>
                 <div class="form-control my-3">
@@ -172,8 +172,8 @@
                     <textarea id="main_prediction" name="main_prediction" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="form-control my-3">
-                    <label for="prepare_prediction">Tindakan Pengendalian</label>
-                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                    <label for="main_action">Tindakan Pengendalian</label>
+                    <textarea id="main_action" name="main_action" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="divider">Confirm</div>
                 <div class="form-control my-3">
@@ -185,8 +185,8 @@
                     <textarea id="confirm_prediction" name="confirm_prediction" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="form-control my-3">
-                    <label for="prepare_prediction">Tindakan Pengendalian</label>
-                    <textarea id="prepare_prediction" name="prepare_prediction" required class="textarea textarea-bordered w-full"></textarea>
+                    <label for="confirm_action">Tindakan Pengendalian</label>
+                    <textarea id="confirm_action" name="confirm_action" required class="textarea textarea-bordered w-full"></textarea>
                 </div>
                 <div class="modal-action">
                     <label for="kyt_modal" class="btn">Cancel</label>
@@ -309,6 +309,23 @@
                 </div>
             </div>
         </div>
+        <div class="w-full grid md:grid-cols-5 grid-cols-3 gap-3 mb-4">
+            <div>
+                <button id="btnStatusPending" class="btn btn-sm bg-base-200 text-base-content w-full">Pending</button>
+            </div>
+            <div>
+                <button id="btnStatusCalled" class="btn btn-sm bg-base-200 text-base-content w-full">Scheduled</button>
+            </div>
+            <div>
+                <button id="btnStatusVendor" class="btn btn-sm bg-base-200 text-base-content w-full">Called</button>
+            </div>
+            <div>
+                <button id="btnStatusProgress" class="btn btn-sm bg-base-200 text-base-content w-full">Progress</button>
+            </div>
+            <div>
+                <button id="btnStatusComplete" class="btn btn-sm bg-base-200 text-base-content w-full">Complete</button>
+            </div>
+        </div>
         <div class="overflow-x-auto">
             <table class="table table-sm">
                 <thead>
@@ -333,9 +350,9 @@
                         int counter = 1;
                         foreach (var item in Model.CasesList)
                         {
-                            DateTime now = DateTime.Now;
+                            @* DateTime now = DateTime.Now;
                             @if(now >= item.DateCompleted)
-                            {
+                            { *@
                                 <tr class="case_list" id="item-@item.Id">
                                     <th class="case_counter">@counter</th>
                                     <td class="hidden case_machine_id">@item.MachineId</td>
@@ -389,7 +406,7 @@
 
                                             foreach (var name in names)
                                             {
-                                                <span>@name</span>
+                                                    <span>@name</span>
                                             }
                                         }
                                     </td>
@@ -405,32 +422,38 @@
                                     </td>
                                     <td class="case_description">@item.Description</td>
                                     <td class="flex align-items-center gap-1">
-                                        <label for="call_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnCall bg-primary/10 text-primary btn-sm">
-                                            Call Vendor
-                                        </label>
-                                        @* <label for="machine_repair_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnSchedules bg-primary/10 text-primary btn-sm">
-                                            Schedule
-                                        </label> *@
-                                        @if (item.IsApproved != 1 && item.Status.Name != "Progress")
+                                        @if(item.IsApproved != 1 && item.Status.Name == "Called") {
+                                            <label for="call_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnCall bg-primary/10 text-primary btn-sm">
+                                                Call Vendor
+                                            </label>
+                                        }
+                                        @if (item.IsApproved != 1 && item.Status.Name != "Progress" && item.Status.Name != "Vendor" && item.Status.Name != "Success")
                                         {
                                             <label for="form_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnEdit btn-primary btn-sm">
                                                 Approve
                                             </label>
                                         }
+                                        @if (item.Status.Name != "Success" && item.IsApproved == 1) {
+                                            <button class="btn btnFinish btn-info btn-sm" data-machineid="@item.MachineId" data-itemid="@item.Id">Set Finish</button>
+                                        }
+                                        @if (item.Status.Name == "Vendor")
+                                        {
+                                            <button class="btn btnFinish btn-info btn-sm" data-machineid="@item.MachineId" data-itemid="@item.Id">Set Finish</button>
+
+                                        }
                                         @if (item.Status.Name != "Success")
                                         {
-                                            <button class="btn btnFinish btn-info btn-sm" data-itemid="@item.Id">Set Finish</button>
+                                            <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
+                                            </label>
                                         }
                                         else
                                         {
-                                            <button class="btn btnProgress btn-info btn-sm" data-itemid="@item.Id">Set Progress</button>
+                                           @*  <button class="btn btnProgress btn-info btn-sm" data-itemid="@item.Id">Set Progress</button> *@
                                         }
-                                        <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                                        </label>
                                     </td>
                                 </tr>
-                            }
+                            @* } *@
                             counter++;
                         }
                     }
@@ -480,6 +503,54 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.1/xlsx.full.min.js"></script>
 
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let selectedMachine = 0
+        const statusOrderUrl = urlParams.get('statusOrder');
+        if (statusOrderUrl == null || statusOrderUrl == undefined || statusOrderUrl == 'Pending') {
+            document.getElementById('btnStatusPending').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Called') {
+            document.getElementById('btnStatusCalled').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Vendor') {
+            document.getElementById('btnStatusVendor').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Progress') {
+            document.getElementById('btnStatusProgress').classList.add('bg-primary', 'text-white')
+        }
+        if (statusOrderUrl == 'Success') {
+            document.getElementById('btnStatusComplete').classList.add('bg-primary', 'text-white')
+        }
+
+        document.getElementById('btnStatusPending').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Pending')
+        })
+        document.getElementById('btnStatusProgress').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Progress')
+        })
+        document.getElementById('btnStatusVendor').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Vendor')
+        })
+        document.getElementById('btnStatusCalled').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Called')
+        })
+        document.getElementById('btnStatusComplete').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Success')
+        })
+
+        function changeStatus(status) {
+            let sort_data = document.getElementById('sort-filter').value == 'Select Order' ? 'newest' : document.getElementById('sort-filter').value
+            console.log(sort_data)
+            let current_url = window.location.href
+            let baseUrl = current_url.split('?')[0]
+            window.location.href = baseUrl + '?page=1&sortOrder=' + sort_data + '&statusOrder=' + status
+        }
+
         let user_id = 0
         let user_name = ''
         let case_id = 0
@@ -656,9 +727,6 @@
                 .then((data) => {
                     alert('Repair Schedule Data Saved');
                     document.getElementById('call_modal').click()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 300)
                 })
         }
 
@@ -734,11 +802,14 @@
             let potential_hazard = document.getElementById('potential_hazard').value;
             let prepare_process = document.getElementById('prepare_process').value;
             let prepare_prediction = document.getElementById('prepare_prediction').value;
+            let prepare_action = document.getElementById('prepare_action').value;
             let main_process = document.getElementById('main_process').value;
             let description = document.getElementById('kyt_description').value;
             let main_prediction = document.getElementById('main_prediction').value;
+            let main_action = document.getElementById('main_action').value;
             let confirm_process = document.getElementById('confirm_process').value;
             let confirm_prediction = document.getElementById('confirm_prediction').value;
+            let confirm_action = document.getElementById('confirm_action').value;
 
             let members = []
             members_added.map((item, index) => {
@@ -752,11 +823,14 @@
                 PotentialHazard: potential_hazard,
                 PrepareProcess: prepare_process,
                 PreparePrediction: prepare_prediction,
+                PrepareAction: prepare_action,
                 MainProcess: main_process,
                 MainPrediction: main_prediction,
+                MainAction: main_action,
                 ConfirmProcess: confirm_process,
                 Description: description,
                 ConfirmPrediction: confirm_prediction,
+                ConfirmAction: confirm_action,
                 DangerousMode: dangerous_mode,
                 Approval: 1,
                 // Member: members
@@ -842,6 +916,45 @@
             })
         })
 
+        function setUsedMachines(machine_id, used_status) {
+            fetch('/MTC/UpdateMachines/' + machine_id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    IsUsed: used_status
+                })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Machine use');
+                    } else {
+                        alert('Machine cant use');
+                    }
+                });
+        }
+
+        function setFinishDate(caseId) {
+            let date_now = new Date().toISOString()
+            fetch("/MTC/Leader/UpdateCase/" + caseId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    dateCompleted: date_now,
+                })
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    fetch()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 100)
+                })
+        }
+
         function setStatus(caseId, statusId) {
             fetch("/MTC/Leader/UpdateCase/" + caseId, {
                 method: 'POST',
@@ -850,11 +963,11 @@
                 },
                 body: JSON.stringify({
                     StatusId: statusId,
-                    
                 })
             })
                 .then((response) => response.json())
                 .then((data) => {
+                    fetch()
                     setTimeout(() => {
                         window.location.reload()
                     }, 100)
@@ -863,8 +976,11 @@
 
         Array.from(document.getElementsByClassName('btnFinish')).map((element, index) => {
             element.addEventListener('click', (event) => {
+                selectedMachine = event.target.getAttribute('data-machineid')
                 data = event.target.getAttribute('data-itemid')
                 setStatus(data, 2)
+                setFinishDate(data)
+                setUsedMachines(selectedMachine, 0)
             })
         })
 
@@ -946,9 +1062,6 @@
                     if (data.success) {
                         alert('Case deleted');
                         document.getElementById('delete_modal').click()
-                        setTimeout(() => {
-                            window.location.reload()
-                        }, 300)
                     } else {
                         alert('Error deleting case');
                     }
@@ -962,6 +1075,7 @@
         document.getElementById('formCallData').addEventListener('submit', (event) => {
             event.preventDefault()
             updateCallVendor()
+            setStatus(data, 5)
         });
         document.getElementById('machineRepairData').addEventListener('submit', (event) => {
             event.preventDefault()

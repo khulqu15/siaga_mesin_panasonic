@@ -144,13 +144,17 @@ namespace panasonic_machine_checker.Controllers
             var status = _context.StatusCases.ToList();
 
             var query = _context.Cases
+                .Include(c => c.Kytforms)
+                    .ThenInclude(k => k.Member)
+                        .ThenInclude(m => m.UserMember)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
                 .Include(c => c.RepairSchedules)
                 .Include(c => c.Machine)
-                .ThenInclude(m => m.MachineLiniId)
-                .ThenInclude(l => l.BULiniId)
-                .ThenInclude(b => b.ManagerUserId)
+                    .ThenInclude(m => m.MachineLiniId)
+                        .ThenInclude(l => l.BULiniId)
+                            .ThenInclude(b => b.BuMaintenance)
+                .Where(c => c.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
                 .AsQueryable();
 
             query = query.Where(c => c.Status.Name == statusOrder);
@@ -256,11 +260,17 @@ namespace panasonic_machine_checker.Controllers
             var status = _context.StatusCases.ToList();
 
             var query = _context.Cases
+                .Include(c => c.Kytforms)
+                    .ThenInclude(k => k.Member)
+                        .ThenInclude(m => m.UserMember)
                 .Include(c => c.ReportedByNavigation)
                 .Include(c => c.Status)
                 .Include(c => c.RepairSchedules)
                 .Include(c => c.Machine)
-                .ThenInclude(m => m.MachineLiniId)
+                    .ThenInclude(m => m.MachineLiniId)
+                        .ThenInclude(l => l.BULiniId)
+                            .ThenInclude(b => b.BuMaintenance)
+                .Where(c => c.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
                 .AsQueryable();
 
             query = query.Where(c => c.Status.Name == statusOrder);
@@ -358,7 +368,7 @@ namespace panasonic_machine_checker.Controllers
 
 
         [HttpGet("/MTC/Leader/{id}")]
-        public IActionResult Leader(int id, int page = 1, string sortOrder = "newest")
+        public IActionResult Leader(int id, int page = 1, string sortOrder = "newest", string statusOrder = "Pending")
         {
             ViewData["UserRole"] = "MTC Leader";
             int pageSize = 10;
@@ -396,8 +406,7 @@ namespace panasonic_machine_checker.Controllers
                     .ThenInclude(m => m.MachineLiniId)
                         .ThenInclude(l => l.BULiniId)
                             .ThenInclude(b => b.BuMaintenance)
-                .Where(c => c.DateCompleted != null && c.IsScheduled != 0 && c.IsScheduled != null &&
-                            c.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
+                .Where(c => c.Status.Name == statusOrder && c.Machine.MachineLiniId.BULiniId.BuMaintenance.Any(item => item.ManagerId == id))
                 .AsQueryable();
 
             switch (sortOrder.ToLower())
@@ -529,6 +538,7 @@ namespace panasonic_machine_checker.Controllers
         [HttpGet("/MTC/ManagerCase/{id}")]
         public IActionResult ManagerCase(int id, int page = 1, string sortOrder = "newest")
         {
+            ViewData["UserRole"] = "MTC Manager";
             ViewData["UserRole"] = "MTC Manager";
             int pageSize = 10;
             CasesModel caseModel = new CasesModel();
@@ -719,6 +729,9 @@ namespace panasonic_machine_checker.Controllers
                 if (data.DecisionManager.HasValue)
                     case_data.DecisionManager = data.DecisionManager;
 
+                if (data.StatusId.HasValue)
+                    case_data.StatusId = data.StatusId;
+
                 _context.Cases.Update(case_data);
                 _context.SaveChanges();
                 return Json(new { success = true, machine = case_data });
@@ -733,14 +746,14 @@ namespace panasonic_machine_checker.Controllers
             var case_data = _context.Cases.Find(id);
             if (case_data != null)
             {
-                if (data.MachineId.HasValue)
-                    case_data.MachineId = data.MachineId;
+                //if (data.MachineId.HasValue)
+                //    case_data.MachineId = data.MachineId;
 
-                if (data.ReportedById.HasValue)
-                    case_data.ReportedById = data.ReportedById;
+                //if (data.ReportedById.HasValue)
+                //    case_data.ReportedById = data.ReportedById;
 
-                if (!string.IsNullOrEmpty(data.Description))
-                    case_data.Description = data.Description;
+                //if (!string.IsNullOrEmpty(data.Description))
+                //    case_data.Description = data.Description;
 
                 if (data.StatusId.HasValue)
                     case_data.StatusId = data.StatusId;
@@ -748,13 +761,13 @@ namespace panasonic_machine_checker.Controllers
                 if (data.DateCompleted.HasValue)
                     case_data.DateCompleted = data.DateCompleted;
 
-                if (data.DateReported.HasValue)
-                    case_data.DateReported = data.DateReported;
+                //if (data.DateReported.HasValue)
+                //    case_data.DateReported = data.DateReported;
 
-                if (data.DecisionManager.HasValue)
-                    case_data.DecisionManager = data.DecisionManager;
+                //if (data.DecisionManager.HasValue)
+                //    case_data.DecisionManager = data.DecisionManager;
 
-                _context.Cases.Add(case_data);
+                _context.Cases.Update(case_data);
                 _context.SaveChanges();
                 return Json(new { success = true, machine = case_data });
             }
@@ -851,6 +864,17 @@ namespace panasonic_machine_checker.Controllers
                     FilledById = item.FilledBy,
                     FilledBy = item.FilledByNavigation,
                     Approval = item.Approval,
+                    PreparePrediction = item.PreparePrediction,
+                    PrepareProcess = item.PreparePrediction,
+                    PrepareAction = item.PrepareAction,
+                    MainPrediction = item.MainPrediction,
+                    MainProcess = item.MainProcess,
+                    MainAction = item.MainAction,
+                    ConfirmPrediction = item.ConfirmPrediction,
+                    ConfirmProcess = item.ConfirmProcess,
+                    ConfirmAction = item.ConfirmAction,
+                    Description = item.Description,
+                    DangerousMode = item.DangerousMode
                 });
             }
 
@@ -892,6 +916,20 @@ namespace panasonic_machine_checker.Controllers
             ViewBag.UserList = usersModel.UserList;
 
             return View("~/Views/MTC/Manager/Index.cshtml", model);
+        }
+
+        [HttpPost("/MTC/UpdateMachines/{id}")]
+        public JsonResult UpdateMachines(int id, [FromBody] Machine data)
+        {
+            var machines = _context.Machines.Find(id);
+            if (machines != null)
+            {
+                machines.IsUsed = data.IsUsed;
+                _context.SaveChanges();
+                return Json(new { success = true, data = machines });
+            }
+            return Json(new { success = false, message = "Machines not found." });
+
         }
 
         [HttpPost("/MTC/CreateKYTForms")]
