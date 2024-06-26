@@ -77,12 +77,15 @@
                 </div>
             </div>
         </div>
-        <div class="w-full grid md:grid-cols-4 grid-cols-2 gap-3 mb-4">
+        <div class="w-full grid md:grid-cols-5 grid-cols-3 gap-3 mb-4">
             <div>
                 <button id="btnStatusPending" class="btn btn-sm bg-base-200 text-base-content w-full">Pending</button>
             </div>
             <div>
-                <button id="btnStatusCalled" class="btn btn-sm bg-base-200 text-base-content w-full">Called</button>
+                <button id="btnStatusCalled" class="btn btn-sm bg-base-200 text-base-content w-full">Scheduled</button>
+            </div>
+            <div>
+                <button id="btnStatusVendor" class="btn btn-sm bg-base-200 text-base-content w-full">Called</button>
             </div>
             <div>
                 <button id="btnStatusProgress" class="btn btn-sm bg-base-200 text-base-content w-full">Progress</button>
@@ -315,12 +318,36 @@
         if (statusOrderUrl == 'Called') {
             document.getElementById('btnStatusCalled').classList.add('bg-primary', 'text-white')
         }
+        if (statusOrderUrl == 'Vendor') {
+            document.getElementById('btnStatusVendor').classList.add('bg-primary', 'text-white')
+        }
         if (statusOrderUrl == 'Progress') {
             document.getElementById('btnStatusProgress').classList.add('bg-primary', 'text-white')
         }
         if (statusOrderUrl == 'Success') {
             document.getElementById('btnStatusComplete').classList.add('bg-primary', 'text-white')
         }
+
+        document.getElementById('btnStatusPending').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Pending')
+        })
+        document.getElementById('btnStatusProgress').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Progress')
+        })
+        document.getElementById('btnStatusVendor').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Vendor')
+        })
+        document.getElementById('btnStatusCalled').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Called')
+        })
+        document.getElementById('btnStatusComplete').addEventListener('click', (event) => {
+            event.preventDefault()
+            changeStatus('Success')
+        })
 
         let user_id = 0;
 
@@ -429,23 +456,6 @@
 
         document.getElementById('sort-filter').addEventListener('change', (event) => {
             window.location.href = '?page=1&sortOrder=' + event.target.value;
-        })
-
-        document.getElementById('btnStatusPending').addEventListener('click', (event) => {
-            event.preventDefault()
-            changeStatus('Pending')
-        })
-        document.getElementById('btnStatusProgress').addEventListener('click', (event) => {
-            event.preventDefault()
-            changeStatus('Progress')
-        })
-        document.getElementById('btnStatusCalled').addEventListener('click', (event) => {
-            event.preventDefault()
-            changeStatus('Called')
-        })
-        document.getElementById('btnStatusComplete').addEventListener('click', (event) => {
-            event.preventDefault()
-            changeStatus('Success')
         })
 
         document.getElementById('btnAdd').addEventListener('click', (event) => {

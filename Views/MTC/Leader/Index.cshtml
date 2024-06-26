@@ -335,9 +335,9 @@
                         <th>Reported By</th>
                         <th>Reported At</th>
                         <th>Deadline</th>
-                        <th>BU</th>
+                        @* <th>BU</th>
                         <th>Lini</th>
-                        <th>Status</th>
+                        <th>Status</th> *@
                         <th>Member</th>
                         <th>Approval</th>
                         <th>Description</th>
@@ -368,9 +368,9 @@
                                             <span class="div py-1 rounded px-2 text-xs @GetTimeDiffClass(item.DateCompleted)">@FormatTimeDifference(item.DateCompleted)</span>
                                         }
                                     </td>
-                                    <td class="case_bu_name">@item.BU.Name</td>
-                                    <td class="case_lini_name">@item.Lini.Name</td>
-                                    <td class="hidden case_status_id">@item.StatusId</td>
+                                    @* <td class="case_bu_name">@item.BU.Name</td>
+                                    <td class="case_lini_name">@item.Lini.Name</td> *@
+                                    @* <td class="hidden case_status_id">@item.StatusId</td> *@
                                     <td class="hidden case_potential_hazard">
                                         @foreach (var potential in item.Kytforms)
                                         {
@@ -383,7 +383,7 @@
                                             @potential.Description
                                         }
                                     </td>
-                                    <td class="case_status">@item.Status.Name</td>
+                                    @* <td class="case_status">@item.Status.Name</td> *@
                                     <td class="case_approved_at hidden">@item.ApprovedAt</td>
                                     <td class="case_kyt_analytics hidden">
                                         @if (item.Kytforms.Any())
@@ -427,7 +427,7 @@
                                                 Call Vendor
                                             </label>
                                         }
-                                        @if (item.IsApproved != 1 && item.Status.Name != "Progress" && item.Status.Name != "Vendor" && item.Status.Name != "Success")
+                                        @if (item.IsApproved != 1 && item.Status.Name != "Progress" && item.Status.Name != "Vendor" && item.Status.Name != "Success" && item.Status.Name != "Pending")
                                         {
                                             <label for="form_modal" data-itemid="@item.Id" data-casename="@item.Machine.Name" data-reportedby="@item.ReportedByNavigation.Name" class="btn btnEdit btn-primary btn-sm">
                                                 Approve
@@ -443,9 +443,9 @@
                                         }
                                         @if (item.Status.Name != "Success")
                                         {
-                                            <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
+                                            @* <label for="delete_modal" data-itemid="@item.Id" class="btn btnDelete btn-error btn-sm">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z" /></svg>
-                                            </label>
+                                            </label> *@
                                         }
                                         else
                                         {
@@ -475,9 +475,9 @@
                         <th>Reported By</th>
                         <th>Reported At</th>
                         <th>Deadline</th>
-                        <th>BU</th>
+                        @* <th>BU</th>
                         <th>Lini</th>
-                        <th>Status</th>
+                        <th>Status</th> *@
                         <th>Member</th>
                         <th>Approval</th>
                         <th>Description</th>
