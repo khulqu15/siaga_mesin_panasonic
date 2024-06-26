@@ -470,19 +470,19 @@
 
                 var namesString = names.join(', ');
 
-                let total_minutes = 0
-                let total_hours = 0
-                if (xlsx_reported_at != null) {
-                    let end_date = new Date()
-                    if (xlsx_completed_at != null) end_date = new Date(xlsx_completed_at)
+                let total_minutes = 0;
+                let total_hours = 0;
+                if (xlsx_reported_at && new Date(xlsx_reported_at) != 'Invalid Date') {
+                    let end_date = new Date();
+                    if (xlsx_completed_at && new Date(xlsx_completed_at) != 'Invalid Date') {
+                        end_date = new Date(xlsx_completed_at);
+                    }
 
-                    let reported = new Date(xlsx_reported_at)
-                    let difference = Math.abs(end_date.getTime() - reported.getTime())
-                    total_minutes = Math.round(difference / 60000)
-                    total_hours = Math.round(difference / 3600000)
+                    let reported = new Date(xlsx_reported_at);
+                    let difference = Math.abs(end_date.getTime() - reported.getTime());
+                    total_minutes = Math.round(difference / 60000);
+                    total_hours = Math.round(difference / 3600000);
                 }
-                let xlsx_duration = total_minutes
-                let xlsx_duration_hour = total_hours
 
                 excel_data.push({
                     '#': index + 1,
@@ -493,7 +493,7 @@
                     'Trouble': xlsx_trouble,
                     'Analisis': xlsx_analytics,
                     'Action': xlsx_action,
-                    'Duration': xlsx_duration_hour + ' Hour, ' + xlsx_duration + ' Minutes',
+                    'Duration': total_hours + ' Hour (' + total_minutes + ' Minutes)',
                     'Closed': namesString
                 })
             })

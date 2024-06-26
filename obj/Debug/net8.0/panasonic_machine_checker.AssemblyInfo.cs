@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("panasonic_machine_checker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e173fc505a0b823c19c8acaf67dcb51b2e49be1f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b5dd5d85302c659dc5cbf775a1757e8b5c01a9d2")]
 [assembly: System.Reflection.AssemblyProductAttribute("panasonic_machine_checker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("panasonic_machine_checker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
